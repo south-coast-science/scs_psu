@@ -10,7 +10,7 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu import PSU
-from scs_psu.psu.stm32 import STM32
+from scs_psu.psu.stm32i2c import STM32
 
 
 # --------------------------------------------------------------------------------------------------------------------
