@@ -21,5 +21,8 @@ try:
     mcu = STM32(PSU.MCU_ADDR)
     print(mcu)
 
+    check = mcu.read_reg(STM32.ADDR_PSU_STATUS)
+    print("check:0x%02x" % check)
+
 finally:
     I2C.close()

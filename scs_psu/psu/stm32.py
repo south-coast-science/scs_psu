@@ -113,7 +113,10 @@ class STM32(object):
 
         try:
             I2C.start_tx(self.__addr)
-            byte = I2C.read_cmd(addr, 1)
+            # byte = I2C.read_cmd(addr, 1)
+
+            I2C.write(addr, 0)
+            byte = I2C.read(1)
 
             return byte
         finally:
