@@ -5,7 +5,7 @@ Created on 10 Feb 2017
 """
 
 from scs_host.lock.lock import Lock
-from scs_psu.psu.stm32 import STM32
+from scs_psu.psu.stm32i2c import STM32
 
 
 # --------------------------------------------------------------------------------------------------------------------

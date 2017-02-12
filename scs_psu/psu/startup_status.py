@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 from scs_core.data.json import JSONable
 
-from scs_psu.psu.stm32 import STM32
+from scs_psu.psu.stm32i2c import STM32
 
 
 # --------------------------------------------------------------------------------------------------------------------
