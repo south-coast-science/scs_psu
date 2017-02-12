@@ -15,7 +15,7 @@ class PSU(object):
     STM32 32-Bit ARM Cortex-M Microcontroller
     """
 
-    __MCU_ADDR =                0x6f
+    MCU_ADDR =                  0x6f
 
     __LOCK =                    "CMD"
     __LOCK_TIMEOUT =            2.0
@@ -34,7 +34,7 @@ class PSU(object):
         """
         Constructor
         """
-        self.__mcu = STM32(PSU.__MCU_ADDR)
+        self.__mcu = STM32(PSU.MCU_ADDR)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ class PSU(object):
 
         try:
             print(datetime)
-            
+
             # TODO: load registers
 
             self.__mcu.issue_cmd(STM32.CMD_RTC_SET)

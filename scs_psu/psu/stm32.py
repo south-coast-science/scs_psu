@@ -90,9 +90,9 @@ class STM32(object):
         while True:
             time.sleep(0.001)       # TODO: for how long?
 
-            running = self.read_reg(STM32.ADDR_CMD_STATUS) & cmd
+            busy = self.read_reg(STM32.ADDR_CMD_STATUS) & cmd
 
-            if not running:
+            if not busy:
                 return
 
 
