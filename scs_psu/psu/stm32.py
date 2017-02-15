@@ -105,14 +105,14 @@ class STM32(object):
 
 
     def read_reg(self, addr):
-        self.__serial.write_chars(self.MODE_READ, addr)
-        chars = self.__serial.read_chars(1)
+        self.__serial.write(self.MODE_READ, addr)
+        chars = self.__serial.read(1)
 
         return int(chars[0])
 
 
     def write_reg(self, addr, char):
-        self.__serial.write_chars(self.MODE_WRITE, addr, char)
+        self.__serial.write(self.MODE_WRITE, addr, char)
 
 
     # ----------------------------------------------------------------------------------------------------------------
