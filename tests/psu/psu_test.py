@@ -14,11 +14,5 @@ from scs_psu.psu.psu import PSU
 
 # --------------------------------------------------------------------------------------------------------------------
 
-I2C.open(Host.I2C_SENSORS)
-
-try:
-    psu = PSU()
-    print(psu)
-
-finally:
-    I2C.close()
+psu = PSU()
+print(psu)

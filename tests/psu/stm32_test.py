@@ -6,23 +6,29 @@ Created on 12 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_host.bus.i2c import I2C
-from scs_host.sys.host import Host
-
-from scs_psu.psu.psu import PSU
-from scs_psu.psu.stm32i2c import STM32
+from scs_psu.psu.stm32 import STM32
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-I2C.open(Host.I2C_SENSORS)
+mcu = STM32()
+mcu.open()
 
-try:
-    mcu = STM32(PSU.MCU_ADDR)
-    print(mcu)
+print(mcu)
 
-    check = mcu.read_reg(STM32.ADDR_PSU_STATUS)
-    print("check:0x%02x" % check)
+mcu.write_reg(STM32.ADDR_POWER_WAIT_SECS, 0x20)
 
-finally:
-    I2C.close()
+value = mcu.read_reg(STM32.ADDR_POWER_WAIT_SECS)
+print("wait: 0x%02x" % value)
+
+
+mcu.write_reg(STM32.ADDR_POWER_OFF_SECS, 0x10)
+
+value = mcu.read_reg(STM32.ADDR_POWER_OFF_SECS)
+print("off: 0x%02x" % value)
+
+
+mcu.cmd(STM32.CMD_POWER_CYCLE)
+
+
+mcu.close()

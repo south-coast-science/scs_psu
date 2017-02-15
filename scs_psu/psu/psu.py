@@ -5,7 +5,7 @@ Created on 10 Feb 2017
 """
 
 from scs_host.lock.lock import Lock
-from scs_psu.psu.stm32i2c import STM32
+from scs_psu.psu.stm32 import STM32
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -14,8 +14,6 @@ class PSU(object):
     """
     STM32 32-Bit ARM Cortex-M Microcontroller
     """
-
-    MCU_ADDR =                  0x6f
 
     __LOCK =                    "CMD"
     __LOCK_TIMEOUT =            2.0
@@ -34,7 +32,7 @@ class PSU(object):
         """
         Constructor
         """
-        self.__mcu = STM32(PSU.MCU_ADDR)
+        self.__mcu = STM32()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,7 +44,7 @@ class PSU(object):
             self.__mcu.write_reg(STM32.ADDR_POWER_WAIT_SECS, wait_secs)
             self.__mcu.write_reg(STM32.ADDR_POWER_OFF_SECS, off_secs)
 
-            self.__mcu.issue_cmd(STM32.CMD_POWER_CYCLE)
+            self.__mcu.cmd(STM32.CMD_POWER_CYCLE)
 
         finally:
             Lock.release(PSU.__lock_name(PSU.__LOCK))
