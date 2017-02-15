@@ -16,6 +16,7 @@ mcu.open()
 
 print(mcu)
 
+
 mcu.write_reg(STM32.ADDR_POWER_WAIT_SECS, 0x20)
 
 value = mcu.read_reg(STM32.ADDR_POWER_WAIT_SECS)

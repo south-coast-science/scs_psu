@@ -4,7 +4,6 @@ Created on 10 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_host.lock.lock import Lock
 from scs_psu.psu.stm32 import STM32
 
 
@@ -14,17 +13,6 @@ class PSU(object):
     """
     STM32 32-Bit ARM Cortex-M Microcontroller
     """
-
-    __LOCK =                    "CMD"
-    __LOCK_TIMEOUT =            2.0
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def __lock_name(cls, func):
-        return cls.__name__ + "-" + func
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -38,7 +26,7 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def power_cycle(self, wait_secs, off_secs):
-        Lock.acquire(PSU.__lock_name(PSU.__LOCK), PSU.__LOCK_TIMEOUT)
+        self.__mcu.open()
 
         try:
             self.__mcu.write_reg(STM32.ADDR_POWER_WAIT_SECS, wait_secs)
@@ -47,45 +35,45 @@ class PSU(object):
             self.__mcu.cmd(STM32.CMD_POWER_CYCLE)
 
         finally:
-            Lock.release(PSU.__lock_name(PSU.__LOCK))
+            self.__mcu.close()
 
 
     def reset_watchdog(self):
-        Lock.acquire(PSU.__lock_name(PSU.__LOCK), PSU.__LOCK_TIMEOUT)
+        self.__mcu.open()
 
         try:
-            self.__mcu.issue_cmd(STM32.CMD_WATCHDOG_RESET)
+            self.__mcu.cmd(STM32.CMD_WATCHDOG_RESET)
 
         finally:
-            Lock.release(PSU.__lock_name(PSU.__LOCK))
+            self.__mcu.close()
 
 
     def set_rtc(self, datetime):
-        Lock.acquire(PSU.__lock_name(PSU.__LOCK), PSU.__LOCK_TIMEOUT)
+        self.__mcu.open()
 
         try:
             print(datetime)
 
             # TODO: load registers
 
-            self.__mcu.issue_cmd(STM32.CMD_RTC_SET)
+            self.__mcu.cmd(STM32.CMD_RTC_SET)
 
         finally:
-            Lock.release(PSU.__lock_name(PSU.__LOCK))
+            self.__mcu.close()
 
 
     def run_rtc(self):
-        Lock.acquire(PSU.__lock_name(PSU.__LOCK), PSU.__LOCK_TIMEOUT)
+        self.__mcu.open()
 
         try:
-            self.__mcu.issue_cmd(STM32.CMD_RTC_RUN)
+            self.__mcu.cmd(STM32.CMD_RTC_RUN)
 
         finally:
-            Lock.release(PSU.__lock_name(PSU.__LOCK))
+            self.__mcu.close()
 
 
     def get_power(self):
-        Lock.acquire(PSU.__lock_name(PSU.__LOCK), PSU.__LOCK_TIMEOUT)
+        self.__mcu.open()
 
         try:
             self.__mcu.cmd(STM32.CMD_ADC_READ)
@@ -103,11 +91,11 @@ class PSU(object):
             return socket, battery
 
         finally:
-            Lock.release(PSU.__lock_name(PSU.__LOCK))
+            self.__mcu.close()
 
 
     def get_version(self):
-        Lock.acquire(PSU.__lock_name(PSU.__LOCK), PSU.__LOCK_TIMEOUT)
+        self.__mcu.open()
 
         try:
             version = self.__mcu.read_reg(STM32.ADDR_VERSION)
@@ -118,7 +106,7 @@ class PSU(object):
             return software_version, hardware_version
 
         finally:
-            Lock.release(PSU.__lock_name(PSU.__LOCK))
+            self.__mcu.close()
 
 
     def get_psu_status(self):
