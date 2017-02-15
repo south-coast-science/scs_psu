@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 """
-Created on 9 Nov 2016
+Created on 14 Feb 2017
 
-@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+@author: Jamie Campbell (jamie.campbell@southcoastscience.com)
 """
 
 import serial

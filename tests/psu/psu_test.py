@@ -15,3 +15,4 @@ psu = PSU()
 print(psu)
 
 psu.power_cycle(10, 10)
+psu.power_cycle(10, 10)
