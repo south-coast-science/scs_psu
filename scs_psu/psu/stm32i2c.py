@@ -130,6 +130,7 @@ class STM32(object):
         try:
             I2C.start_tx(self.__addr)
             I2C.write(addr, value)
+
         finally:
             I2C.end_tx()
 
