@@ -6,13 +6,15 @@ Created on 8 Aug 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./psu.py -v status
+./psu_monitor.py -p -v
 """
 
 import sys
 
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
+
+from scs_host.sys.host import Host
 
 from scs_psu.cmd.cmd_psu import CmdPSU
 from scs_psu.psu.psu import PSU
@@ -38,7 +40,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        psu = PSU()
+        psu = PSU(Host.psu_device())
 
         if cmd.verbose:
             print(psu, file=sys.stderr)
@@ -76,7 +78,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         if cmd.verbose:
-            print("psu: KeyboardInterrupt", file=sys.stderr)
+            print("psu_monitor: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)

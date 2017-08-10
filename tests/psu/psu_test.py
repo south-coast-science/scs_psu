@@ -6,16 +6,16 @@ Created on 10 Aug 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
-
 from scs_core.data.json import JSONify
+
+from scs_host.sys.host import Host
 
 from scs_psu.psu.psu import PSU
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSU()
+psu = PSU(Host.psu_device())
 print(psu)
 print("-")
 

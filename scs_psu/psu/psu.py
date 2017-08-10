@@ -8,11 +8,11 @@ import json
 
 from collections import OrderedDict
 
-from scs_host.sys.host_serial import HostSerial
+from scs_core.psu.psu_status import PSUStatus
+from scs_core.psu.psu_uptime import PSUUptime
+from scs_core.psu.psu_version import PSUVersion
 
-from scs_psu.psu.psu_status import PSUStatus
-from scs_psu.psu.psu_uptime import PSUUptime
-from scs_psu.psu.psu_version import PSUVersion
+from scs_host.sys.host_serial import HostSerial
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -30,11 +30,11 @@ class PSU(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
+    def __init__(self, device):
         """
         Constructor
         """
-        self.__serial = HostSerial(PSU.__UART, PSU.__BAUD_RATE, False)
+        self.__device = device
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -79,13 +79,15 @@ class PSU(object):
 
 
     def charge_pause(self, on):
-        response = self.communicate("c-pause")
+        state = 1 if bool(on) else 0
+        response = self.communicate("c-pause % d" % state)
 
         return response
 
 
     def charge_dead(self, on):
-        response = self.communicate("c-dead")
+        state = 1 if bool(on) else 0
+        response = self.communicate("c-dead % d" % state)
 
         return response
 
@@ -93,19 +95,24 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
-        try:
-            self.__serial.open(PSU.__SERIAL_TIMEOUT)
+        ser = None
 
-            self.__serial.write_line(command.strip())
-            response = self.__serial.read_line("\r\n", PSU.__SERIAL_TIMEOUT)
+        try:
+            ser = HostSerial(self.__device, PSU.__BAUD_RATE, False)
+
+            ser.open(PSU.__SERIAL_TIMEOUT)
+
+            ser.write_line(command.strip())
+            response = ser.read_line("\r\n", PSU.__SERIAL_TIMEOUT)
 
             return response
 
         finally:
-            self.__serial.close()
+            if ser:
+                ser.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSU:{serial:%s}" % self.__serial
+        return "PSU:{device:%s}" % self.__device
