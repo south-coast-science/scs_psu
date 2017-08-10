@@ -62,9 +62,7 @@ if __name__ == '__main__':
                 sys.stderr.flush()
 
             for line in sys.stdin:
-                command = line.strip()
-
-                response = psu.communicate(command)
+                response = psu.communicate(line.strip())
                 print(response)
                 sys.stdout.flush()
 

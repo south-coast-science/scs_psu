@@ -3,7 +3,7 @@ Created on 21 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies whether on not an NDIR is present
+specifies whether on not a PSU is present
 
 example JSON:
 {"present": true}
