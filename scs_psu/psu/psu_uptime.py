@@ -1,19 +1,22 @@
 """
-Created on 12 Feb 2017
+Created on 8 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example:
+{"secs": 57}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
-
-from scs_psu.psu.stm32i2c import STM32
+from scs_core.data.timedelta import Timedelta
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class StartupStatus(JSONable):
+class PSUUptime(JSONable):
     """
     classdocs
     """
@@ -21,21 +24,22 @@ class StartupStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, byte):
-        power_cycle = bool(byte & STM32.STARTUP_POWER_CYCLE)
-        watchdog = bool(byte & STM32.STARTUP_WATCHDOG)
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
 
-        return StartupStatus(power_cycle, watchdog)
+        seconds = jdict.get('secs')
+
+        return PSUUptime(seconds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, power_cycle, watchdog):
+    def __init__(self, seconds):
         """
         Constructor
         """
-        self.__power_cycle = power_cycle
-        self.__watchdog = watchdog
+        self.__seconds = Datum.int(seconds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -43,8 +47,7 @@ class StartupStatus(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['pow_cycle'] = self.power_cycle
-        jdict['watchdog'] = self.watchdog
+        jdict['period'] = self.timedelta
 
         return jdict
 
@@ -52,16 +55,16 @@ class StartupStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def power_cycle(self):
-        return self.__power_cycle
+    def seconds(self):
+        return self.__seconds
 
 
     @property
-    def watchdog(self):
-        return self.__watchdog
+    def timedelta(self):
+        return Timedelta(seconds=self.seconds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StartupStatus:{power_cycle:%s, watchdog:%s}" % (self.power_cycle, self.watchdog)
+        return "PSUUptime:{seconds:%s}" % self.seconds

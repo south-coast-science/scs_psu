@@ -1,18 +1,32 @@
 """
-Created on 10 Feb 2017
+Created on 8 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_psu.psu.stm32 import STM32
+import json
+
+from collections import OrderedDict
+
+from scs_host.sys.host_serial import HostSerial
+
+from scs_psu.psu.psu_status import PSUStatus
+from scs_psu.psu.psu_uptime import PSUUptime
+from scs_psu.psu.psu_version import PSUVersion
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSU(object):
     """
-    STM32 32-Bit ARM Cortex-M Microcontroller
+    South Coast Science PSU v1.0.0 via UART
     """
+
+    __UART =                5
+    __BAUD_RATE =           9600
+
+    __SERIAL_TIMEOUT =      3.0
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -20,104 +34,76 @@ class PSU(object):
         """
         Constructor
         """
-        self.__mcu = STM32()
+        self.__serial = HostSerial(PSU.__UART, PSU.__BAUD_RATE, False)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def power_cycle(self, wait_secs, off_secs):
-        self.__mcu.open()
+    def version(self):
+        response = self.communicate("version")
+        jdict = json.loads(response, object_pairs_hook=OrderedDict)
 
-        try:
-            self.__mcu.write_reg(STM32.ADDR_POWER_WAIT_SECS, wait_secs)
-            self.__mcu.write_reg(STM32.ADDR_POWER_OFF_SECS, off_secs)
-
-            self.__mcu.cmd(STM32.CMD_POWER_CYCLE)
-
-        finally:
-            self.__mcu.close()
+        return PSUVersion.construct_from_jdict(jdict)
 
 
-    def reset_watchdog(self):
-        self.__mcu.open()
+    def status(self):
+        response = self.communicate("status")
+        jdict = json.loads(response, object_pairs_hook=OrderedDict)
 
-        try:
-            self.__mcu.cmd(STM32.CMD_WATCHDOG_RESET)
-
-        finally:
-            self.__mcu.close()
+        return PSUStatus.construct_from_jdict(jdict)
 
 
-    def set_rtc(self, datetime):
-        self.__mcu.open()
+    def uptime(self):
+        response = self.communicate("uptime")
+        jdict = json.loads(response, object_pairs_hook=OrderedDict)
 
-        try:
-            print(datetime)
-
-            # TODO: load registers
-
-            self.__mcu.cmd(STM32.CMD_RTC_SET)
-
-        finally:
-            self.__mcu.close()
+        return PSUUptime.construct_from_jdict(jdict)
 
 
-    def run_rtc(self):
-        self.__mcu.open()
+    def watchdog_start(self, interval):
+        response = self.communicate("w-start % d" % interval)
 
-        try:
-            self.__mcu.cmd(STM32.CMD_RTC_RUN)
-
-        finally:
-            self.__mcu.close()
+        return response
 
 
-    def get_power(self):
-        self.__mcu.open()
+    def watchdog_stop(self):
+        response = self.communicate("w-stop")
 
-        try:
-            self.__mcu.cmd(STM32.CMD_ADC_READ)
-
-            socket_msb = self.__mcu.read_reg(STM32.ADDR_SOCKET_V_MSB)
-            socket_lsb = self.__mcu.read_reg(STM32.ADDR_SOCKET_V_LSB)
-
-            socket = socket_msb << 8 | socket_lsb
-
-            battery_msb = self.__mcu.read_reg(STM32.ADDR_BATTERY_V_MSB)
-            battery_lsb = self.__mcu.read_reg(STM32.ADDR_BATTERY_V_LSB)
-
-            battery = battery_msb << 8 | battery_lsb
-
-            return socket, battery
-
-        finally:
-            self.__mcu.close()
+        return response
 
 
-    def get_version(self):
-        self.__mcu.open()
+    def watchdog_touch(self):
+        response = self.communicate("w-touch")
 
-        try:
-            version = self.__mcu.read_reg(STM32.ADDR_VERSION)
-
-            software_version = version >> 4
-            hardware_version = version & 0x0f
-
-            return software_version, hardware_version
-
-        finally:
-            self.__mcu.close()
+        return response
 
 
-    def get_psu_status(self):
+    def charge_pause(self, on):
+        # TODO: implement charge_pause(..)
         pass
 
 
-    def get_startup_status(self):
+    def charge_dead(self, on):
+        # TODO: implement charge_dead(..)
         pass
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def communicate(self, command):
+        try:
+            self.__serial.open(PSU.__SERIAL_TIMEOUT)
+
+            self.__serial.write_line(command.strip())
+            response = self.__serial.read_line("\r\n", PSU.__SERIAL_TIMEOUT)
+
+            return response
+
+        finally:
+            self.__serial.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSU:{mcu:%s}" % self.__mcu
+        return "PSU:{serial:%s}" % self.__serial

@@ -1,14 +1,16 @@
 """
-Created on 12 Feb 2017
+Created on 8 Aug 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example:
+{"p-rst": false, "w-rst": false, "batt-flt": false, "host-3v3": 3.4, "pwr-in": 9.6, "prot-batt": 5.0}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
-
-from scs_psu.psu.stm32i2c import STM32
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,35 +23,36 @@ class PSUStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct(cls, byte):
-        charger_pause = bool(byte & STM32.STATUS_CHARGER_PAUSE)
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
 
-        battery_dead = bool(byte & STM32.STATUS_BATTERY_DEAD)
-        battery_fault = bool(byte & STM32.STATUS_BATTERY_FAULT)
-        battery_on = bool(byte & STM32.STATUS_ON_BATTERY)
+        power_reset = jdict.get('p-rst')
+        watchdog_reset = jdict.get('w-rst')
 
-        socket_on = bool(byte & STM32.STATUS_ON_SOCKET)
+        battery_fault = jdict.get('batt-flt')
 
-        run = bool(byte & STM32.STATUS_RUN)
+        host_3v3 = jdict.get('host-3v3')
+        power_in = jdict.get('pwr-in')
+        prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(charger_pause, battery_dead, battery_fault, battery_on, socket_on, run)
+        return PSUStatus(power_reset, watchdog_reset, battery_fault, host_3v3, power_in, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, charger_pause, battery_dead, battery_fault, battery_on, socket_on, run):
+    def __init__(self, power_reset, watchdog_reset, battery_fault, host_3v3, power_in, prot_batt):
         """
         Constructor
         """
-        self.__charger_pause = charger_pause
+        self.__power_reset = power_reset                        # restart because host was powered down     bool
+        self.__watchdog_reset = watchdog_reset                  # restart because of watchdog timeout       bool
 
-        self.__battery_dead = battery_dead
-        self.__battery_fault = battery_fault
-        self.__battery_on = battery_on
+        self.__battery_fault = battery_fault                    # battery fault                             bool
 
-        self.__socket_on = socket_on
-
-        self.__run = run
+        self.__host_3v3 = Datum.float(host_3v3, 1)              # host 3V3 voltage                          float
+        self.__power_in = Datum.float(power_in, 1)              # PSU input voltage                         float
+        self.__prot_batt = Datum.float(prot_batt, 1)            # battery voltage                           float
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -57,15 +60,14 @@ class PSUStatus(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['chg_pause'] = self.charger_pause
+        jdict['p-rst'] = self.power_reset
+        jdict['w-rst'] = self.watchdog_reset
 
-        jdict['bat_dead'] = self.battery_dead
-        jdict['bat_fault'] = self.battery_fault
-        jdict['bat_on'] = self.battery_on
+        jdict['batt-flt'] = self.battery_fault
 
-        jdict['soc_on'] = self.socket_on
-
-        jdict['run'] = self.run
+        jdict['host-3v3'] = self.host_3v3
+        jdict['pwr-in'] = self.power_in
+        jdict['prot-batt'] = self.prot_batt
 
         return jdict
 
@@ -73,13 +75,13 @@ class PSUStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def charger_pause(self):
-        return self.__charger_pause
+    def power_reset(self):
+        return self.__power_reset
 
 
     @property
-    def battery_dead(self):
-        return self.__battery_dead
+    def watchdog_reset(self):
+        return self.__watchdog_reset
 
 
     @property
@@ -88,22 +90,24 @@ class PSUStatus(JSONable):
 
 
     @property
-    def battery_on(self):
-        return self.__battery_on
+    def host_3v3(self):
+        return self.__host_3v3
 
 
     @property
-    def socket_on(self):
-        return self.__socket_on
+    def power_in(self):
+        return self.__power_in
 
 
     @property
-    def run(self):
-        return self.__run
+    def prot_batt(self):
+        return self.__prot_batt
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{charger_pause:%s, battery_dead:%s, battery_fault:%s, battery_on:%s, socket_on:%s, run:%s}" \
-               % (self.charger_pause, self.battery_dead, self.battery_fault, self.battery_on, self.socket_on, self.run)
+        return "PSUStatus:{power_reset:%s, watchdog_reset:%s, battery_fault:%s, " \
+               "host_3v3:%s, power_in:%s, prot_batt:%s}" \
+               % (self.power_reset, self.watchdog_reset, self.battery_fault,
+                  self.host_3v3, self.power_in, self.prot_batt)
