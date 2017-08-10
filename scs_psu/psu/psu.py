@@ -79,13 +79,15 @@ class PSU(object):
 
 
     def charge_pause(self, on):
-        # TODO: implement charge_pause(..)
-        pass
+        response = self.communicate("c-pause")
+
+        return response
 
 
     def charge_dead(self, on):
-        # TODO: implement charge_dead(..)
-        pass
+        response = self.communicate("c-dead")
+
+        return response
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -45,3 +45,11 @@ print("-")
 stop = psu.watchdog_stop()
 print(stop)
 print("-")
+
+pause = psu.charge_pause(0)
+print(pause)
+print("-")
+
+dead = psu.charge_dead(0)
+print(dead)
+print("-")
