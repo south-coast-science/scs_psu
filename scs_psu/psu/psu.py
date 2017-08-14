@@ -22,7 +22,7 @@ class PSU(object):
     South Coast Science PSU v1.0.0 via UART
     """
 
-    __BAUD_RATE =           9600
+    __BAUD_RATE =           1200
 
     __SERIAL_TIMEOUT =      4.0
 
