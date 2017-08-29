@@ -40,23 +40,35 @@ class PSU(object):
 
     def version(self):
         response = self.communicate("version")
-        jdict = json.loads(response, object_pairs_hook=OrderedDict)
 
-        return PSUVersion.construct_from_jdict(jdict)
+        try:
+            jdict = json.loads(response, object_pairs_hook=OrderedDict)
+            return PSUVersion.construct_from_jdict(jdict)
+
+        except ValueError:
+            return None
 
 
     def status(self):
         response = self.communicate("status")
-        jdict = json.loads(response, object_pairs_hook=OrderedDict)
 
-        return PSUStatus.construct_from_jdict(jdict)
+        try:
+            jdict = json.loads(response, object_pairs_hook=OrderedDict)
+            return PSUStatus.construct_from_jdict(jdict)
+
+        except ValueError:
+            return None
 
 
     def uptime(self):
         response = self.communicate("uptime")
-        jdict = json.loads(response, object_pairs_hook=OrderedDict)
 
-        return PSUUptime.construct_from_jdict(jdict)
+        try:
+            jdict = json.loads(response, object_pairs_hook=OrderedDict)
+            return PSUUptime.construct_from_jdict(jdict)
+
+        except ValueError:
+            return None
 
 
     def watchdog_start(self, interval):
