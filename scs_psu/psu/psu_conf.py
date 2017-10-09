@@ -30,11 +30,6 @@ class PSUConf(PersistentJSONable):
         return host.conf_dir() + cls.__FILENAME
 
 
-    @classmethod
-    def load_from_host(cls, host):
-        return cls.load_from_file(cls.filename(host))
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -53,6 +48,8 @@ class PSUConf(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__present = bool(present)
 
 
