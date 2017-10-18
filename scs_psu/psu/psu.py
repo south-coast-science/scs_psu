@@ -5,7 +5,6 @@ Created on 8 Aug 2017
 """
 
 import json
-import time
 
 from collections import OrderedDict
 
@@ -23,9 +22,11 @@ class PSU(object):
     South Coast Science PSU v1.0.0 via UART
     """
 
-    __BAUD_RATE =           2400
+    __BAUD_RATE =           1200
 
-    __SERIAL_TIMEOUT =      4.0
+    __EOL =                 "\n"
+
+    __SERIAL_TIMEOUT =      3.0
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -115,11 +116,7 @@ class PSU(object):
             ser.open(PSU.__SERIAL_TIMEOUT)
 
             ser.write_line(command.strip())
-
-            # start = time.time()
-            response = ser.read_line("\r\n", PSU.__SERIAL_TIMEOUT)
-            # end = time.time() - start
-            # print("inner: %0.3f" % end)
+            response = ser.read_line(PSU.__EOL, PSU.__SERIAL_TIMEOUT)
 
             return response
 

@@ -9,7 +9,6 @@ Created on 17 Oct 2017
 import sys
 import time
 
-from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_host.sys.host import Host
@@ -28,10 +27,10 @@ while True:
     now = LocalizedDatetime.now()
     start = time.time()
 
-    response = psu.communicate('uptime')
+    response = psu.communicate('status')
     elapsed = time.time() - start
 
     print("%s, %0.3f, '%s'" % (now.as_iso8601(), elapsed, response))
     sys.stdout.flush()
 
-    time.sleep(0.1)
+    time.sleep(1.0)
