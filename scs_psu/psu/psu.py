@@ -24,7 +24,7 @@ class PSU(object):
 
     __BAUD_RATE =           1200
 
-    __EOL =                 "\n"
+    __EOL =                 "\n\r"
 
     __SERIAL_TIMEOUT =      3.0
 
