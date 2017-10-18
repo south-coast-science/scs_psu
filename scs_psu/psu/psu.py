@@ -19,7 +19,7 @@ from scs_host.sys.host_serial import HostSerial
 
 class PSU(object):
     """
-    South Coast Science PSU v1.0.0 via UART
+    South Coast Science PSU v1 (firmware v1.1.0) via UART
     """
 
     __BAUD_RATE =           1200
