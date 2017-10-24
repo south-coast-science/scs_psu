@@ -15,11 +15,13 @@ from scs_core.psu.psu_version import PSUVersion
 from scs_host.sys.host_serial import HostSerial
 
 
+# TODO: subclass according to the version reported by the actual PSU
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSU(object):
     """
-    South Coast Science PSU v1 (firmware v1.1.0) via UART
+    South Coast Science PSU v1 (firmware v1.1.x) via UART
     """
 
     __BAUD_RATE =           1200
@@ -115,7 +117,7 @@ class PSU(object):
 
             ser.open(PSU.__SERIAL_TIMEOUT)
 
-            ser.write_line(command.strip())
+            ser.write_line(command.strip())                             # TODO: single-character EOL would be better?
             response = ser.read_line(PSU.__EOL, PSU.__SERIAL_TIMEOUT)
 
             return response
