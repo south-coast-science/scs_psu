@@ -23,14 +23,18 @@ print(psu, file=sys.stderr)
 print("-")
 
 
-while True:
-    now = LocalizedDatetime.now()
-    start = time.time()
+try:
+    while True:
+        now = LocalizedDatetime.now()
+        start = time.time()
 
-    response = psu.communicate('status')
-    elapsed = time.time() - start
+        response = psu.communicate('status')
+        elapsed = time.time() - start
 
-    print("%s, %0.3f, '%s'" % (now.as_iso8601(), elapsed, response))
-    sys.stdout.flush()
+        print("%s, %0.3f, '%s'" % (now.as_iso8601(), elapsed, response))
+        sys.stdout.flush()
 
-    time.sleep(1.0)
+        time.sleep(1.0)
+
+except KeyboardInterrupt:
+    pass
