@@ -117,7 +117,7 @@ class PSU(object):
 
             ser.open(PSU.__SERIAL_TIMEOUT)
 
-            ser.write_line(command.strip())                             # TODO: single-character EOL would be better?
+            ser.write_line(command.strip(), PSU.__EOL)
             response = ser.read_line(PSU.__EOL, PSU.__SERIAL_TIMEOUT)
 
             return response
