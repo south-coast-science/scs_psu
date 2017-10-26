@@ -5,6 +5,7 @@ Created on 8 Aug 2017
 """
 
 import json
+import sys
 
 from collections import OrderedDict
 
@@ -21,14 +22,15 @@ from scs_host.sys.host_serial import HostSerial
 
 class PSU(object):
     """
-    South Coast Science PSU v1 (firmware v1.1.x) via UART
+    South Coast Science PSU v1 (firmware v1.2.x) via UART
     """
 
-    __BAUD_RATE =           1200
+    __BAUD_RATE =               1200
 
-    __EOL =                 "\n"
+    __EOL =                     "\n"
 
-    __SERIAL_TIMEOUT =      3.0
+    __SERIAL_LOCK_TIMEOUT =     5.0         # seconds
+    __SERIAL_COMMS_TIMEOUT =    4.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -115,10 +117,12 @@ class PSU(object):
         try:
             ser = HostSerial(self.__device, PSU.__BAUD_RATE, False)
 
-            ser.open(PSU.__SERIAL_TIMEOUT)
+            ser.open(PSU.__SERIAL_LOCK_TIMEOUT)
 
             ser.write_line(command.strip(), PSU.__EOL)
-            response = ser.read_line(PSU.__EOL, PSU.__SERIAL_TIMEOUT)
+            response = ser.read_line(PSU.__EOL, PSU.__SERIAL_COMMS_TIMEOUT)
+
+            print("psu.communicate - response:%s" % response, file=sys.stderr)
 
             return response
 
