@@ -29,17 +29,17 @@ class PSU(object):
 
     __EOL =                     "\n"
 
-    __SERIAL_LOCK_TIMEOUT =     5.0         # seconds
+    __SERIAL_LOCK_TIMEOUT =     6.0         # seconds
     __SERIAL_COMMS_TIMEOUT =    4.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device):
+    def __init__(self, uart):
         """
         Constructor
         """
-        self.__device = device
+        self.__serial = HostSerial(uart, self.__BAUD_RATE, False)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -112,26 +112,21 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
-        ser = None
-
         try:
-            ser = HostSerial(self.__device, PSU.__BAUD_RATE, False)
+            self.__serial.open(self.__SERIAL_LOCK_TIMEOUT)
 
-            ser.open(PSU.__SERIAL_LOCK_TIMEOUT)
-
-            ser.write_line(command.strip(), PSU.__EOL)
-            response = ser.read_line(PSU.__EOL, PSU.__SERIAL_COMMS_TIMEOUT)
+            self.__serial.write_line(command.strip(), self.__EOL)
+            response = self.__serial.read_line(PSU.__EOL, self.__SERIAL_COMMS_TIMEOUT)
 
             print("psu.communicate - response:%s" % response, file=sys.stderr)
 
             return response
 
         finally:
-            if ser:
-                ser.close()
+            self.__serial.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSU:{device:%s}" % self.__device
+        return "PSU:{serial:%s}" % self.__serial
