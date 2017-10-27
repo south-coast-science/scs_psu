@@ -6,6 +6,7 @@ Created on 8 Aug 2017
 
 import json
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -112,10 +113,14 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
+        print("psu.communicate - command:%s" % command, file=sys.stderr)
+
         try:
             self.__serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
 
             self.__serial.write_line(command.strip(), self.__EOL)
+            time.sleep(0.1)
+
             response = self.__serial.read_line(PSU.__EOL, self.__SERIAL_COMMS_TIMEOUT)
 
             print("psu.communicate - response:%s" % response, file=sys.stderr)
