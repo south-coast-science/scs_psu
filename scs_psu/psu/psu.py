@@ -57,7 +57,7 @@ class PSU(object):
 
 
     def status(self):
-        response = self.communicate("status")
+        response = self.communicate("state")        # TODO: return command to "status"
 
         try:
             jdict = json.loads(response, object_pairs_hook=OrderedDict)
