@@ -1,11 +1,11 @@
 # scs_psu
-Communication and control of the South Coast Science power supply board for BeagleBone.
+Communication and control of the South Coast Science power supply boards for BeagleBone.
 
 **Required libraries:** 
 
 * Third party: -
 * SCS root: scs_core
-* SCS host: scs_host_bbe
+* SCS host: scs_host_bbe, scs_host_bbe_southern
 
 
 **Typical PYTHONPATH:**
