@@ -28,7 +28,7 @@ try:
         now = LocalizedDatetime.now()
         start = time.time()
 
-        response = psu.communicate('status')
+        response = psu.communicate('state')
         elapsed = time.time() - start
 
         print("%s, %0.3f, '%s'" % (now.as_iso8601(), elapsed, response))

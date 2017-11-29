@@ -1,29 +1,26 @@
 """
-Created on 8 Aug 2017
+Created on 13 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
 import json
 import sys
-import time
 
+from abc import abstractmethod
 from collections import OrderedDict
-
-from scs_core.psu.psu_status import PSUStatus
-from scs_core.psu.psu_uptime import PSUUptime
-from scs_core.psu.psu_version import PSUVersion
 
 from scs_host.sys.host_serial import HostSerial
 
+from scs_core.psu.psu_uptime import PSUUptime
+from scs_core.psu.psu_version import PSUVersion
 
-# TODO: subclass according to the version reported by the actual PSU
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSU(object):
     """
-    South Coast Science PSU v1 (firmware v1.2.x) via UART
+    South Coast Science PSU via UART
     """
 
     __BAUD_RATE =               1200
@@ -40,7 +37,14 @@ class PSU(object):
         """
         Constructor
         """
-        self.__serial = HostSerial(uart, self.__BAUD_RATE, False)
+        self._serial = HostSerial(uart, self.__BAUD_RATE, False)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def status(self):
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -51,17 +55,6 @@ class PSU(object):
         try:
             jdict = json.loads(response, object_pairs_hook=OrderedDict)
             return PSUVersion.construct_from_jdict(jdict)
-
-        except ValueError:
-            return None
-
-
-    def status(self):
-        response = self.communicate("state")        # TODO: return command to "status"
-
-        try:
-            jdict = json.loads(response, object_pairs_hook=OrderedDict)
-            return PSUStatus.construct_from_jdict(jdict)
 
         except ValueError:
             return None
@@ -113,25 +106,17 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
-        print("psu.communicate - command:%s" % command, file=sys.stderr)
+        print("PSU.communicate - command:%s" % command, file=sys.stderr)
 
         try:
-            self.__serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
+            self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
 
-            length = self.__serial.write_line(command.strip(), self.__EOL)
-            # time.sleep(0.2)
+            length = self._serial.write_line(command.strip(), self.__EOL)
+            response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
 
-            response = self.__serial.read_line(PSU.__EOL, self.__SERIAL_COMMS_TIMEOUT)
-
-            print("psu.communicate - length:%d response:%s" % (length, response), file=sys.stderr)
+            print("PSU.communicate - sent:%d response:%s" % (length, response), file=sys.stderr)
 
             return response
 
         finally:
-            self.__serial.close()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "PSU:{serial:%s}" % self.__serial
+            self._serial.close()
