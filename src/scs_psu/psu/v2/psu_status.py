@@ -3,7 +3,7 @@ Created on 13 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-example:
+document example:
 {"rst": 10, "link-in": false, "chg": 1010, "batt-flt": false, "host-3v3": 3.4, "pwr-in": 12.3, "prot-batt": 9.9}
 """
 

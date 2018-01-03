@@ -10,10 +10,10 @@ import sys
 from abc import abstractmethod
 from collections import OrderedDict
 
-from scs_host.sys.host_serial import HostSerial
-
 from scs_core.psu.psu_uptime import PSUUptime
 from scs_core.psu.psu_version import PSUVersion
+
+from scs_host.sys.host_serial import HostSerial
 
 
 # --------------------------------------------------------------------------------------------------------------------
