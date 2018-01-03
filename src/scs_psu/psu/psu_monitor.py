@@ -7,7 +7,7 @@ Created on 25 Oct 2017
 from collections import OrderedDict
 from multiprocessing import Manager
 
-from scs_core.psu.psu_status import PSUStatus
+from scs_core.psu.psu_uptime import PSUUptime
 
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
@@ -55,7 +55,7 @@ class PSUMonitor(SynchronisedProcess):
         with self._lock:
             value = self._value
 
-        return PSUStatus.construct_from_jdict(OrderedDict(value))
+        return PSUUptime.construct_from_jdict(OrderedDict(value))
 
 
     # ----------------------------------------------------------------------------------------------------------------
