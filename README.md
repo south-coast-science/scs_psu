@@ -8,7 +8,7 @@ Communication and control of the South Coast Science power supply boards for Bea
 * SCS host: scs_host_bbe, scs_host_bbe_southern, scs_host_bbe_southern
 
 
-**Typical PYTHONPATH:**
+**Example PYTHONPATH:**
 
 BeagleBone, in /root/.bashrc:
 
