@@ -13,28 +13,36 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_host.sys.host import Host
 
-from scs_psu.psu.psu import PSU
+from scs_psu.psu.v1.psu_v1 import PSUv1
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSU(Host.psu_device())
-print(psu, file=sys.stderr)
+psu = PSUv1(Host.psu_device())
+print(psu)
 print("-")
 
-
 try:
-    while True:
+    psu.open()
+
+    for i in range(1000000):
         now = LocalizedDatetime.now()
         start = time.time()
 
         response = psu.communicate('state')
         elapsed = time.time() - start
 
-        print("%s, %0.3f, '%s'" % (now.as_iso8601(), elapsed, response))
-        sys.stdout.flush()
+        print("%7d: %s, %0.3f, '%s'" % ((i + 1), now.as_iso8601(), elapsed, response))
+        print("-")
 
+        sys.stdout.flush()
         time.sleep(1.0)
+
+        if len(response) < 10:
+            break
 
 except KeyboardInterrupt:
     pass
+
+finally:
+    psu.close()

@@ -49,6 +49,16 @@ class PSU(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def open(self):
+        self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
+
+
+    def close(self):
+        self._serial.close()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def version(self):
         response = self.communicate("version")
 
@@ -106,17 +116,18 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
-        print("PSU.communicate - command:%s" % command, file=sys.stderr)
+        # print("PSU.communicate - command:%s" % command, file=sys.stderr)
 
         try:
-            self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
+            # self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
 
             length = self._serial.write_line(command.strip(), self.__EOL)
             response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
 
-            print("PSU.communicate - sent:%d response:%s" % (length, response), file=sys.stderr)
+            # print("PSU.communicate - sent:%d response:%s" % (length, response), file=sys.stderr)
 
             return response
 
         finally:
-            self._serial.close()
+            pass
+            # self._serial.close()
