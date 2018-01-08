@@ -31,7 +31,7 @@ class PSUv1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
-        response = self.communicate("status")
+        response = self.communicate("state")
 
         try:
             jdict = json.loads(response, object_pairs_hook=OrderedDict)

@@ -13,7 +13,8 @@ from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
-from scs_psu.psu.psu import PSU
+from scs_psu.psu.v1.psu_v1 import PSUv1
+from scs_psu.psu.v2.psu_v2 import PSUv2
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -55,11 +56,11 @@ class PSUConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def psu(self, host):
+    def psu(self, host):                # TODO: select model of PSU
         if not self.present:
             return None
 
-        return PSU(host.psu_device())
+        return PSUv1(host.psu_device())
 
 
     # ----------------------------------------------------------------------------------------------------------------

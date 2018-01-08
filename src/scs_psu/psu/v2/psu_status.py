@@ -4,7 +4,7 @@ Created on 13 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"rst": 10, "link-in": false, "chg": 1010, "batt-flt": false, "host-3v3": 3.4, "pwr-in": 12.3, "prot-batt": 9.9}
+{"rst": "00", "link-in": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.4, "pwr-in": 12.5, "prot-batt": 0.1}
 """
 
 from collections import OrderedDict

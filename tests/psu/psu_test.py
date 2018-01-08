@@ -10,46 +10,54 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 
-from scs_psu.psu.psu import PSU
+# from scs_psu.psu.psu import PSU
+from scs_psu.psu.v2.psu_v2 import PSUv2
+from scs_psu.psu.v1.psu_v1 import PSUv1
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSU(Host.psu_device())
+psu = PSUv2(Host.psu_device())
 print(psu)
 print("-")
 
-version = psu.version()
-print(version)
-print(JSONify.dumps(version))
-print("-")
+try:
+    psu.open()
 
-status = psu.status()
-print(status)
-print(JSONify.dumps(status))
-print("-")
+    version = psu.version()
+    print("version: %s" % version)
+    print(JSONify.dumps(version))
+    print("-")
 
-uptime = psu.uptime()
-print(uptime)
-print(JSONify.dumps(uptime))
-print("-")
+    status = psu.status()
+    print("status: %s" % status)
+    print(JSONify.dumps(status))
+    print("-")
 
-touch = psu.watchdog_touch()
-print(touch)
-print("-")
+    uptime = psu.uptime()
+    print("uptime: %s" % uptime)
+    print(JSONify.dumps(uptime))
+    print("-")
 
-start = psu.watchdog_start(10)
-print(start)
-print("-")
+    touch = psu.watchdog_touch()
+    print("touch: %s" % touch)
+    print("-")
 
-stop = psu.watchdog_stop()
-print(stop)
-print("-")
+    start = psu.watchdog_start(10)
+    print("start: %s" % start)
+    print("-")
 
-pause = psu.charge_pause(0)
-print(pause)
-print("-")
+    stop = psu.watchdog_stop()
+    print("stop: %s" % stop)
+    print("-")
 
-dead = psu.charge_dead(0)
-print(dead)
-print("-")
+    pause = psu.charge_pause(0)
+    print("pause: %s" % pause)
+    print("-")
+
+    dead = psu.charge_dead(0)
+    print("dead: %s" % dead)
+    print("-")
+
+finally:
+    psu.close()

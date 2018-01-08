@@ -13,15 +13,14 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_host.sys.host import Host
 
-from scs_psu.psu.psu import PSU
+from scs_psu.psu.v1.psu_v1 import PSUv1
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSU(Host.psu_device())
-print(psu, file=sys.stderr)
+psu = PSUv1(Host.psu_device())
+print(psu)
 print("-")
-
 
 try:
     psu.open()
