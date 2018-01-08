@@ -65,12 +65,6 @@ class PSUConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     @property
     def present(self):
         return self.__present
