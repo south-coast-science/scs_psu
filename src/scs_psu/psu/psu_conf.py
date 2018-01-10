@@ -3,18 +3,18 @@ Created on 21 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies whether on not a PSU is present
+specifies which PSU board is present, if any
 
 example JSON:
-{"present": true}
+{"model": "OsloV1"}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
-from scs_psu.psu.v1.psu_v1 import PSUv1
-from scs_psu.psu.v2.psu_v2 import PSUv2
+from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
+from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -36,44 +36,44 @@ class PSUConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return PSUConf(False)
+            return PSUConf(None)
 
-        present = jdict.get('present')
+        model = jdict.get('model')
 
-        return PSUConf(present)
+        return PSUConf(model)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, present):
+    def __init__(self, model):
         """
         Constructor
         """
         super().__init__()
 
-        self.__present = bool(present)
+        self.__model = model
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def psu(self, host):                # TODO: select model of PSU
-        if not self.present:
+    def psu(self, host):
+        if self.model is None:
             return None
 
-        return PSUv1(host.psu_device())
+        if self.model == 'PrototypeV1':
+            return PSUPrototypeV1(host.psu_device())
 
+        if self.model == 'OsloV1':
+            return PSUOsloV1(host.psu_device())
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def save(self, host):
-        PersistentJSONable.save(self, self.__class__.filename(host))
+        raise ValueError('unknown model: %s' % self.model)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def present(self):
-        return self.__present
+    def model(self):
+        return self.__model
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ class PSUConf(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['present'] = self.present
+        jdict['model'] = self.__model
 
         return jdict
 
@@ -89,4 +89,4 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf:{present:%s}" %  self.present
+        return "PSUConf:{model:%s}" % self.model

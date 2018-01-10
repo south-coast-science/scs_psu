@@ -10,14 +10,14 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 
-# from scs_psu.psu.psu import PSU
-from scs_psu.psu.v2.psu_v2 import PSUv2
-from scs_psu.psu.v1.psu_v1 import PSUv1
+from scs_psu.psu.psu_conf import PSUConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSUv2(Host.psu_device())
+psu_conf = PSUConf.load(Host)
+
+psu = psu_conf.psu(Host)
 print(psu)
 print("-")
 

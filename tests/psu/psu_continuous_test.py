@@ -13,12 +13,14 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_host.sys.host import Host
 
-from scs_psu.psu.v1.psu_v1 import PSUv1
+from scs_psu.psu.psu_conf import PSUConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSUv1(Host.psu_device())
+psu_conf = PSUConf.load(Host)
+
+psu = psu_conf.psu(Host)
 print(psu)
 print("-")
 
