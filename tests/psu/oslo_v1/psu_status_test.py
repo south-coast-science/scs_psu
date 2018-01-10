@@ -12,12 +12,13 @@ from collections import OrderedDict
 
 from scs_core.data.json import JSONify
 
-from scs_psu.psu.v1.psu_status import PSUStatus
+from scs_psu.psu.oslo_v1.psu_status import PSUStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jstr = '{"p-rst": false, "w-rst": false, "batt-flt": false, "host-3v3": 3.4, "pwr-in": 9.6, "prot-batt": 5.0}'
+jstr = '{"rst": "10", "link-in": false, "chg": "1010", "batt-flt": false, ' \
+       '"host-3v3": 3.4, "pwr-in": 12.3, "prot-batt": 9.9}'
 print(jstr)
 print("-")
 

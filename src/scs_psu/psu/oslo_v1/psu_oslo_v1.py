@@ -2,6 +2,8 @@
 Created on 13 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+The Oslo PSU
 """
 
 import json
@@ -9,15 +11,25 @@ import json
 from collections import OrderedDict
 
 from scs_psu.psu.psu import PSU
-from scs_psu.psu.v1.psu_status import PSUStatus
+from scs_psu.psu.oslo_v1.psu_status import PSUStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUv1(PSU):
+class PSUOsloV1(PSU):
     """
-    South Coast Science PSU v1 (prototype) via UART
+    South Coast Science PSU v2 (Oslo) via UART
     """
+
+    __BAUD_RATE =               1200
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def baud_rate(cls):
+        return PSUOsloV1.__BAUD_RATE
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -31,6 +43,7 @@ class PSUv1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
+        print("PSUOsloV1...")
         response = self.communicate("state")
 
         try:
@@ -44,4 +57,4 @@ class PSUv1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUv1:{serial:%s}" % self._serial
+        return "PSUOsloV1:{serial:%s}" % self._serial

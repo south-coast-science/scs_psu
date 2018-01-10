@@ -2,10 +2,11 @@
 Created on 13 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+An abstract PSU
 """
 
 import json
-import sys
 
 from abc import abstractmethod
 from collections import OrderedDict
@@ -23,8 +24,6 @@ class PSU(object):
     South Coast Science PSU via UART
     """
 
-    __BAUD_RATE =               1200
-
     __EOL =                     "\n"
 
     __SERIAL_LOCK_TIMEOUT =     6.0         # seconds
@@ -37,10 +36,15 @@ class PSU(object):
         """
         Constructor
         """
-        self._serial = HostSerial(uart, self.__BAUD_RATE, False)
+        self._serial = HostSerial(uart, self.baud_rate(), False)
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def baud_rate(self):
+        pass
+
 
     @abstractmethod
     def status(self):
@@ -116,18 +120,7 @@ class PSU(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
-        # print("PSU.communicate - command:%s" % command, file=sys.stderr)
+        self._serial.write_line(command.strip(), self.__EOL)
+        response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
 
-        try:
-            # self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
-
-            length = self._serial.write_line(command.strip(), self.__EOL)
-            response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
-
-            # print("PSU.communicate - sent:%d response:%s" % (length, response), file=sys.stderr)
-
-            return response
-
-        finally:
-            pass
-            # self._serial.close()
+        return response
