@@ -66,11 +66,11 @@ class PSUStatus(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rst'] = self.reset
+        jdict['rst'] = self.reset.as_json()             # TODO: check non-standard as_json call
 
         jdict['link-in'] = self.link_in
 
-        jdict['chg'] = self.charger
+        jdict['chg'] = self.charger.as_json()           # TODO: check non-standard as_json call
 
         jdict['batt-flt'] = self.battery_fault
 
@@ -133,7 +133,6 @@ class ResetStatus(JSONable):
     """
     classdocs
     """
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

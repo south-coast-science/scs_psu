@@ -13,8 +13,10 @@ from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
-from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
 from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
+from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
+
+from scs_psu.psu.psu_monitor import PSUMonitor
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -67,6 +69,15 @@ class PSUConf(PersistentJSONable):
             return PSUOsloV1(host.psu_device())
 
         raise ValueError('unknown model: %s' % self.model)
+
+
+    def psu_monitor(self, host):
+        psu = self.psu(host)
+
+        if psu is None:
+            return None
+
+        return PSUMonitor(psu)
 
 
     # ----------------------------------------------------------------------------------------------------------------
