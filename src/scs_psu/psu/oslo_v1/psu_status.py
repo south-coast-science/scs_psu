@@ -66,11 +66,11 @@ class PSUStatus(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rst'] = self.reset.as_json()             # TODO: check non-standard as_json call
+        jdict['rst'] = self.reset
 
         jdict['link-in'] = self.link_in
 
-        jdict['chg'] = self.charger.as_json()           # TODO: check non-standard as_json call
+        jdict['chg'] = self.charger
 
         jdict['batt-flt'] = self.battery_fault
 
