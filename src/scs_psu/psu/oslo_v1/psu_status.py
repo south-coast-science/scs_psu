@@ -28,13 +28,13 @@ class PSUStatus(JSONable):
             return None
 
         # check for well-formedness...
-        if 'rst' not in jdict or 'link-in' not in jdict or 'chg' not in jdict or 'batt-flt' not in jdict or \
+        if 'rst' not in jdict or 'standby' not in jdict or 'chg' not in jdict or 'batt-flt' not in jdict or \
                 'host-3v3' not in jdict or 'pwr-in' not in jdict or 'prot-batt' not in jdict:
             return None
 
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
 
-        link_in = jdict.get('link-in')
+        standby = jdict.get('standby')
 
         charger = ChargerStatus.construct_from_jdict(jdict.get('chg'))
 
@@ -44,18 +44,18 @@ class PSUStatus(JSONable):
         power_in = jdict.get('pwr-in')
         prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(reset, link_in, charger, battery_fault, host_3v3, power_in, prot_batt)
+        return PSUStatus(reset, standby, charger, battery_fault, host_3v3, power_in, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, reset, link_in, charger, battery_fault, host_3v3, power_in, prot_batt):
+    def __init__(self, reset, standby, charger, battery_fault, host_3v3, power_in, prot_batt):
         """
         Constructor
         """
         self.__reset = reset                                # ResetStatus
 
-        self.__link_in = link_in                            # bool
+        self.__standby = standby                            # bool
 
         self.__charger = charger                            # ChargerStatus
 
@@ -73,7 +73,7 @@ class PSUStatus(JSONable):
 
         jdict['rst'] = self.reset
 
-        jdict['link-in'] = self.link_in
+        jdict['standby'] = self.standby
 
         jdict['chg'] = self.charger
 
@@ -94,8 +94,8 @@ class PSUStatus(JSONable):
 
 
     @property
-    def link_in(self):
-        return self.__link_in
+    def standby(self):
+        return self.__standby
 
 
     @property
@@ -126,9 +126,9 @@ class PSUStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{reset:%s, link_in:%s, charger:%s, battery_fault:%s, " \
+        return "PSUStatus:{reset:%s, standby:%s, charger:%s, battery_fault:%s, " \
                "host_3v3:%s, power_in:%s, prot_batt:%s}" \
-               % (self.reset, self.link_in, self.charger, self.battery_fault,
+               % (self.reset, self.standby, self.charger, self.battery_fault,
                   self.host_3v3, self.power_in, self.prot_batt)
 
 
