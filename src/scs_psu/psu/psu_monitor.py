@@ -53,7 +53,7 @@ class PSUMonitor(SynchronisedProcess):
                     status.as_list(self._value)
 
                 # act...
-                if status.link_in:
+                if status.standby:
                     self.__shutdown()
 
         except KeyboardInterrupt:

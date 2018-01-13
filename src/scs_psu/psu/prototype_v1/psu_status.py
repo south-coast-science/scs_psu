@@ -85,6 +85,11 @@ class PSUStatus(JSONable):
 
 
     @property
+    def standby(self):
+        return None
+
+
+    @property
     def watchdog_reset(self):
         return self.__watchdog_reset
 
