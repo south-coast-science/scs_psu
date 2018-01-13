@@ -27,6 +27,11 @@ class PSUStatus(JSONable):
         if not jdict:
             return None
 
+        # check for well-formedness...
+        if 'rst' not in jdict or 'link-in' not in jdict or 'chg' not in jdict or 'batt-flt' not in jdict or \
+                'host-3v3' not in jdict or 'pwr-in' not in jdict or 'prot-batt' not in jdict:
+            return None
+
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
 
         link_in = jdict.get('link-in')
