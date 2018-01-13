@@ -19,7 +19,7 @@ class PSUMonitor(SynchronisedProcess):
     """
     classdocs
     """
-    __MONITOR_INTERVAL =        1.0             # seconds
+    __MONITOR_INTERVAL =        2.0             # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -73,13 +73,21 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
-        self.__psu.open()
-        super().start()
+        try:
+            self.__psu.open()
+            super().start()
+
+        except KeyboardInterrupt:
+            pass
 
 
     def stop(self):
-        super().stop()
-        self.__psu.close()
+        try:
+            super().stop()
+            self.__psu.close()
+
+        except KeyboardInterrupt:
+            pass
 
 
     def sample(self):
