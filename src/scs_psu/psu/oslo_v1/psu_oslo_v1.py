@@ -43,7 +43,6 @@ class PSUOsloV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
-        print("PSUOsloV1...")
         response = self.communicate("state")
 
         try:
@@ -52,6 +51,10 @@ class PSUOsloV1(PSU):
 
         except ValueError:
             return None
+
+
+    def construct_status_from_jdict(self, jdict):
+        return PSUStatus.construct_from_jdict(jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

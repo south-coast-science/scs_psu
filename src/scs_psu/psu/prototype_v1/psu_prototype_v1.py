@@ -52,6 +52,10 @@ class PSUPrototypeV1(PSU):
             return None
 
 
+    def construct_status_from_jdict(self, jdict):
+        return PSUStatus.construct_from_jdict(jdict)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

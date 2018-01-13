@@ -51,6 +51,11 @@ class PSU(object):
         pass
 
 
+    @abstractmethod
+    def construct_status_from_jdict(self, jdict):
+        pass
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def open(self):
