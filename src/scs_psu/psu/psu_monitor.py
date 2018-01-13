@@ -100,4 +100,5 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUMonitor:{sample:%s, psu:%s}" % (self.sample(), self.__psu)
+        return "PSUMonitor:{value:%s, psu:%s, shutdown_initiated:%s}" % \
+               (self._value, self.__psu, self.__shutdown_initiated)
