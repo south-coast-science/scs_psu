@@ -3,11 +3,19 @@ Communication and control of the South Coast Science power supply boards for Bea
 
 _Contains library classes only._
 
+
 **Required libraries:** 
 
 * Third party: -
 * SCS root: scs_core
 * SCS host: scs_host_bbe, scs_host_bbe_southern, scs_host_bbe_southern
+
+
+**Branches:**
+
+The stable branch of this repository is master. For deployment purposes, use:
+
+    git clone --branch=master https://github.com/south-coast-science/scs_psu.git
 
 
 **Example PYTHONPATH:**

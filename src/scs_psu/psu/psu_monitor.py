@@ -45,29 +45,19 @@ class PSUMonitor(SynchronisedProcess):
                 status = self.__psu.status()
 
                 if status is None:
-                    print("PSUMonitor.run: got None", sys.stderr)
+                    # print("PSUMonitor.run: got None", sys.stderr)
                     continue
 
                 # report...
                 with self._lock:
                     status.as_list(self._value)
 
-                # act...
+                # monitor...
                 if status.standby:
                     self.__shutdown()
 
         except KeyboardInterrupt:
             pass
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __shutdown(self):
-        if self.__shutdown_initiated:
-            return
-
-        self.__shutdown_initiated = True
-        print("SHUTDOWN!", file=sys.stdout)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -95,6 +85,16 @@ class PSUMonitor(SynchronisedProcess):
             value = self._value
 
         return self.__psu.construct_status_from_jdict(OrderedDict(value))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __shutdown(self):
+        if self.__shutdown_initiated:
+            return
+
+        self.__shutdown_initiated = True
+        print("PSUMonitor: SHUTDOWN", file=sys.stdout)
 
 
     # ----------------------------------------------------------------------------------------------------------------
