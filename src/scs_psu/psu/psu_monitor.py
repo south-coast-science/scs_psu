@@ -94,7 +94,9 @@ class PSUMonitor(SynchronisedProcess):
             return
 
         self.__shutdown_initiated = True
-        print("PSUMonitor: SHUTDOWN", file=sys.stdout)
+
+        print("PSUMonitor: SHUTDOWN", file=sys.stderr)
+        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
