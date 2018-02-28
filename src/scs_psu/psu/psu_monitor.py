@@ -45,7 +45,6 @@ class PSUMonitor(SynchronisedProcess):
                 status = self.__psu.status()
 
                 if status is None:
-                    # print("PSUMonitor.run: got None", sys.stderr)
                     continue
 
                 # report...
