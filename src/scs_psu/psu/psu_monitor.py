@@ -36,6 +36,25 @@ class PSUMonitor(SynchronisedProcess):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # SynchronisedProcess implementation...
+
+    def start(self):
+        try:
+            self.__psu.open()
+            super().start()
+
+        except KeyboardInterrupt:
+            pass
+
+
+    def stop(self):
+        try:
+            super().stop()
+            self.__psu.close()
+
+        except KeyboardInterrupt:
+            pass
+
 
     def run(self):
         try:
@@ -60,33 +79,7 @@ class PSUMonitor(SynchronisedProcess):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    def start(self):
-        try:
-            self.__psu.open()
-            super().start()
-
-        except KeyboardInterrupt:
-            pass
-
-
-    def stop(self):
-        try:
-            super().stop()
-            self.__psu.close()
-
-        except KeyboardInterrupt:
-            pass
-
-
-    def sample(self):
-        with self._lock:
-            value = self._value
-
-        return self.__psu.construct_status_from_jdict(OrderedDict(value))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
+    # SynchronisedProcess special operations...
 
     def __shutdown(self):
         if self.__shutdown_initiated:
@@ -96,6 +89,16 @@ class PSUMonitor(SynchronisedProcess):
 
         print("PSUMonitor: SHUTDOWN", file=sys.stderr)
         sys.stderr.flush()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # data retrieval for client process...
+
+    def sample(self):
+        with self._lock:
+            value = self._value
+
+        return self.__psu.construct_status_from_jdict(OrderedDict(value))
 
 
     # ----------------------------------------------------------------------------------------------------------------
