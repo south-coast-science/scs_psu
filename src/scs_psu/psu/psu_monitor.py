@@ -94,6 +94,10 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # data retrieval for client process...
 
+    def firmware(self):
+        return self.__psu.version()
+
+
     def sample(self):
         with self._lock:
             value = self._value
