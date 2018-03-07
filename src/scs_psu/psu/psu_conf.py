@@ -79,7 +79,7 @@ class PSUConf(PersistentJSONable):
         if psu is None:
             return None
 
-        return PSUMonitor(psu)
+        return PSUMonitor(host, psu)
 
 
     # ----------------------------------------------------------------------------------------------------------------

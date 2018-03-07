@@ -23,7 +23,7 @@ class PSUMonitor(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, psu):
+    def __init__(self, host, psu):
         """
         Constructor
         """
@@ -31,11 +31,32 @@ class PSUMonitor(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
+        self.__host = host
         self.__psu = psu
+
         self.__shutdown_initiated = False
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # SynchronisedProcess implementation...
+
+    def start(self):
+        try:
+            self.__psu.open()
+            super().start()
+
+        except KeyboardInterrupt:
+            pass
+
+
+    def stop(self):
+        try:
+            super().stop()
+            self.__psu.close()
+
+        except KeyboardInterrupt:
+            pass
+
 
     def run(self):
         try:
@@ -60,23 +81,25 @@ class PSUMonitor(SynchronisedProcess):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # SynchronisedProcess special operations...
 
-    def start(self):
-        try:
-            self.__psu.open()
-            super().start()
+    def __shutdown(self):
+        if self.__shutdown_initiated:
+            return
 
-        except KeyboardInterrupt:
-            pass
+        self.__shutdown_initiated = True
+
+        print("PSUMonitor: SHUTDOWN", file=sys.stderr)
+        sys.stderr.flush()
+
+        self.__host.shutdown()
 
 
-    def stop(self):
-        try:
-            super().stop()
-            self.__psu.close()
+    # ----------------------------------------------------------------------------------------------------------------
+    # data retrieval for client process...
 
-        except KeyboardInterrupt:
-            pass
+    def firmware(self):
+        return self.__psu.version()
 
 
     def sample(self):
@@ -88,18 +111,6 @@ class PSUMonitor(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __shutdown(self):
-        if self.__shutdown_initiated:
-            return
-
-        self.__shutdown_initiated = True
-
-        print("PSUMonitor: SHUTDOWN", file=sys.stderr)
-        sys.stderr.flush()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        return "PSUMonitor:{value:%s, psu:%s, shutdown_initiated:%s}" % \
-               (self._value, self.__psu, self.__shutdown_initiated)
+        return "PSUMonitor:{value:%s, host:%s, psu:%s, shutdown_initiated:%s}" % \
+               (self._value, self.__host, self.__psu, self.__shutdown_initiated)
