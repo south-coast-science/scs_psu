@@ -90,6 +90,13 @@ class PSU(object):
             return None
 
 
+    def do_not_resuscitate(self, enable):
+        param = 1 if bool(enable) else 0
+        response = self.communicate("dnr %d" % param)
+
+        return response
+
+
     def watchdog_start(self, interval):
         response = self.communicate("w-start % d" % interval)
 
