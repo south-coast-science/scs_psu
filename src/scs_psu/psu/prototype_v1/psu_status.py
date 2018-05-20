@@ -20,6 +20,10 @@ class PSUStatus(JSONable):
     classdocs
     """
 
+    POWER_IN_MINIMUM =        7.0           # Volts
+    BATTERY_MINIMUM =         6.4           # Volts
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -58,6 +62,12 @@ class PSUStatus(JSONable):
         self.__host_3v3 = Datum.float(host_3v3, 1)              # host 3V3 voltage                          float
         self.__power_in = Datum.float(power_in, 1)              # PSU input voltage                         float
         self.__prot_batt = Datum.float(prot_batt, 1)            # battery voltage                           float
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def below_power_threshold(self):
+        return self.power_in < self.POWER_IN_MINIMUM and self.prot_batt < self.BATTERY_MINIMUM
 
 
     # ----------------------------------------------------------------------------------------------------------------

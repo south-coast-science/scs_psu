@@ -20,6 +20,10 @@ class PSUStatus(JSONable):
     classdocs
     """
 
+    POWER_IN_MINIMUM =        7.0           # Volts
+    BATTERY_MINIMUM =         6.4           # Volts
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -84,6 +88,12 @@ class PSUStatus(JSONable):
         jdict['prot-batt'] = self.prot_batt
 
         return jdict
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def below_power_threshold(self):
+        return self.power_in < self.POWER_IN_MINIMUM and self.prot_batt < self.BATTERY_MINIMUM
 
 
     # ----------------------------------------------------------------------------------------------------------------
