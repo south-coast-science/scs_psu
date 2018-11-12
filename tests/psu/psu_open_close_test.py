@@ -31,7 +31,7 @@ try:
 
         psu.open()
 
-        response = psu.communicate('state')
+        response = psu.communicate('status')
 
         psu.close()
 
