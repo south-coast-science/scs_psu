@@ -4,6 +4,8 @@
 Created on 12 Nov 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+screen /dev/ttyUSB0 1200,cs8,-parenb,cstopb,-hupcl,clocal
 """
 
 import sys
