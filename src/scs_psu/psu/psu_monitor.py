@@ -13,8 +13,6 @@ from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 
-# TODO: fix _str_ method
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSUMonitor(SynchronisedProcess):
