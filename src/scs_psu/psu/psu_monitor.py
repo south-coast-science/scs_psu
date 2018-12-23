@@ -13,6 +13,8 @@ from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 
+# TODO: fix _str_ method
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSUMonitor(SynchronisedProcess):
@@ -129,5 +131,7 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
+        host_name = None if self.__host is None else self.__host.name()
+
         return "PSUMonitor:{value:%s, host:%s, psu:%s, shutdown_initiated:%s}" % \
-               (self._value, self.__host, self.__psu, self.__shutdown_initiated)
+               (self._value, host_name, self.__psu, self.__shutdown_initiated)
