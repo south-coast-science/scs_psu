@@ -8,8 +8,6 @@ Created on 13 Nov 2017
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 
 from scs_psu.psu.prototype_v1.psu_status import PSUStatus
@@ -21,7 +19,7 @@ jstr = '{"p-rst": false, "w-rst": false, "batt-flt": false, "host-3v3": 3.4, "pw
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr)
 print(jdict)
 print("-")
 

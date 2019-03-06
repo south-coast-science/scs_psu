@@ -9,7 +9,6 @@ An abstract PSU
 import json
 
 from abc import abstractmethod
-from collections import OrderedDict
 
 from scs_core.psu.psu_uptime import PSUUptime
 from scs_core.psu.psu_version import PSUVersion
@@ -72,7 +71,7 @@ class PSU(object):
         response = self.communicate("version")
 
         try:
-            jdict = json.loads(response, object_pairs_hook=OrderedDict)
+            jdict = json.loads(response)
             return PSUVersion.construct_from_jdict(jdict)
 
         except ValueError:
@@ -83,7 +82,7 @@ class PSU(object):
         response = self.communicate("uptime")
 
         try:
-            jdict = json.loads(response, object_pairs_hook=OrderedDict)
+            jdict = json.loads(response)
             return PSUUptime.construct_from_jdict(jdict)
 
         except ValueError:
