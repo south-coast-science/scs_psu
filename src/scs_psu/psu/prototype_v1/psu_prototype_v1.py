@@ -8,8 +8,6 @@ The prototype PSU
 
 import json
 
-from collections import OrderedDict
-
 from scs_psu.psu.psu import PSU
 from scs_psu.psu.prototype_v1.psu_status import PSUStatus
 
@@ -45,7 +43,7 @@ class PSUPrototypeV1(PSU):
         response = self.communicate("state")
 
         try:
-            jdict = json.loads(response, object_pairs_hook=OrderedDict)
+            jdict = json.loads(response)
             return PSUStatus.construct_from_jdict(jdict)
 
         except ValueError:
