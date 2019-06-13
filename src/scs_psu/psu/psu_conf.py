@@ -13,6 +13,7 @@ from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
+from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
 from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
 
@@ -31,6 +32,13 @@ class PSUConf(PersistentJSONable):
     @classmethod
     def persistence_location(cls, host):
         return host.conf_dir(), cls.__FILENAME
+
+
+    __MODELS = ['MobileV1', 'OsloV1', 'PrototypeV1']
+
+    @classmethod
+    def models(cls):
+        return cls.__MODELS
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -62,11 +70,14 @@ class PSUConf(PersistentJSONable):
         if self.model is None:
             return None
 
-        if self.model == 'PrototypeV1':
-            return PSUPrototypeV1(host.psu_device())
+        if self.model == 'MobileV1':
+            return PSUMobileV1()
 
         if self.model == 'OsloV1':
             return PSUOsloV1(host.psu_device())
+
+        if self.model == 'PrototypeV1':
+            return PSUPrototypeV1(host.psu_device())
 
         raise ValueError('unknown model: %s' % self.model)
 
