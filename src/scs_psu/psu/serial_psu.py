@@ -81,6 +81,12 @@ class SerialPSU(PSU):
             return None
 
 
+    def host_shutdown_initiated(self):
+        response = self.communicate("dnr %d" % 1)
+
+        return response
+
+
     def do_not_resuscitate(self, enable):
         param = 1 if bool(enable) else 0
         response = self.communicate("dnr %d" % param)

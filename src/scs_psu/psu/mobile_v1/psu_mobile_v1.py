@@ -36,6 +36,8 @@ class PSUMobileV1(PSU):
     def open(self):
         I2C.open(Host.I2C_SENSORS)
 
+        self.__header.button_enable()
+
 
     def close(self):
         I2C.close()
@@ -64,8 +66,8 @@ class PSUMobileV1(PSU):
         return None
 
 
-    def do_not_resuscitate(self, enable):
-        return None
+    def host_shutdown_initiated(self):
+        return self.__header.host_shutdown_initiated()
 
 
     def watchdog_start(self, interval):

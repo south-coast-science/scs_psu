@@ -53,7 +53,7 @@ class PSU(ABC):
 
 
     @abstractmethod
-    def do_not_resuscitate(self, enable):
+    def host_shutdown_initiated(self):
         pass
 
 
