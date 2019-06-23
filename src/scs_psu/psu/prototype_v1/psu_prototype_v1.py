@@ -8,13 +8,13 @@ The prototype PSU
 
 import json
 
-from scs_psu.psu.psu import PSU
+from scs_psu.psu.serial_psu import SerialPSU
 from scs_psu.psu.prototype_v1.psu_status import PSUStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUPrototypeV1(PSU):
+class PSUPrototypeV1(SerialPSU):
     """
     South Coast Science PSU v1 (prototype) via UART
     """
