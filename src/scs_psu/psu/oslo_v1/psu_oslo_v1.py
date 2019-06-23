@@ -8,13 +8,13 @@ The Oslo PSU
 
 import json
 
-from scs_psu.psu.psu import PSU
+from scs_psu.psu.serial_psu import SerialPSU
 from scs_psu.psu.oslo_v1.psu_status import PSUStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUOsloV1(PSU):
+class PSUOsloV1(SerialPSU):
     """
     South Coast Science PSU v2 (Oslo) via UART
     """
