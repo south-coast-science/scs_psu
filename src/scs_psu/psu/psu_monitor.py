@@ -73,8 +73,11 @@ class PSUMonitor(SynchronisedProcess):
                     status.as_list(self._value)
 
                 # monitor...
-                if status.standby or status.below_power_threshold():
-                    self.__enter_host_shutdown()
+                if status.standby:
+                    self.__enter_host_shutdown("standby")
+
+                if status.below_power_threshold():
+                    self.__enter_host_shutdown("below power threshold")
 
         except KeyboardInterrupt:
             pass
@@ -83,7 +86,7 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # SynchronisedProcess special operations...
 
-    def __enter_host_shutdown(self):
+    def __enter_host_shutdown(self, reason):
         if self.__shutdown_initiated:
             return
 
@@ -91,7 +94,7 @@ class PSUMonitor(SynchronisedProcess):
 
         self.__shutdown_initiated = True
 
-        print("PSUMonitor: entering shutdown", file=sys.stderr)
+        print("PSUMonitor: %s: entering shutdown" % reason, file=sys.stderr)
         sys.stderr.flush()
 
         self.__host.shutdown()
