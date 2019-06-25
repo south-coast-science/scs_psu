@@ -8,13 +8,6 @@ Created on 24 Jun 2019
 See also: scs_dfe_end/tests/interface/components/rpz_header_test.py
 """
 
-import sys
-import time
-
-from scs_core.data.localized_datetime import LocalizedDatetime
-
-from scs_host.sys.host import Host
-
 from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 
 
