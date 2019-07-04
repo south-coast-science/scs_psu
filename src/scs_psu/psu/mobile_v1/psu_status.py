@@ -18,7 +18,7 @@ class PSUStatus(PSUReport):
     classdocs
     """
 
-    POWER_IN_MINIMUM =        4.5           # Volts
+    POWER_IN_MINIMUM =        3.0           # Volts
 
 
     # ----------------------------------------------------------------------------------------------------------------
