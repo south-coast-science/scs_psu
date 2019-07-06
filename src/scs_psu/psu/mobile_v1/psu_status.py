@@ -11,6 +11,8 @@ from scs_core.data.datum import Datum
 from scs_psu.psu.psu_report import PSUReport
 
 
+# TODO: set a correct value for POWER_IN_MINIMUM
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSUStatus(PSUReport):
