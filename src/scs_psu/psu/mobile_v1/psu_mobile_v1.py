@@ -6,8 +6,6 @@ Created on 13 Jun 2019
 Lightweight system Raspberry Pi Zero header + mobile power pack
 """
 
-from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
-
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
