@@ -24,11 +24,11 @@ class PSUMobileV1(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):     # TODO: needs mcu as a parameter, like PZHB
+    def __init__(self, header):
         """
         Constructor
         """
-        self.__header = PZHBMCUt1f1(PZHBMCUt1f1.DEFAULT_ADDR)
+        self.__header = header
 
 
     # ----------------------------------------------------------------------------------------------------------------
