@@ -90,6 +90,8 @@ class PSUMonitor(SynchronisedProcess):
         if self.__shutdown_initiated:
             return
 
+        # TODO: test whether the message queue is empty
+
         self.__psu.host_shutdown_initiated()
 
         self.__shutdown_initiated = True
