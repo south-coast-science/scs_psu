@@ -8,6 +8,8 @@ Created on 10 Aug 2017
 
 from scs_core.data.json import JSONify
 
+from scs_dfe.interface.interface_conf import InterfaceConf
+
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
@@ -15,9 +17,12 @@ from scs_psu.psu.psu_conf import PSUConf
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# Interface...
+interface_conf = InterfaceConf.load(Host)
+
 psu_conf = PSUConf.load(Host)
 
-psu = psu_conf.psu(Host)
+psu = psu_conf.psu(Host, interface_conf.model)
 print(psu)
 print("-")
 

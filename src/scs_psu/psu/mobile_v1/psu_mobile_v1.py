@@ -6,8 +6,6 @@ Created on 13 Jun 2019
 Lightweight system Raspberry Pi Zero header + mobile power pack
 """
 
-from scs_dfe.interface.components.rpz_header_t1_f1 import RPzHeaderT1F1
-
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
@@ -24,11 +22,18 @@ class PSUMobileV1(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self):
+    @classmethod
+    def requires_interface(cls):
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, header):
         """
         Constructor
         """
-        self.__header = RPzHeaderT1F1(RPzHeaderT1F1.DEFAULT_ADDR)
+        self.__header = header
 
 
     # ----------------------------------------------------------------------------------------------------------------
