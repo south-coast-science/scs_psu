@@ -77,11 +77,14 @@ class PSUConf(PersistentJSONable):
         if self.model is None:
             return None
 
-        if self.model == 'MobileV1' and interface_model == 'PZHBt1':
-            return PSUMobileV1(PZHBMCUt1f1(PZHBMCUt1f1.DEFAULT_ADDR))
+        if self.model == 'MobileV1':
+            if interface_model == 'PZHBt1':
+                return PSUMobileV1(PZHBMCUt1f1(PZHBMCUt1f1.DEFAULT_ADDR))
 
-        if self.model == 'MobileV1' and interface_model == 'PZHBt2':
-            return PSUMobileV1(PZHBMCUt2f1(PZHBMCUt2f1.DEFAULT_ADDR))
+            if interface_model == 'PZHBt2':
+                return PSUMobileV1(PZHBMCUt2f1(PZHBMCUt2f1.DEFAULT_ADDR))
+
+            raise ValueError('unknown interface model: %s' % interface_model)
 
         if self.model == 'OsloV1':
             return PSUOsloV1(host.psu_device())
