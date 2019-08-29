@@ -38,8 +38,7 @@ class PSUConf(PersistentJSONable):
 
 
     __MODELS = [
-        'MobileV1/PZHBt1',
-        'MobileV1/PZHBt2',
+        'MobileV1',
         'OsloV1',
         'PrototypeV1'
     ]
@@ -74,14 +73,14 @@ class PSUConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def psu(self, host):
+    def psu(self, host, interface_model):
         if self.model is None:
             return None
 
-        if self.model == 'MobileV1' or self.model == 'MobileV1/PZHBt1':
+        if self.model == 'MobileV1' and interface_model == 'PZHBt1':
             return PSUMobileV1(PZHBMCUt1f1(PZHBMCUt1f1.DEFAULT_ADDR))
 
-        if self.model == 'MobileV1/PZHBt2':
+        if self.model == 'MobileV1' and interface_model == 'PZHBt2':
             return PSUMobileV1(PZHBMCUt2f1(PZHBMCUt2f1.DEFAULT_ADDR))
 
         if self.model == 'OsloV1':
@@ -93,8 +92,8 @@ class PSUConf(PersistentJSONable):
         raise ValueError('unknown model: %s' % self.model)
 
 
-    def psu_monitor(self, host):
-        psu = self.psu(host)
+    def psu_monitor(self, host, interface_model):
+        psu = self.psu(host, interface_model)
 
         if psu is None:
             return None

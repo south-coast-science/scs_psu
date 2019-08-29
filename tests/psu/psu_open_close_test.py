@@ -13,6 +13,8 @@ import time
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_dfe.interface.interface_conf import InterfaceConf
+
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
@@ -20,9 +22,12 @@ from scs_psu.psu.psu_conf import PSUConf
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# Interface...
+interface_conf = InterfaceConf.load(Host)
+
 psu_conf = PSUConf.load(Host)
 
-psu = psu_conf.psu(Host)
+psu = psu_conf.psu(Host, interface_conf.model)
 print(psu)
 print("-")
 
