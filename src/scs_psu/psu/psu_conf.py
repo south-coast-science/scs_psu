@@ -13,6 +13,9 @@ from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
+from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
+from scs_dfe.interface.pzhb.pzhb_mcu_t2_f1 import PZHBMCUt2f1
+
 from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
 from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
@@ -34,7 +37,11 @@ class PSUConf(PersistentJSONable):
         return host.conf_dir(), cls.__FILENAME
 
 
-    __MODELS = ['MobileV1', 'OsloV1', 'PrototypeV1']
+    __MODELS = [
+        'MobileV1',
+        'OsloV1',
+        'PrototypeV1'
+    ]
 
     @classmethod
     def models(cls):
@@ -66,12 +73,18 @@ class PSUConf(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def psu(self, host):
+    def psu(self, host, interface_model):
         if self.model is None:
             return None
 
         if self.model == 'MobileV1':
-            return PSUMobileV1()
+            if interface_model == 'PZHBt1':
+                return PSUMobileV1(PZHBMCUt1f1(PZHBMCUt1f1.DEFAULT_ADDR))
+
+            if interface_model == 'PZHBt2':
+                return PSUMobileV1(PZHBMCUt2f1(PZHBMCUt2f1.DEFAULT_ADDR))
+
+            raise ValueError('unknown interface model: %s' % interface_model)
 
         if self.model == 'OsloV1':
             return PSUOsloV1(host.psu_device())
@@ -82,8 +95,8 @@ class PSUConf(PersistentJSONable):
         raise ValueError('unknown model: %s' % self.model)
 
 
-    def psu_monitor(self, host):
-        psu = self.psu(host)
+    def psu_monitor(self, host, interface_model):
+        psu = self.psu(host, interface_model)
 
         if psu is None:
             return None
