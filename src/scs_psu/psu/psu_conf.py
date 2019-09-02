@@ -84,7 +84,7 @@ class PSUConf(PersistentJSONable):
             if interface_model == 'PZHBt2':
                 return PSUMobileV1(PZHBMCUt2f1(PZHBMCUt2f1.DEFAULT_ADDR))
 
-            raise ValueError('unknown interface model: %s' % interface_model)
+            raise ValueError('incompatible interface model for MobileV1: %s' % interface_model)
 
         if self.model == 'OsloV1':
             return PSUOsloV1(host.psu_device())
@@ -92,7 +92,7 @@ class PSUConf(PersistentJSONable):
         if self.model == 'PrototypeV1':
             return PSUPrototypeV1(host.psu_device())
 
-        raise ValueError('unknown model: %s' % self.model)
+        raise ValueError('unknown interface model: %s' % self.model)
 
 
     def psu_monitor(self, host, interface_model):
