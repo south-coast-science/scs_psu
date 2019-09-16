@@ -79,7 +79,7 @@ class PSUMonitor(SynchronisedProcess):
                 if status.below_power_threshold():
                     self.__enter_host_shutdown("below power threshold")
 
-        except KeyboardInterrupt:
+        except (BrokenPipeError, KeyboardInterrupt, TypeError):
             pass
 
 
