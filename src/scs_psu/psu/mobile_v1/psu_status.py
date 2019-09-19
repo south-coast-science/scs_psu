@@ -43,7 +43,7 @@ class PSUStatus(PSUReport):
         Constructor
         """
         self.__standby = standby                            # bool
-        self.__power_in = Datum.float(power_in, 1)          # PSU input voltage                         float
+        self.__power_in = Datum.float(power_in, 1)          # PSU input voltage  float
 
 
     # ----------------------------------------------------------------------------------------------------------------

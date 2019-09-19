@@ -4,6 +4,7 @@ Created on 25 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import copy
 import sys
 
 from collections import OrderedDict
@@ -111,7 +112,10 @@ class PSUMonitor(SynchronisedProcess):
 
     def sample(self):
         with self._lock:
-            value = self._value
+            value = copy.deepcopy(self._value)
+
+        print("PSUMonitor - sample:%s" % value, file=sys.stderr)
+        sys.stderr.flush()
 
         return self.__psu.construct_status_from_jdict(OrderedDict(value))
 
