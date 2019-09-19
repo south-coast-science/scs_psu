@@ -112,12 +112,12 @@ class PSUMonitor(SynchronisedProcess):
 
     def sample(self):
         with self._lock:
-            value = copy.deepcopy(self._value)
+            status = self.__psu.construct_status_from_jdict(OrderedDict(self._value))
 
-        print("PSUMonitor - sample:%s" % value, file=sys.stderr)
+        print("sample - status:%s" % status, file=sys.stderr)
         sys.stderr.flush()
 
-        return self.__psu.construct_status_from_jdict(OrderedDict(value))
+        return status
 
 
     # ----------------------------------------------------------------------------------------------------------------
