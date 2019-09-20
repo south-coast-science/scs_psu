@@ -114,9 +114,6 @@ class PSUMonitor(SynchronisedProcess):
         with self._lock:
             status = self.__psu.construct_status_from_jdict(OrderedDict(self._value))
 
-        print("sample - status:%s" % status, file=sys.stderr)
-        sys.stderr.flush()
-
         return status
 
 
