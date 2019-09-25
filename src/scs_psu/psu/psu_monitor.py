@@ -41,6 +41,9 @@ class PSUMonitor(SynchronisedProcess):
     # SynchronisedProcess implementation...
 
     def start(self):
+        print("PSUMonitor.start", file=sys.stderr)
+        sys.stderr.flush()
+
         try:
             self.__psu.open()
             super().start()
@@ -50,6 +53,9 @@ class PSUMonitor(SynchronisedProcess):
 
 
     def stop(self):
+        print("PSUMonitor.stop", file=sys.stderr)
+        sys.stderr.flush()
+
         try:
             super().stop()
             self.__psu.close()
@@ -59,6 +65,9 @@ class PSUMonitor(SynchronisedProcess):
 
 
     def run(self):
+        print("PSUMonitor.run", file=sys.stderr)
+        sys.stderr.flush()
+
         try:
             timer = IntervalTimer(self.__MONITOR_INTERVAL)
 
