@@ -26,11 +26,11 @@ class MAX17055Datum(JSONable):
             return None
 
         charge = MAX17055Charge.construct_from_jdict(jdict.get('chrg'))
-        tte = Timedelta.construct_from_jdict(jdict.get('tte'))
-        ttf = Timedelta.construct_from_jdict(jdict.get('ttf'))
+        tte = Timedelta(seconds=jdict.get('tte'))
+        ttf = Timedelta(seconds=jdict.get('ttf'))
 
         current = jdict.get('curr')
-        temperature = jdict.get('tmp')
+        temperature = jdict.get('g-tmp')
 
         return MAX17055Datum(charge, tte, ttf, current, temperature)
 
@@ -55,11 +55,11 @@ class MAX17055Datum(JSONable):
         jdict = OrderedDict()
 
         jdict['chrg'] = self.charge
-        jdict['tte'] = self.tte
-        jdict['ttf'] = self.ttf
+        jdict['tte'] = None if self.tte is None else int(self.tte.total_seconds())
+        jdict['ttf'] = None if self.ttf is None else int(self.ttf.total_seconds())
 
         jdict['curr'] = self.current
-        jdict['tmp'] = self.temperature
+        jdict['g-tmp'] = self.temperature
 
         return jdict
 

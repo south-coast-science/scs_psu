@@ -154,15 +154,17 @@ class MAX17055(object):
         try:
             self.obtain_lock()
 
+            # charge...
             percent = self.read_charge_state_percent()
             mah = self.read_charge_state_mah()
 
             charge = MAX17055Charge(percent, mah)
 
+            # datum...
             tte = self.read_time_until_empty()
             ttf = self.read_time_until_full()
 
-            current = self.read_current()
+            current = self.read_current_avg()
             temperature = self.read_temperature()
 
             return MAX17055Datum(charge, tte, ttf, current, temperature)
@@ -195,7 +197,7 @@ class MAX17055(object):
 
         tte = raw_tte * 5.625
 
-        return Timedelta(seconds=tte)
+        return Timedelta(seconds=round(tte))
 
 
     def read_time_until_full(self):
@@ -206,11 +208,18 @@ class MAX17055(object):
 
         ttf = raw_ttf * 5.625
 
-        return Timedelta(seconds=ttf)
+        return Timedelta(seconds=round(ttf))
 
 
     def read_current(self):
         raw_current = self.__read_reg(self.__REG_CURRENT, True)
+        milli_amps = raw_current * self.__current_lsb()
+
+        return int(round(milli_amps))
+
+
+    def read_current_avg(self):
+        raw_current = self.__read_reg(self.__REG_CURRENT_AVG, True)
         milli_amps = raw_current * self.__current_lsb()
 
         return int(round(milli_amps))

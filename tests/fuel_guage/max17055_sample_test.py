@@ -6,6 +6,7 @@ Created on 2 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
 import time
 
 from scs_core.data.json import JSONify
@@ -37,7 +38,9 @@ try:
 
     while True:
         datum = gauge.sample()
+
         print(JSONify.dumps(datum))
+        sys.stdout.flush()
 
         time.sleep(5.0)
 
