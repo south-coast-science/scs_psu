@@ -11,13 +11,14 @@ https://github.com/electricimp/MAX17055
 
 import time
 
-from scs_core.data.datum import Decode, Format
+from scs_core.data.datum import Decode
 from scs_core.data.timedelta import Timedelta
 
 from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
 from scs_psu.fuel_gauage.max17055_config import MAX17055Config
+from scs_psu.fuel_gauage.max17055_datum import MAX17055Charge, MAX17055Datum
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ class MAX17055(object):
     __REG_REP_CAP =             0x05            # reported capacity
     __REG_REP_SOC =             0x06            # reported state of charge
     __REG_TEMP =                0x08
-    __REG_VCELL =               0x09            # Voltage
+    __REG_V_CELL =              0x09            # Voltage
     __REG_CURRENT =             0x0a
     __REG_CURRENT_AVG =         0x0b
 
@@ -49,7 +50,7 @@ class MAX17055(object):
     __REG_TEMP_AVG =            0x16
     __REG_CYCLES =              0x17            # charging cycle count
     __REG_DESIGN_CAP =          0x18
-    __REG_VCELL_AVG =           0x19            # Voltage
+    __REG_V_CELL_AVG =          0x19            # Voltage
     __REG_MAX_MIN_TEMP =        0x1a
     __REG_MAX_MIN_VOLT =        0x1b            # Voltage
     __REG_MAX_MIN_CURRENT =     0x1c
@@ -149,28 +150,44 @@ class MAX17055(object):
             self.release_lock()
 
 
-    def __clear_status_flags(self):
-        status = self.__read_reg(self.__REG_STATUS, False)
-        self.__write_reg(self.__REG_STATUS, status & 0x777f)
+    def sample(self):
+        try:
+            self.obtain_lock()
+
+            percent = self.read_charge_state_percent()
+            mah = self.read_charge_state_mah()
+
+            charge = MAX17055Charge(percent, mah)
+
+            tte = self.read_time_until_empty()
+            ttf = self.read_time_until_full()
+
+            current = self.read_current()
+            temperature = self.read_temperature()
+
+            return MAX17055Datum(charge, tte, ttf, current, temperature)
+
+        finally:
+            self.release_lock()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def get_charge_state_percent(self):
+    def read_charge_state_percent(self):
         raw_percent = self.__read_reg(self.__REG_REP_SOC, True)
         percent = raw_percent / 256.0
 
         return round(percent, 1)
 
 
-    def get_charge_state_mah(self):
+    def read_charge_state_mah(self):
         raw_capacity = self.__read_reg(self.__REG_REP_CAP, True)
-        milliamp_hours = raw_capacity * self.__capacity_lsb()
+        milli_amp_hours = raw_capacity * self.__capacity_lsb()
 
-        return int(round(milliamp_hours))
+        return int(round(milli_amp_hours))
 
 
-    def get_time_until_empty(self):
+    def read_time_until_empty(self):
         raw_tte = self.__read_reg(self.__REG_TTE, True)
 
         if raw_tte < 1:
@@ -181,7 +198,7 @@ class MAX17055(object):
         return Timedelta(seconds=tte)
 
 
-    def get_time_until_full(self):
+    def read_time_until_full(self):
         raw_ttf = self.__read_reg(self.__REG_TTF, True)
 
         if raw_ttf < 1:
@@ -192,21 +209,21 @@ class MAX17055(object):
         return Timedelta(seconds=ttf)
 
 
-    def get_current(self):
+    def read_current(self):
         raw_current = self.__read_reg(self.__REG_CURRENT, True)
-        milliamps = raw_current * self.__current_lsb()
+        milli_amps = raw_current * self.__current_lsb()
 
-        return int(round(milliamps))
+        return int(round(milli_amps))
 
 
-    def get_voltage(self):
-        raw_voltage = self.__read_reg(self.__REG_VCELL, True)
+    def read_voltage(self):
+        raw_voltage = self.__read_reg(self.__REG_V_CELL, True)
         volts = (raw_voltage * 0.078125) / 1000.0
 
         return round(volts, 1)
 
 
-    def get_temperature(self):
+    def read_temperature(self):
         raw_temp = self.__read_reg(self.__REG_TEMP, True)
         centigrade = raw_temp / 256.0
 
@@ -216,18 +233,23 @@ class MAX17055(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __capacity_lsb(self):
-        res_milliohms = self.__conf.sense_res * 1000
+        res_milli_ohms = self.__conf.sense_res * 1000
 
-        return 5.0 / res_milliohms          # mAh
+        return 5.0 / res_milli_ohms          # mAh
 
 
     def __current_lsb(self):
-        res_milliohms = self.__conf.sense_res * 1000
+        res_milli_ohms = self.__conf.sense_res * 1000
 
-        return 1.5625 / res_milliohms       # mA
+        return 1.5625 / res_milli_ohms       # mA
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def __clear_status_flags(self):
+        status = self.__read_reg(self.__REG_STATUS, False)
+        self.__write_reg(self.__REG_STATUS, status & 0x777f)
+
 
     def __wait_for_reg_value(self, reg, mask, expected):
         read_value = None

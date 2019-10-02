@@ -50,11 +50,11 @@ class MAX17055Config(JSONable):
         """
         Constructor
         """
-        self.__des_cap = Datum.int(des_cap)                     # designed capacity of the battery in mAh
-        self.__sense_res = Datum.float(sense_res, 3)            # size of the sense resistor in Ω
-        self.__chrg_term = Datum.int(chrg_term)                 # battery’s termination charge in mA
-        self.__empty_v_target = Datum.float(empty_v_target, 2)  # empty target voltage in V. Resolution is 10mV
-        self.__recovery_v = Datum.float(recovery_v, 2)          # recovery voltage in V
+        self.__des_cap = Datum.int(des_cap)                     # designed capacity of the battery (mAh)
+        self.__sense_res = Datum.float(sense_res, 3)            # size of the sense resistor (Ω)
+        self.__chrg_term = Datum.int(chrg_term)                 # battery’s termination charge (mA)
+        self.__empty_v_target = Datum.float(empty_v_target, 2)  # empty target voltage (V). Resolution is 10mV
+        self.__recovery_v = Datum.float(recovery_v, 2)          # recovery voltage (V)
         self.__chrg_v = Datum.int(chrg_v)                       # charge voltage (see constants)
         self.__batt_type = Datum.int(batt_type)                 # type of battery (see constants)
 
