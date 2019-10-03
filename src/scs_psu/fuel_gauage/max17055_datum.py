@@ -124,7 +124,7 @@ class MAX17055Charge(JSONable):
         """
         Constructor
         """
-        self.__percent = Datum.float(percent, 1)                    # float         %
+        self.__percent = Datum.float(percent, 1)                    # float         percentage
         self.__mah = Datum.int(mah)                                 # int           mAh
 
 

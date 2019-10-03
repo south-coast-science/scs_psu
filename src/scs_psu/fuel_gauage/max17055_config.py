@@ -35,11 +35,11 @@ class MAX17055Config(JSONable):
 
         des_cap = jdict.get('des-cap')
         sense_res = jdict.get('sense-res')
-        chrg_term = jdict.get('chrg_term')
-        empty_v_target = jdict.get('empty_v_target')
-        recovery_v = jdict.get('recovery_v')
-        chrg_v = jdict.get('chrg_v')
-        batt_type = jdict.get('batt_type')
+        chrg_term = jdict.get('chrg-term')
+        empty_v_target = jdict.get('empty-v-target')
+        recovery_v = jdict.get('recovery-v')
+        chrg_v = jdict.get('chrg-v')
+        batt_type = jdict.get('batt-type')
 
         return MAX17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
 
@@ -50,13 +50,13 @@ class MAX17055Config(JSONable):
         """
         Constructor
         """
-        self.__des_cap = Datum.int(des_cap)                     # designed capacity of the battery (mAh)
-        self.__sense_res = Datum.float(sense_res, 3)            # size of the sense resistor (Ω)
-        self.__chrg_term = Datum.int(chrg_term)                 # battery’s termination charge (mA)
-        self.__empty_v_target = Datum.float(empty_v_target, 2)  # empty target voltage (V). Resolution is 10mV
-        self.__recovery_v = Datum.float(recovery_v, 2)          # recovery voltage (V)
-        self.__chrg_v = Datum.int(chrg_v)                       # charge voltage (see constants)
-        self.__batt_type = Datum.int(batt_type)                 # type of battery (see constants)
+        self.__des_cap = Datum.int(des_cap)                         # designed capacity of the battery (mAh)
+        self.__sense_res = Datum.float(sense_res, 3)                # size of the sense resistor (Ω)
+        self.__chrg_term = Datum.int(chrg_term)                     # battery’s termination charge (mA)
+        self.__empty_v_target = Datum.float(empty_v_target, 2)      # empty target voltage (V, resolution is 10mV)
+        self.__recovery_v = Datum.float(recovery_v, 2)              # recovery voltage (V)
+        self.__chrg_v = Datum.int(chrg_v)                           # charge voltage (see constants)
+        self.__batt_type = Datum.int(batt_type)                     # type of battery (see constants)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,11 +66,11 @@ class MAX17055Config(JSONable):
 
         jdict['des-cap'] = self.des_cap
         jdict['sense-res'] = self.sense_res
-        jdict['chrg_term'] = self.chrg_term
-        jdict['empty_v_target'] = self.empty_v_target
-        jdict['recovery_v'] = self.recovery_v
-        jdict['chrg_v'] = self.chrg_v
-        jdict['batt_type'] = self.batt_type
+        jdict['chrg-term'] = self.chrg_term
+        jdict['empty-v-target'] = self.empty_v_target
+        jdict['recovery-v'] = self.recovery_v
+        jdict['chrg-v'] = self.chrg_v
+        jdict['batt-type'] = self.batt_type
 
         return jdict
 
