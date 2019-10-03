@@ -95,7 +95,7 @@ class MAX17055(object):
 
             if not (status & 0x0002) and not force_config:
                 self.__clear_status_flags()
-                return False
+                return False                                        # configuration not updated
 
             # wait for DNR to clear...
             self.__wait_for_reg_value(self.__REG_FSTAT, 0x0001, 0)
@@ -145,7 +145,7 @@ class MAX17055(object):
             # clear POR bit...
             self.__write_and_verify_reg(self.__REG_STATUS, 0xfffd)
 
-            return True
+            return True                                             # configuration updated
 
         finally:
             self.release_lock()
