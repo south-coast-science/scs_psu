@@ -8,8 +8,8 @@ Created on 30 Sep 2019
 
 import time
 
-from scs_psu.fuel_gauage.max17055 import MAX17055
-from scs_psu.fuel_gauage.max17055_config import MAX17055Config
+from scs_psu.fuel_gauage.max17055.max17055 import MAX17055
+from scs_psu.fuel_gauage.max17055.max17055_config import MAX17055Config
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -19,7 +19,7 @@ from scs_host.sys.host import Host
 
 des_cap = 6200
 sense_res = 0.01
-chrg_term = 10                 # 10, 20 or 250?
+chrg_term = 10                 # 10 or 20
 empty_v_target = 2.7
 recovery_v = 3.0
 chrg_v = MAX17055Config.CHRG_V_4_4_OR_4_35

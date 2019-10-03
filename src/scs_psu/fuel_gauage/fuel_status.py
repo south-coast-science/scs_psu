@@ -13,7 +13,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Datum(JSONable):
+class FuelStatus(JSONable):
     """
     classdocs
     """
@@ -25,14 +25,14 @@ class MAX17055Datum(JSONable):
         if not jdict:
             return None
 
-        charge = MAX17055Charge.construct_from_jdict(jdict.get('chrg'))
+        charge = ChargeLevel.construct_from_jdict(jdict.get('chrg'))
         tte = Timedelta(seconds=jdict.get('tte'))
         ttf = Timedelta(seconds=jdict.get('ttf'))
 
         current = jdict.get('curr')
         temperature = jdict.get('g-tmp')
 
-        return MAX17055Datum(charge, tte, ttf, current, temperature)
+        return FuelStatus(charge, tte, ttf, current, temperature)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class MAX17055Datum(JSONable):
         """
         Constructor
         """
-        self.__charge = charge                                  # MAX17055Charge
+        self.__charge = charge                                  # ChargeLevel
         self.__tte = tte                                        # TimeDelta     time to empty
         self.__ttf = ttf                                        # TimeDelta     time to full
 
@@ -94,13 +94,13 @@ class MAX17055Datum(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Datum:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s}" % \
+        return "FuelStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s}" % \
                (self.charge, self.tte, self.ttf, self.current, self.temperature)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Charge(JSONable):
+class ChargeLevel(JSONable):
     """
     classdocs
     """
@@ -115,7 +115,7 @@ class MAX17055Charge(JSONable):
         percent = jdict.get('%')
         mah = jdict.get('mah')
 
-        return MAX17055Charge(percent, mah)
+        return ChargeLevel(percent, mah)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -154,4 +154,4 @@ class MAX17055Charge(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Charge:{percent:%s, mah:%s}" %  (self.percent, self.mah)
+        return "ChargeLevel:{percent:%s, mah:%s}" %  (self.percent, self.mah)

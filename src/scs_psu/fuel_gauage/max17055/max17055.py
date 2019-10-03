@@ -17,8 +17,8 @@ from scs_core.data.timedelta import Timedelta
 from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
-from scs_psu.fuel_gauage.max17055_config import MAX17055Config
-from scs_psu.fuel_gauage.max17055_datum import MAX17055Charge, MAX17055Datum
+from scs_psu.fuel_gauage.max17055.max17055_config import MAX17055Config
+from scs_psu.fuel_gauage.fuel_status import ChargeLevel, FuelStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ class MAX17055(object):
             percent = self.read_charge_state_percent()
             mah = self.read_charge_state_mah()
 
-            charge = MAX17055Charge(percent, mah)
+            charge = ChargeLevel(percent, mah)
 
             # datum...
             tte = self.read_time_until_empty()
@@ -167,7 +167,7 @@ class MAX17055(object):
             current = self.read_current_avg()
             temperature = self.read_temperature()
 
-            return MAX17055Datum(charge, tte, ttf, current, temperature)
+            return FuelStatus(charge, tte, ttf, current, temperature)
 
         finally:
             self.release_lock()
@@ -342,4 +342,4 @@ class MAX17055(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055:{conf:%s}" %  self.__conf
+        return self.__class__.__name__ + ":{conf:%s}" %  self.__conf
