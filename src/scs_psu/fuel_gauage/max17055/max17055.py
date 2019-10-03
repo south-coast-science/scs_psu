@@ -57,6 +57,7 @@ class MAX17055(object):
     __REG_I_CHRG_TERM =         0x1e
 
     __REG_TTF =                 0x20            # time to full
+    __REG_DEV_NAME =            0x21            # device name / version
 
     __REG_DIE_TEMP =            0x34
     __REG_FSTAT =               0x3d
@@ -155,8 +156,8 @@ class MAX17055(object):
             self.obtain_lock()
 
             # charge...
-            percent = self.read_charge_state_percent()
-            mah = self.read_charge_state_mah()
+            percent = self.read_charge_percent()
+            mah = self.read_charge_mah()
 
             charge = ChargeLevel(percent, mah)
 
@@ -175,14 +176,14 @@ class MAX17055(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def read_charge_state_percent(self):
+    def read_charge_percent(self):
         raw_percent = self.__read_reg(self.__REG_REP_SOC, True)
         percent = raw_percent / 256.0
 
         return round(percent, 1)
 
 
-    def read_charge_state_mah(self):
+    def read_charge_mah(self):
         raw_capacity = self.__read_reg(self.__REG_REP_CAP, True)
         milli_amp_hours = raw_capacity * self.__capacity_lsb()
 
@@ -237,6 +238,12 @@ class MAX17055(object):
         centigrade = raw_temp / 256.0
 
         return round(centigrade, 1)
+
+
+    def read_device_rev(self):
+        rev = self.__read_reg(self.__REG_DEV_NAME, False)
+
+        return rev
 
 
     # ----------------------------------------------------------------------------------------------------------------

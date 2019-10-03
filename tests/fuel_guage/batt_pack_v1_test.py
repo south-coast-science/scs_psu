@@ -26,6 +26,8 @@ try:
     gauge = BattPackV1Gauge()
     gauge.initialise(True)
 
+    print(gauge)
+
     timer = IntervalTimer(10.0)
 
     while timer.true():

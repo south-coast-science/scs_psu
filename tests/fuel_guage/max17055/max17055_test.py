@@ -33,16 +33,19 @@ try:
     I2C.open(Host.I2C_SENSORS)
 
     gauge = MAX17055(conf)
-    loaded = gauge.initialise(True)
+    loaded = gauge.initialise(False)
     print("conf loaded: %s" % loaded)
     print(gauge)
+
+    rev = gauge.read_device_rev()
+    print("rev:0x%04x" % rev)
     print("-")
 
     while True:
         # print('\033[2J')            # clear screen
 
-        charge_percent = gauge.read_charge_state_percent()
-        charge_mah = gauge.read_charge_state_mah()
+        charge_percent = gauge.read_charge_percent()
+        charge_mah = gauge.read_charge_mah()
         print("charge level:%s%%, %smAh" % (charge_percent, charge_mah))
         print()
 
