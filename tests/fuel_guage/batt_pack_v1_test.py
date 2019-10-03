@@ -26,7 +26,8 @@ try:
     gauge = BattPackV1Gauge()
     gauge.initialise(True)
 
-    print(gauge)
+    print(gauge, file=sys.stderr)
+    sys.stderr.flush()
 
     timer = IntervalTimer(10.0)
 
