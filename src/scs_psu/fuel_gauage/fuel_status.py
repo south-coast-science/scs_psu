@@ -52,7 +52,7 @@ class FuelStatus(JSONable):
         self.__current = Datum.int(current)                     # int           current (mA)
         self.__temperature = Datum.float(temperature, 1)        # float         temperature (°C)
 
-        self.__cycles = Datum.int(cycles)                       # int
+        self.__cycles = Datum.float(cycles, 1)                  # float         percentage
 
 
     # ----------------------------------------------------------------------------------------------------------------

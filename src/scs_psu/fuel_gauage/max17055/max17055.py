@@ -6,6 +6,7 @@ Created on 30 Sep 2019
 Maxim Integrated 1-Cell Fuel Gauge with ModelGauge m5 EZ
 
 https://www.maximintegrated.com/en/products/power/battery-management/MAX17055.html
+https://www.maximintegrated.com/en/design/technical-documents/userguides-and-manuals/6/6365.html
 https://github.com/electricimp/MAX17055
 """
 
@@ -18,6 +19,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
 from scs_psu.fuel_gauage.max17055.max17055_config import MAX17055Config
+from scs_psu.fuel_gauage.max17055.max17055_params import MAX17055Params
+
 from scs_psu.fuel_gauage.fuel_status import ChargeLevel, FuelStatus
 
 
@@ -44,8 +47,10 @@ class MAX17055(object):
     __REG_V_CELL =              0x09            # Voltage
     __REG_CURRENT =             0x0a
     __REG_CURRENT_AVG =         0x0b
+    __REG_MIX_SOC =             0x0d            # state of charge
+    __REG_MIX_CAP =             0x0f
 
-    __REG_REP_FULL_CAP =        0x10            # reported full capacity
+    __REG_FULL_CAP_REP =        0x10            # reported full capacity
     __REG_TTE =                 0x11            # time to empty
     __REG_TEMP_AVG =            0x16
     __REG_CYCLES =              0x17            # charging cycle count
@@ -59,13 +64,16 @@ class MAX17055(object):
 
     __REG_TTF =                 0x20            # time to full
     __REG_DEV_NAME =            0x21            # device name / version
+    __REG_FULL_CAP_NOM =        0x23
 
     __REG_DIE_TEMP =            0x34
+    __REG_R_COMP_0 =            0x38
+    __REG_TEMP_CO =             0x39
     __REG_FSTAT =               0x3d
     __REG_V_EMPTY =             0x3a
 
-    __REG_DQ_ACC =              0x45
-    __REG_DP_ACC =              0x46
+    __REG_D_Q_ACC =             0x45
+    __REG_D_P_ACC =             0x46
 
     __REG_HIB_MODE =            0x60            # hibernate mode
 
@@ -91,18 +99,16 @@ class MAX17055(object):
         try:
             self.obtain_lock()
 
-            # get POR bit...
-            status = self.__read_reg(self.__REG_STATUS, False)
-
-            if not (status & 0x0002) and not force_config:
-                self.__clear_status_flags()
-                return False                                        # configuration not updated
+            # PoR?...
+            if not self.read_power_on_reset() and not force_config:
+                self.clear_power_on_reset()
+                return False                                            # configuration is not updated
 
             # wait for DNR to clear...
             self.__wait_for_reg_value(self.__REG_FSTAT, 0x0001, 0)
 
             # store hibernate configuration...
-            hib_cfg = self.__read_reg(self.__REG_HIB_CFG, False)
+            hib_cfg = self.__read_reg(self.__REG_HIB_CFG)
 
             self.__write_reg(self.__REG_HIB_MODE, 0x90)
             self.__write_reg(self.__REG_HIB_CFG, 0x00)
@@ -113,7 +119,7 @@ class MAX17055(object):
             self.__write_reg(self.__REG_DESIGN_CAP, des_cap)
 
             dq_acc = int(round(des_cap / 32))
-            self.__write_reg(self.__REG_DQ_ACC, dq_acc)
+            self.__write_reg(self.__REG_D_Q_ACC, dq_acc)
 
             # termination charge...
             chrg_therm = int(round(self.__conf.chrg_term / self.__current_lsb()))
@@ -128,7 +134,7 @@ class MAX17055(object):
 
             # refactored from: (des_Cap / 32) * (dPAccCoefficient / des_cap) = dPAccCoefficient / 32
             dp_acc = int(51200 / 32) if self.__conf.chrg_v else int(44138 / 32)
-            self.__write_reg(self.__REG_DP_ACC, dp_acc)
+            self.__write_reg(self.__REG_D_P_ACC, dp_acc)
 
             # model Refresh (bit 15), VChg (bit 10), ModelId (bits 4-7)
             model_cfg = (0x8000 | (self.__conf.chrg_v << 10) | (self.__conf.batt_type << 4))
@@ -143,7 +149,7 @@ class MAX17055(object):
             # clear boot status...
             self.__clear_status_flags()
 
-            # clear POR bit...
+            # clear PoR bit...
             self.__write_and_verify_reg(self.__REG_STATUS, 0xfffd)
 
             return True                                             # configuration updated
@@ -175,6 +181,80 @@ class MAX17055(object):
 
         finally:
             self.release_lock()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def read_learned_params(self):
+        try:
+            self.obtain_lock()
+
+            r_comp_0 = self.__read_reg(self.__REG_R_COMP_0)
+            temp_co = self.__read_reg(self.__REG_TEMP_CO)
+            full_cap_rep = self.__read_reg(self.__REG_FULL_CAP_REP)
+            full_cap_nom = self.__read_reg(self.__REG_FULL_CAP_NOM)
+
+            cycles = self.__read_reg(self.__REG_CYCLES)
+
+            return MAX17055Params(r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
+
+        finally:
+            self.release_lock()
+
+
+    def restore_learned_params(self, params: MAX17055Params):
+        try:
+            self.obtain_lock()
+
+            # restore capacity...
+            self.__write_and_verify_reg(self.__REG_R_COMP_0, params.r_comp_0)
+            self.__write_and_verify_reg(self.__REG_TEMP_CO, params.temp_co)
+            self.__write_and_verify_reg(self.__REG_FULL_CAP_NOM, params.full_cap_nom)
+
+            time.sleep(0.350)
+
+            # restore full cap...
+            full_cap_nom = self.__read_reg(self.__REG_FULL_CAP_NOM)
+            mix_soc = self.__read_reg(self.__REG_MIX_SOC)
+
+            mix_cap = int(mix_soc * full_cap_nom / 256000)
+            self.__write_and_verify_reg(self.__REG_MIX_CAP, mix_cap)
+
+            self.__write_and_verify_reg(self.__REG_FULL_CAP_REP, params.full_cap_rep)
+
+            # set dQacc to 200% of capacity...
+            d_qacc = int(params.full_cap_nom / 16)
+            self.__write_and_verify_reg(self.__REG_D_Q_ACC, d_qacc)
+
+            # set dPacc to 200%
+            self.__write_and_verify_reg(self.__REG_D_Q_ACC, 0x0c80)         # 3200
+
+            time.sleep(0.350)
+
+            # restore cycles...
+            self.__write_and_verify_reg(self.__REG_CYCLES, params.cycles)
+
+        finally:
+            self.release_lock()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def read_power_on_reset(self):
+        status = self.__read_reg(self.__REG_STATUS)
+        poc = status & 0x0002
+
+        return bool(poc)
+
+
+    def clear_power_on_reset(self):
+        status = self.__read_reg(self.__REG_STATUS)
+        self.__write_and_verify_reg(self.__REG_STATUS, status & 0xfffd)
+
+
+    def __clear_status_flags(self):
+        status = self.__read_reg(self.__REG_STATUS, False)
+        self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -251,13 +331,14 @@ class MAX17055(object):
 
 
     def read_cycles(self):
-        cycles = self.__read_reg(self.__REG_CYCLES, False)
+        raw_cycles = self.__read_reg(self.__REG_CYCLES)
+        cycles = raw_cycles / 100.0
 
-        return cycles
+        return round(cycles, 1)
 
 
     def read_device_rev(self):
-        rev = self.__read_reg(self.__REG_DEV_NAME, False)
+        rev = self.__read_reg(self.__REG_DEV_NAME)
 
         return rev
 
@@ -278,16 +359,11 @@ class MAX17055(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __clear_status_flags(self):
-        status = self.__read_reg(self.__REG_STATUS, False)
-        self.__write_reg(self.__REG_STATUS, status & 0x777f)
-
-
     def __wait_for_reg_value(self, reg, mask, expected):
         read_value = None
 
         for count in range(self.__REG_CHECK_NUM_RETRIES):
-            read_value = self.__read_reg(reg, False)
+            read_value = self.__read_reg(reg)
 
             if read_value & mask == expected:
                 return
@@ -297,7 +373,7 @@ class MAX17055(object):
         raise RuntimeError("reg:0x%02x mask:0x%04x expected:0x%04x got:0x%04x" % (reg, mask, expected, read_value))
 
 
-    def __read_reg(self, reg, signed):
+    def __read_reg(self, reg, signed=False):
         try:
             I2C.start_tx(self.__ADDR)
 

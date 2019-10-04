@@ -1,16 +1,10 @@
 #!/usr/bin/env python3
 
 """
-Created on 2 Oct 2016
+Created on 3 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
-
-import sys
-
-from scs_core.data.json import JSONify
-
-from scs_core.sync.interval_timer import IntervalTimer
 
 from scs_psu.fuel_gauage.batt_pack_v1_gauge import BattPackV1Gauge
 
@@ -24,19 +18,21 @@ try:
     I2C.open(Host.I2C_SENSORS)
 
     gauge = BattPackV1Gauge()
-    loaded = gauge.initialise(True)
+    print(gauge)
+    print("-")
 
-    print(gauge, file=sys.stderr)
-    print("loaded:%s" % loaded, file=sys.stderr)
-    sys.stderr.flush()
+    print("read...")
+    params = gauge.read_learned_params()
+    print(params)
+    print("-")
 
-    timer = IntervalTimer(10.0)
+    print("restore...")
+    gauge.restore_learned_params(params)
+    print("-")
 
-    while timer.true():
-        datum = gauge.sample()
-
-        print(JSONify.dumps(datum))
-        sys.stdout.flush()
+    print("read...")
+    params = gauge.read_learned_params()
+    print(params)
 
 except KeyboardInterrupt:
     print()

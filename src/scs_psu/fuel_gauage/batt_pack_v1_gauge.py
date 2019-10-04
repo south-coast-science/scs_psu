@@ -26,7 +26,7 @@ class BattPackV1Gauge(MAX17055):
         """
         des_cap = 6200              # mAh
         sense_res = 0.01            # Ω
-        chrg_term = 40              # mA
+        chrg_term = 250             # mA
         empty_v_target = 3.3        # V
         recovery_v = 3.5            # V
 
