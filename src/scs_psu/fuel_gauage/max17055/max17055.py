@@ -242,9 +242,9 @@ class MAX17055(object):
 
     def read_power_on_reset(self):
         status = self.__read_reg(self.__REG_STATUS)
-        poc = status & 0x0002
+        por = status & 0x0002
 
-        return bool(poc)
+        return bool(por)
 
 
     def clear_power_on_reset(self):

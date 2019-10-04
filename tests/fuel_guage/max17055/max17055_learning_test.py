@@ -26,13 +26,13 @@ try:
     print(params)
     print("-")
 
-    print("restore...")
-    gauge.restore_learned_params(params)
-    print("-")
-
-    print("read...")
-    params = gauge.read_learned_params()
-    print(params)
+    # print("restore...")
+    # gauge.restore_learned_params(params)
+    # print("-")
+    #
+    # print("read...")
+    # params = gauge.read_learned_params()
+    # print(params)
 
 except KeyboardInterrupt:
     print()
