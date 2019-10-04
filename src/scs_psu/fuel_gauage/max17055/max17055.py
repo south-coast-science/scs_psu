@@ -55,6 +55,7 @@ class MAX17055(object):
     __REG_MAX_MIN_VOLT =        0x1b            # Voltage
     __REG_MAX_MIN_CURRENT =     0x1c
     __REG_I_CHRG_TERM =         0x1e
+    __REG_CAP_AVG =             0x1f
 
     __REG_TTF =                 0x20            # time to full
     __REG_DEV_NAME =            0x21            # device name / version
@@ -168,7 +169,9 @@ class MAX17055(object):
             current = self.read_current_avg()
             temperature = self.read_temperature()
 
-            return FuelStatus(charge, tte, ttf, current, temperature)
+            cycles = self.read_cycles()
+
+            return FuelStatus(charge, tte, ttf, current, temperature, cycles)
 
         finally:
             self.release_lock()
@@ -212,6 +215,13 @@ class MAX17055(object):
         return Timedelta(seconds=round(ttf))
 
 
+    def read_capacity_avg(self):
+        raw_capacity = self.__read_reg(self.__REG_CAP_AVG, True)
+        milli_amp_hours = raw_capacity * self.__capacity_lsb()
+
+        return int(round(milli_amp_hours))
+
+
     def read_current(self):
         raw_current = self.__read_reg(self.__REG_CURRENT, True)
         milli_amps = raw_current * self.__current_lsb()
@@ -238,6 +248,12 @@ class MAX17055(object):
         centigrade = raw_temp / 256.0
 
         return round(centigrade, 1)
+
+
+    def read_cycles(self):
+        cycles = self.__read_reg(self.__REG_CYCLES, False)
+
+        return cycles
 
 
     def read_device_rev(self):

@@ -11,6 +11,8 @@ from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
 
 
+# TODO: should also contain "capacity (average)"?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class FuelStatus(JSONable):
@@ -32,12 +34,14 @@ class FuelStatus(JSONable):
         current = jdict.get('curr')
         temperature = jdict.get('g-tmp')
 
-        return FuelStatus(charge, tte, ttf, current, temperature)
+        cycles = jdict.get('cyc')
+
+        return FuelStatus(charge, tte, ttf, current, temperature, cycles)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, charge, tte, ttf, current, temperature):
+    def __init__(self, charge, tte, ttf, current, temperature, cycles):
         """
         Constructor
         """
@@ -47,6 +51,8 @@ class FuelStatus(JSONable):
 
         self.__current = Datum.int(current)                     # int           current (mA)
         self.__temperature = Datum.float(temperature, 1)        # float         temperature (°C)
+
+        self.__cycles = Datum.int(cycles)                       # int
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,6 +66,8 @@ class FuelStatus(JSONable):
 
         jdict['curr'] = self.current
         jdict['g-tmp'] = self.temperature
+
+        jdict['cyc'] = self.cycles
 
         return jdict
 
@@ -91,11 +99,16 @@ class FuelStatus(JSONable):
         return self.__temperature
 
 
+    @property
+    def cycles(self):
+        return self.__cycles
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "FuelStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s}" % \
-               (self.charge, self.tte, self.ttf, self.current, self.temperature)
+        return "FuelStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, cycles:%s}" % \
+               (self.charge, self.tte, self.ttf, self.current, self.temperature, self.cycles)
 
 
 # --------------------------------------------------------------------------------------------------------------------
