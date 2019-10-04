@@ -18,10 +18,10 @@ from scs_core.data.timedelta import Timedelta
 from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
-from scs_psu.fuel_gauage.max17055.max17055_config import MAX17055Config
-from scs_psu.fuel_gauage.max17055.max17055_params import MAX17055Params
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import MAX17055Config
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params
 
-from scs_psu.fuel_gauage.fuel_status import ChargeLevel, FuelStatus
+from scs_psu.batt_pack.fuel_gauge.fuel_status import ChargeLevel, FuelStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------

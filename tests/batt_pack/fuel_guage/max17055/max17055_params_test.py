@@ -12,7 +12,7 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 
-from scs_psu.fuel_gauage.max17055.max17055_params import MAX17055Params
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------

@@ -13,7 +13,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONify
 from scs_core.data.timedelta import Timedelta
 
-from scs_psu.fuel_gauage.fuel_status import ChargeLevel, FuelStatus
+from scs_psu.batt_pack.fuel_gauge.fuel_status import ChargeLevel, FuelStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ print("-")
 tte = Timedelta(hours=1, minutes=2, seconds=3)
 ttf = Timedelta(hours=11, minutes=21, seconds=31)
 
-datum = FuelStatus(charge, tte, ttf, 1024, 31.2)
+datum = FuelStatus(charge, tte, ttf, 1024, 31.2, 66)
 print(datum)
 print("-")
 
