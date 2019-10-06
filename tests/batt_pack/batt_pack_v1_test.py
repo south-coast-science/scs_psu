@@ -46,5 +46,6 @@ except KeyboardInterrupt:
 finally:
     if pack:
         pack.save_learning(Host)
+        print("saved learning", file=sys.stderr)
 
     I2C.close()

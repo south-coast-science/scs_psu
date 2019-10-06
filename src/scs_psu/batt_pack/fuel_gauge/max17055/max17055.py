@@ -18,10 +18,10 @@ from scs_core.data.timedelta import Timedelta
 from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
+from scs_psu.batt_pack.fuel_gauge.fuel_status import ChargeLevel, FuelStatus
+
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import MAX17055Config
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params
-
-from scs_psu.batt_pack.fuel_gauge.fuel_status import ChargeLevel, FuelStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -84,6 +84,7 @@ class MAX17055(object):
 
     __REG_MODEL_CFG =           0xdb
 
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, conf: MAX17055Config):
@@ -96,13 +97,13 @@ class MAX17055(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def initialise(self, force_config=False):
+        # PoR?...
+        if not self.read_power_on_reset() and not force_config:
+            self.clear_power_on_reset()
+            return False  # configuration is not updated
+
         try:
             self.obtain_lock()
-
-            # PoR?...
-            if not self.read_power_on_reset() and not force_config:
-                self.clear_power_on_reset()
-                return False                                            # configuration is not updated
 
             # wait for DNR to clear...
             self.__wait_for_reg_value(self.__REG_FSTAT, 0x0001, 0)
@@ -147,7 +148,8 @@ class MAX17055(object):
             self.__write_reg(self.__REG_HIB_CFG, hib_cfg)
 
             # clear boot status...
-            self.__clear_status_flags()
+            status = self.__read_reg(self.__REG_STATUS, False)
+            self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
 
             # clear PoR bit...
             self.__write_and_verify_reg(self.__REG_STATUS, 0xfffd)
@@ -248,13 +250,14 @@ class MAX17055(object):
 
 
     def clear_power_on_reset(self):
-        status = self.__read_reg(self.__REG_STATUS)
-        self.__write_and_verify_reg(self.__REG_STATUS, status & 0xfffd)
+        try:
+            self.obtain_lock()
 
+            status = self.__read_reg(self.__REG_STATUS)
+            self.__write_and_verify_reg(self.__REG_STATUS, status & 0xfffd)
 
-    def __clear_status_flags(self):
-        status = self.__read_reg(self.__REG_STATUS, False)
-        self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
+        finally:
+            self.release_lock()
 
 
     # ----------------------------------------------------------------------------------------------------------------
