@@ -7,8 +7,6 @@ Tuned for 2 x Nitecore IMR 18650 (3.7 V, 3100 mAh)
 https://www.nitecore.co.uk/Shop/Products/Batteries/13663-Nitecore-IMR-18650-Battery-for-TM28-Torch.html#Features
 """
 
-import sys
-
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import MAX17055
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import MAX17055Config
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params

@@ -52,7 +52,7 @@ class PSUMonitor(SynchronisedProcess):
             super().stop()
             self.__psu.close()
 
-        except (BrokenPipeError, KeyboardInterrupt):
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
 
 
@@ -77,7 +77,7 @@ class PSUMonitor(SynchronisedProcess):
                 if status.below_power_threshold():
                     self.__enter_host_shutdown("below power threshold")
 
-        except (BrokenPipeError, KeyboardInterrupt):
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
 
 
