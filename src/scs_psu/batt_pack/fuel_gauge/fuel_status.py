@@ -11,9 +11,11 @@ from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
 
 
+# TODO: should also contain "capacity (average)"?
+
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Datum(JSONable):
+class FuelStatus(JSONable):
     """
     classdocs
     """
@@ -25,28 +27,32 @@ class MAX17055Datum(JSONable):
         if not jdict:
             return None
 
-        charge = MAX17055Charge.construct_from_jdict(jdict.get('chrg'))
+        charge = ChargeLevel.construct_from_jdict(jdict.get('chrg'))
         tte = Timedelta(seconds=jdict.get('tte'))
         ttf = Timedelta(seconds=jdict.get('ttf'))
 
         current = jdict.get('curr')
         temperature = jdict.get('g-tmp')
 
-        return MAX17055Datum(charge, tte, ttf, current, temperature)
+        cycles = jdict.get('cyc')
+
+        return FuelStatus(charge, tte, ttf, current, temperature, cycles)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, charge, tte, ttf, current, temperature):
+    def __init__(self, charge, tte, ttf, current, temperature, cycles):
         """
         Constructor
         """
-        self.__charge = charge                                  # MAX17055Charge
+        self.__charge = charge                                  # ChargeLevel
         self.__tte = tte                                        # TimeDelta     time to empty
         self.__ttf = ttf                                        # TimeDelta     time to full
 
         self.__current = Datum.int(current)                     # int           current (mA)
         self.__temperature = Datum.float(temperature, 1)        # float         temperature (°C)
+
+        self.__cycles = Datum.float(cycles, 1)                  # float         percentage
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,6 +66,8 @@ class MAX17055Datum(JSONable):
 
         jdict['curr'] = self.current
         jdict['g-tmp'] = self.temperature
+
+        jdict['cyc'] = self.cycles
 
         return jdict
 
@@ -91,16 +99,21 @@ class MAX17055Datum(JSONable):
         return self.__temperature
 
 
+    @property
+    def cycles(self):
+        return self.__cycles
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Datum:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s}" % \
-               (self.charge, self.tte, self.ttf, self.current, self.temperature)
+        return "FuelStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, cycles:%s}" % \
+               (self.charge, self.tte, self.ttf, self.current, self.temperature, self.cycles)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Charge(JSONable):
+class ChargeLevel(JSONable):
     """
     classdocs
     """
@@ -115,7 +128,7 @@ class MAX17055Charge(JSONable):
         percent = jdict.get('%')
         mah = jdict.get('mah')
 
-        return MAX17055Charge(percent, mah)
+        return ChargeLevel(percent, mah)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -124,7 +137,7 @@ class MAX17055Charge(JSONable):
         """
         Constructor
         """
-        self.__percent = Datum.float(percent, 1)                    # float         %
+        self.__percent = Datum.float(percent, 1)                    # float         percentage
         self.__mah = Datum.int(mah)                                 # int           mAh
 
 
@@ -154,4 +167,4 @@ class MAX17055Charge(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Charge:{percent:%s, mah:%s}" %  (self.percent, self.mah)
+        return "ChargeLevel:{percent:%s, mah:%s}" %  (self.percent, self.mah)
