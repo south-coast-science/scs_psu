@@ -90,7 +90,7 @@ class PSUMonitor(SynchronisedProcess):
         if self.__shutdown_initiated:
             return
 
-        print("enter_host_shutdown: %s" % reason, file=sys.stderr)
+        print("*** enter_host_shutdown: %s" % reason, file=sys.stderr)
         sys.stderr.flush()
 
         # TODO: test whether the message queue is empty?
