@@ -4,6 +4,8 @@ Created on 25 Oct 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
+
 from collections import OrderedDict
 from multiprocessing import Manager
 
@@ -84,9 +86,12 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # SynchronisedProcess special operations...
 
-    def __enter_host_shutdown(self, _):
+    def __enter_host_shutdown(self, reason):
         if self.__shutdown_initiated:
             return
+
+        print("enter_host_shutdown: %s" % reason, file=sys.stderr)
+        sys.stderr.flush()
 
         # TODO: test whether the message queue is empty?
 
