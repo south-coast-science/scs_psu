@@ -92,16 +92,16 @@ class PSUConf(PersistentJSONable):
         if self.model == 'PrototypeV1':
             return PSUPrototypeV1(host.psu_device())
 
-        raise ValueError('unknown interface model: %s' % self.model)
+        raise ValueError('unknown psu model: %s' % self.model)
 
 
-    def psu_monitor(self, host, interface_model):
+    def psu_monitor(self, host, interface_model, auto_shutdown):
         psu = self.psu(host, interface_model)
 
         if psu is None:
             return None
 
-        return PSUMonitor(host, psu)
+        return PSUMonitor(host, psu, auto_shutdown)
 
 
     # ----------------------------------------------------------------------------------------------------------------
