@@ -12,6 +12,8 @@ from multiprocessing import Manager
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
+from scs_psu.psu.psu import PSU
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -23,7 +25,7 @@ class PSUMonitor(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, psu):
+    def __init__(self, host, psu: PSU, auto_shutdown):
         """
         Constructor
         """
@@ -33,6 +35,7 @@ class PSUMonitor(SynchronisedProcess):
 
         self.__host = host
         self.__psu = psu
+        self.__auto_shutdown = auto_shutdown
 
         self.__shutdown_initiated = False
 
@@ -73,10 +76,13 @@ class PSUMonitor(SynchronisedProcess):
                     status.as_list(self._value)
 
                 # monitor...
+                if not self.__auto_shutdown:
+                    continue
+
                 if status.standby:
                     self.__enter_host_shutdown("standby")
 
-                # if status.below_power_threshold():
+                # if status.below_power_threshold():                            # TODO: use fuel gauge when available
                 #     self.__enter_host_shutdown("below power threshold")
 
         except (BrokenPipeError, KeyboardInterrupt, SystemExit):
@@ -90,13 +96,10 @@ class PSUMonitor(SynchronisedProcess):
         if self.__shutdown_initiated:
             return
 
-        print("*** enter_host_shutdown: %s" % reason, file=sys.stderr)
+        print("PSUMonitor.enter_host_shutdown: %s" % reason, file=sys.stderr)
         sys.stderr.flush()
 
-        # TODO: test whether the message queue is empty?
-
         self.__psu.host_shutdown_initiated()
-
         self.__shutdown_initiated = True
 
         self.__host.shutdown()
@@ -121,5 +124,5 @@ class PSUMonitor(SynchronisedProcess):
     def __str__(self, *args, **kwargs):
         host_name = None if self.__host is None else self.__host.name()
 
-        return "PSUMonitor:{value:%s, host:%s, psu:%s, shutdown_initiated:%s}" % \
-               (self._value, host_name, self.__psu, self.__shutdown_initiated)
+        return "PSUMonitor:{value:%s, host:%s, psu:%s, auto_shutdown:%s, shutdown_initiated:%s}" % \
+               (self._value, host_name, self.__psu, self.__auto_shutdown, self.__shutdown_initiated)
