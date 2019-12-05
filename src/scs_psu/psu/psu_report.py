@@ -38,4 +38,13 @@ class PSUReport(JSONable, ABC):
     @property
     @abstractmethod
     def standby(self):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @abstractmethod
+    def as_json(self):
         pass
+
+

@@ -365,7 +365,7 @@ class MAX17055(object):
     def __wait_for_reg_value(self, reg, mask, expected):
         read_value = None
 
-        for count in range(self.__REG_CHECK_NUM_RETRIES):
+        for _ in range(self.__REG_CHECK_NUM_RETRIES):
             read_value = self.__read_reg(reg)
 
             if read_value & mask == expected:
