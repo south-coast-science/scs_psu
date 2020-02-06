@@ -9,10 +9,10 @@ import sys
 from collections import OrderedDict
 from multiprocessing import Manager
 
+from scs_core.psu.psu import PSU
+
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
-
-from scs_psu.psu.psu import PSU
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ class PSUMonitor(SynchronisedProcess):
     """
     classdocs
     """
-    __MONITOR_INTERVAL =        2.0             # seconds
+    __MONITOR_INTERVAL =        1.0             # seconds
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ class PSUMonitor(SynchronisedProcess):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # SynchronisedProcess special operations...
+    # process special operations...
 
     def __enter_host_shutdown(self, reason):
         if self.__shutdown_initiated:
@@ -114,7 +114,7 @@ class PSUMonitor(SynchronisedProcess):
 
     def sample(self):
         with self._lock:
-            status = self.__psu.construct_status_from_jdict(OrderedDict(self._value))
+            status = self.__psu.report_class().construct_from_jdict(OrderedDict(self._value))
 
         return status
 

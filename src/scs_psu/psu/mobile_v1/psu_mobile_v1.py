@@ -6,11 +6,12 @@ Created on 13 Jun 2019
 Lightweight system Raspberry Pi Zero header + mobile power pack
 """
 
+from scs_core.psu.psu import PSU
+
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 from scs_psu.psu.mobile_v1.psu_status import PSUStatus
-from scs_psu.psu.psu import PSU
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -23,8 +24,18 @@ class PSUMobileV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def name(cls):
+        return 'MobileV1'
+
+
+    @classmethod
     def requires_interface(cls):
         return True
+
+
+    @classmethod
+    def report_class(cls):
+        return PSUStatus
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -55,10 +66,6 @@ class PSUMobileV1(PSU):
         power_in = self.__header.read_batt_v()
 
         return PSUStatus(standby, power_in)
-
-
-    def construct_status_from_jdict(self, jdict):
-        return PSUStatus.construct_from_jdict(jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
