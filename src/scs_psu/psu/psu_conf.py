@@ -6,11 +6,12 @@ Created on 21 Jun 2017
 specifies which PSU board is present, if any
 
 example JSON:
-{"model": "OsloV1", "report-file": "/tmp/southcoastscience/psu_report.json"}
+{"model": "OsloV1", "reporting-interval": 10, "report-file": "/tmp/southcoastscience/psu_report.json"}
 """
 
 from collections import OrderedDict
 
+from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
 from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
@@ -53,23 +54,25 @@ class PSUConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return PSUConf(None, None)
+            return PSUConf(None, None, None)
 
         model = jdict.get('model')
+        reporting_interval = jdict.get('reporting-interval')
         report_file = jdict.get('report-file')
 
-        return PSUConf(model, report_file)
+        return PSUConf(model, reporting_interval, report_file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, report_file):
+    def __init__(self, model, reporting_interval, report_file):
         """
         Constructor
         """
         super().__init__()
 
         self.__model = model
+        self.__reporting_interval = Datum.int(reporting_interval)
         self.__report_file = report_file
 
 
@@ -123,12 +126,18 @@ class PSUConf(PersistentJSONable):
         return self.__report_file
 
 
+    @property
+    def reporting_interval(self):
+        return self.__reporting_interval
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
         jdict = OrderedDict()
 
         jdict['model'] = self.__model
+        jdict['reporting-interval'] = self.__reporting_interval
         jdict['report-file'] = self.__report_file
 
         return jdict
@@ -137,4 +146,5 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf:{model:%s, report_file:%s}" % (self.model, self.report_file)
+        return "PSUConf:{model:%s, reporting_interval:%s, report_file:%s}" % \
+               (self.model, self.reporting_interval, self.report_file)
