@@ -7,8 +7,7 @@ Created on 13 Jun 2019
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
-
-from scs_psu.psu.psu_report import PSUReport
+from scs_core.psu.psu_report import PSUReport
 
 
 # TODO: set a correct value for POWER_IN_MINIMUM

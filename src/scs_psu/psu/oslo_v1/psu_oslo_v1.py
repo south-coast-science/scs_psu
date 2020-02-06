@@ -25,6 +25,16 @@ class PSUOsloV1(SerialPSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def name(cls):
+        return 'OsloV1'
+
+
+    @classmethod
+    def report_class(cls):
+        return PSUStatus
+
+
+    @classmethod
     def baud_rate(cls):
         return PSUOsloV1.__BAUD_RATE
 
@@ -49,10 +59,6 @@ class PSUOsloV1(SerialPSU):
 
         except ValueError:
             return None
-
-
-    def construct_status_from_jdict(self, jdict):
-        return PSUStatus.construct_from_jdict(jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------

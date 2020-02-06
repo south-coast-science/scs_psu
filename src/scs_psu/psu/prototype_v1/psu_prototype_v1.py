@@ -24,6 +24,16 @@ class PSUPrototypeV1(SerialPSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
+    def name(cls):
+        return 'PrototypeV1'
+
+
+    @classmethod
+    def report_class(cls):
+        return PSUStatus
+
+
+    @classmethod
     def baud_rate(cls):
         return PSUPrototypeV1.__BAUD_RATE
 
@@ -48,10 +58,6 @@ class PSUPrototypeV1(SerialPSU):
 
         except ValueError:
             return None
-
-
-    def construct_status_from_jdict(self, jdict):
-        return PSUStatus.construct_from_jdict(jdict)
 
 
     # ----------------------------------------------------------------------------------------------------------------
