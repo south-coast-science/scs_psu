@@ -10,12 +10,11 @@ import json
 
 from abc import abstractmethod
 
+from scs_core.psu.psu import PSU
 from scs_core.psu.psu_uptime import PSUUptime
 from scs_core.psu.psu_version import PSUVersion
 
 from scs_host.sys.host_serial import HostSerial
-
-from scs_psu.psu.psu import PSU
 
 
 # --------------------------------------------------------------------------------------------------------------------
