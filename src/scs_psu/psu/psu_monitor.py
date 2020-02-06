@@ -68,8 +68,6 @@ class PSUMonitor(SynchronisedProcess):
             while timer.true():
                 status = self.__psu.status()
 
-                print("status: %s" % status)
-
                 if status is None:
                     continue
 
