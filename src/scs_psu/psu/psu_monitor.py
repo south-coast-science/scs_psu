@@ -57,7 +57,7 @@ class PSUMonitor(SynchronisedProcess):
             super().stop()
             self.__psu.close()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 
@@ -85,7 +85,7 @@ class PSUMonitor(SynchronisedProcess):
                 # if status.below_power_threshold():                            # TODO: use fuel gauge when available
                 #     self.__enter_host_shutdown("below power threshold")
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 
