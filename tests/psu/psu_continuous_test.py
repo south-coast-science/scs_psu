@@ -9,7 +9,7 @@ Created on 17 Oct 2017
 import sys
 import time
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 
