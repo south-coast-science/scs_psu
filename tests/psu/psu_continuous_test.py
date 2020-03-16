@@ -33,7 +33,7 @@ try:
     psu.open()
 
     for i in range(1000000):
-        now = LocalizedDatetime.now()
+        now = LocalizedDatetime.now().utc()
         start = time.time()
 
         response = psu.communicate('status')
