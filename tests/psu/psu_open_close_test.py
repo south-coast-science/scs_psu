@@ -33,7 +33,7 @@ print("-")
 
 try:
     for i in range(1000000):
-        now = LocalizedDatetime.now()
+        now = LocalizedDatetime.now().utc()
         start = time.time()
 
         psu.open()
