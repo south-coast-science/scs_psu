@@ -51,8 +51,6 @@ class MAX17055Params(PersistentJSONable):
         """
         Constructor
         """
-        PersistentJSONable.__init__(self)
-
         self.__r_comp_0 = r_comp_0                      # unsigned int
         self.__temp_co = temp_co                        # unsigned int
         self.__full_cap_rep = full_cap_rep              # unsigned int
