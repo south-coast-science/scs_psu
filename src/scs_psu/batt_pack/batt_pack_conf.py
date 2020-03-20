@@ -57,8 +57,6 @@ class BattPackConf(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__model = model
 
 

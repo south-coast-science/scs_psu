@@ -69,8 +69,6 @@ class PSUConf(PersistentJSONable):
         """
         Constructor
         """
-        super().__init__()
-
         self.__model = model
         self.__reporting_interval = Datum.int(reporting_interval)
         self.__report_file = report_file
