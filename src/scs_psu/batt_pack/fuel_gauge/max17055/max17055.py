@@ -100,7 +100,7 @@ class MAX17055(object):
         # PoR?...
         if not self.read_power_on_reset() and not force_config:
             self.clear_power_on_reset()
-            return False  # configuration is not updated
+            return False                                        # configuration is not updated
 
         try:
             self.obtain_lock()
@@ -177,9 +177,10 @@ class MAX17055(object):
             current = self.read_current_avg()
             temperature = self.read_temperature()
 
+            capacity = self.read_capacity_avg()
             cycles = self.read_cycles()
 
-            return FuelStatus(charge, tte, ttf, current, temperature, cycles)
+            return FuelStatus(charge, tte, ttf, current, temperature, capacity, cycles)
 
         finally:
             self.release_lock()
@@ -204,7 +205,7 @@ class MAX17055(object):
             self.release_lock()
 
 
-    def restore_learned_params(self, params: MAX17055Params):
+    def write_learned_params(self, params: MAX17055Params):
         try:
             self.obtain_lock()
 

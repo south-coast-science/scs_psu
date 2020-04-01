@@ -25,7 +25,7 @@ print("-")
 tte = Timedelta(hours=1, minutes=2, seconds=3)
 ttf = Timedelta(hours=11, minutes=21, seconds=31)
 
-datum = FuelStatus(charge, tte, ttf, 1024, 31.2, 66)
+datum = FuelStatus(charge, tte, ttf, 1024, 31.2, 4096, 66.5)
 print(datum)
 print("-")
 

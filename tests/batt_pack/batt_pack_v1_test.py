@@ -26,10 +26,10 @@ try:
     I2C.open(Host.I2C_SENSORS)
 
     pack = BattPackV1.construct()
-    loaded = pack.initialise(Host)
+    loaded = pack.initialise(Host, force_config=True)
 
     print(pack, file=sys.stderr)
-    print("loaded:%s" % loaded, file=sys.stderr)
+    print("loaded: %s" % loaded, file=sys.stderr)
     sys.stderr.flush()
 
     timer = IntervalTimer(10.0)
@@ -38,14 +38,18 @@ try:
         datum = pack.sample_fuel_status()
 
         print(JSONify.dumps(datum))
+        # print(datum)
+
+        params = pack.read_learned_params()
+        params.save(Host)
+
+        print(JSONify.dumps(params))
+        # print(params, file=sys.stderr)
+        print("-")
         sys.stdout.flush()
 
 except KeyboardInterrupt:
     print()
 
 finally:
-    if pack:
-        pack.save_learning(Host)
-        print("saved learning", file=sys.stderr)
-
     I2C.close()

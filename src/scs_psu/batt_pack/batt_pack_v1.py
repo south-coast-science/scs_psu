@@ -21,6 +21,8 @@ class BattPackV1(object):
 
     # TODO: default_params()
 
+    # {"r-comp-0": 101, "temp-co": 8766, "full-cap-rep": 10589, "full-cap-nom": 38181, "cycles": 596}
+
 
     @staticmethod
     def gauge_conf():
@@ -54,24 +56,26 @@ class BattPackV1(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def initialise(self, host):
-        if not self.__gauge.read_power_on_reset():
+    def initialise(self, host, force_config=False):
+        if not self.__gauge.read_power_on_reset() and not force_config:
             return False
 
-        self.__gauge.initialise()
+        self.__gauge.initialise(force_config=force_config)
 
         params = MAX17055Params.load(host)
 
         if params:
-            self.__gauge.restore_learned_params(params)
+            self.__gauge.write_learned_params(params)
 
         return True
 
 
-    def save_learning(self, host):
-        params = self.__gauge.read_learned_params()
+    def write_learned_params(self, params: MAX17055Params):
+        pass
 
-        params.save(host)
+
+    def read_learned_params(self):
+        return self.__gauge.read_learned_params()
 
 
     def sample_fuel_status(self):
