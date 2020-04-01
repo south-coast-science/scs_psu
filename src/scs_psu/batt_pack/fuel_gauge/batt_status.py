@@ -13,7 +13,7 @@ from scs_core.data.timedelta import Timedelta
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class FuelStatus(JSONable):
+class BattStatus(JSONable):
     """
     classdocs
     """
@@ -113,7 +113,7 @@ class FuelStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "FuelStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, capacity:%s, cycles:%s}" % \
+        return "BattStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, capacity:%s, cycles:%s}" % \
                (self.charge, self.tte, self.ttf, self.current, self.temperature, self.capacity, self.cycles)
 
 

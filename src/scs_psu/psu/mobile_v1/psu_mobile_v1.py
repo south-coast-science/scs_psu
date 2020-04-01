@@ -44,7 +44,7 @@ class PSUMobileV1(PSU):
         """
         Constructor
         """
-        self.__header = header
+        self.__header = header                                      # PZHB
 
 
     # ----------------------------------------------------------------------------------------------------------------

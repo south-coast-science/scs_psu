@@ -12,7 +12,7 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
-from scs_psu.psu.mobile_v2.psu_status import PSUStatus, BattStatus
+from scs_psu.psu.mobile_v2.psu_status import PSUStatus, ChargeStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -45,8 +45,8 @@ class PSUMobileV2(PSU):
         """
         Constructor
         """
-        self.__header = header
-        self.__batt_pack = BattPackV1.construct()
+        self.__header = header                                      # PZHB
+        self.__batt_pack = BattPackV1.construct()                   # BattPackV1
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,10 +67,14 @@ class PSUMobileV2(PSU):
         standby = self.__header.button_pressed()
         power_in = self.__header.read_batt_v()
 
-        fuel_status = self.__batt_pack.sample_fuel_status()
-        batt_status = BattStatus.construct_from_fuel_status(fuel_status)
+        try:
+            batt_status = self.__batt_pack.sample_fuel_status()
+            charge_status = ChargeStatus.construct_from_batt_status(batt_status)
 
-        return PSUStatus(standby, power_in, batt_status)
+        except OSError:
+            charge_status = None
+
+        return PSUStatus(standby, power_in, charge_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------

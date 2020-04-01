@@ -12,8 +12,6 @@ from scs_core.data.json import JSONable
 
 from scs_core.psu.psu_report import PSUReport
 
-from scs_psu.batt_pack.fuel_gauge.fuel_status import FuelStatus
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -22,7 +20,7 @@ class PSUStatus(PSUReport):
     classdocs
     """
 
-    POWER_IN_MINIMUM =        3.0           # Volts
+    CHARGE_MINIMUM =        5           # percent
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -33,20 +31,20 @@ class PSUStatus(PSUReport):
 
         standby = jdict.get('standby')
         power_in = jdict.get('pwr-in')
-        batt_status = jdict.get('batt')
+        charge_status = ChargeStatus.construct_from_jdict(jdict.get('batt'))
 
-        return PSUStatus(standby, power_in, batt_status)
+        return PSUStatus(standby, power_in, charge_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, standby, power_in, batt_status):
+    def __init__(self, standby, power_in, charge_status):
         """
         Constructor
         """
-        self.__standby = standby                            # bool
-        self.__power_in = Datum.float(power_in, 1)          # PSU input voltage  float
-        self.__batt_status = batt_status                    # BattStatus
+        self.__standby = standby                                # bool
+        self.__power_in = Datum.float(power_in, 1)              # PSU input voltage  float
+        self.__charge_status = charge_status                    # ChargeStatus
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -56,7 +54,7 @@ class PSUStatus(PSUReport):
 
         jdict['standby'] = self.standby
         jdict['pwr-in'] = self.power_in
-        jdict['batt'] = self.batt_status
+        jdict['batt'] = self.charge_status
 
         return jdict
 
@@ -64,7 +62,7 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self):
-        return self.power_in < self.POWER_IN_MINIMUM        # TODO: use percentage
+        return self.charge_status.charge < self.CHARGE_MINIMUM
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -80,19 +78,20 @@ class PSUStatus(PSUReport):
 
 
     @property
-    def batt_status(self):
-        return self.__batt_status
+    def charge_status(self):
+        return self.__charge_status
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{standby:%s, power_in:%s, batt_status:%s}" % (self.standby, self.power_in, self.batt_status)
+        return "PSUStatus:{standby:%s, power_in:%s, charge_status:%s}" % \
+               (self.standby, self.power_in, self.charge_status)
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class BattStatus(JSONable):
+class ChargeStatus(JSONable):
     """
     classdocs
     """
@@ -105,17 +104,24 @@ class BattStatus(JSONable):
             return None
 
         charge = jdict.get('chg')
-        tte = Timedelta(seconds=jdict.get('tte'))
-        ttf = Timedelta(seconds=jdict.get('ttf'))
+
+        seconds = jdict.get('tte')
+        tte = None if seconds is None else Timedelta(seconds=seconds)
+
+        seconds = jdict.get('ttf')
+        ttf = None if seconds is None else Timedelta(seconds=seconds)
 
         return cls(charge, tte, ttf)
 
 
     @classmethod
-    def construct_from_fuel_status(cls, fuel_status: FuelStatus):
-        charge = int(round(fuel_status.charge.percent))
-        tte = fuel_status.tte
-        ttf = fuel_status.ttf
+    def construct_from_batt_status(cls, batt_status):
+        if batt_status is None:
+            return None
+
+        charge = int(round(batt_status.charge.percent))
+        tte = batt_status.tte
+        ttf = batt_status.ttf
 
         return cls(charge, tte, ttf)
 
@@ -163,4 +169,4 @@ class BattStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "FuelStatus:{charge:%s, tte:%s, ttf:%s}" %  (self.charge, self.tte, self.ttf)
+        return "ChargeStatus:{charge:%s, tte:%s, ttf:%s}" %  (self.charge, self.tte, self.ttf)

@@ -82,7 +82,7 @@ class PSUMonitor(SynchronisedProcess):
                 if status.standby:
                     self.__enter_host_shutdown("standby")
 
-                # if status.below_power_threshold():                            # TODO: use fuel gauge when available
+                # if status.below_power_threshold():
                 #     self.__enter_host_shutdown("below power threshold")
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
