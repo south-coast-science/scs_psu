@@ -70,6 +70,11 @@ class PSUStatus(PSUReport):
 
 
     @property
+    def batt_percent(self):
+        return None
+
+
+    @property
     def power_in(self):
         return self.__power_in
 

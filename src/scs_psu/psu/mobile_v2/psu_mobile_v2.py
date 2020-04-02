@@ -1,9 +1,9 @@
 """
-Created on 13 Jun 2019
+Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Lightweight system Raspberry Pi Zero header + mobile power pack
+Lightweight system Raspberry Pi Zero header + mobile power pack + fuel gauge
 """
 
 from scs_core.psu.psu import PSU
@@ -11,12 +11,13 @@ from scs_core.psu.psu import PSU
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
-from scs_psu.psu.mobile_v1.psu_status import PSUStatus
+from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
+from scs_psu.psu.mobile_v2.psu_status import PSUStatus, ChargeStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUMobileV1(PSU):
+class PSUMobileV2(PSU):
     """
     classdocs
     """
@@ -25,7 +26,7 @@ class PSUMobileV1(PSU):
 
     @classmethod
     def name(cls):
-        return 'MobileV1'
+        return 'MobileV2'
 
 
     @classmethod
@@ -45,6 +46,7 @@ class PSUMobileV1(PSU):
         Constructor
         """
         self.__header = header                                      # PZHB
+        self.__batt_pack = BattPackV1.construct()                   # BattPackV1
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -65,7 +67,14 @@ class PSUMobileV1(PSU):
         standby = self.__header.button_pressed()
         power_in = self.__header.read_batt_v()
 
-        return PSUStatus(standby, power_in)
+        try:
+            batt_status = self.__batt_pack.sample_fuel_status()
+            charge_status = ChargeStatus.construct_from_batt_status(batt_status)
+
+        except OSError:
+            charge_status = None
+
+        return PSUStatus(standby, power_in, charge_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -105,4 +114,4 @@ class PSUMobileV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUMobileV1:{header:%s}" % self.__header
+        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.__header, self.__batt_pack)
