@@ -16,8 +16,11 @@ from scs_core.data.json import PersistentJSONable
 
 from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
 from scs_dfe.interface.pzhb.pzhb_mcu_t2_f1 import PZHBMCUt2f1
+from scs_dfe.interface.pzhb.pzhb_mcu_t3_f1 import PZHBMCUt3f1
 
 from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
+from scs_psu.psu.mobile_v2.psu_mobile_v2 import PSUMobileV2
+
 from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
 from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
 
@@ -40,6 +43,7 @@ class PSUConf(PersistentJSONable):
 
     __MODELS = {
         PSUMobileV1.name():  PSUMobileV1,
+        PSUMobileV2.name():  PSUMobileV2,
         PSUOsloV1.name(): PSUOsloV1,
         PSUPrototypeV1.name(): PSUPrototypeV1
     }
@@ -93,6 +97,12 @@ class PSUConf(PersistentJSONable):
                 return psu_class(PZHBMCUt2f1(PZHBMCUt2f1.DEFAULT_ADDR))
 
             raise ValueError('incompatible interface model for MobileV1: %s' % interface_model)
+
+        if self.model == PSUMobileV2.name():
+            if interface_model == 'PZHBt3':
+                return psu_class(PZHBMCUt3f1(PZHBMCUt3f1.DEFAULT_ADDR))
+
+            raise ValueError('incompatible interface model for MobileV2: %s' % interface_model)
 
         return psu_class(host.psu_device())
 

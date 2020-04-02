@@ -11,11 +11,9 @@ from scs_core.data.json import JSONable
 from scs_core.data.timedelta import Timedelta
 
 
-# TODO: should also contain "capacity (average)"?
-
 # --------------------------------------------------------------------------------------------------------------------
 
-class FuelStatus(JSONable):
+class BattStatus(JSONable):
     """
     classdocs
     """
@@ -34,14 +32,15 @@ class FuelStatus(JSONable):
         current = jdict.get('curr')
         temperature = jdict.get('g-tmp')
 
+        capacity = jdict.get('cap')
         cycles = jdict.get('cyc')
 
-        return FuelStatus(charge, tte, ttf, current, temperature, cycles)
+        return cls(charge, tte, ttf, current, temperature, capacity, cycles)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, charge, tte, ttf, current, temperature, cycles):
+    def __init__(self, charge, tte, ttf, current, temperature, capacity, cycles):
         """
         Constructor
         """
@@ -52,6 +51,7 @@ class FuelStatus(JSONable):
         self.__current = Datum.int(current)                     # int           current (mA)
         self.__temperature = Datum.float(temperature, 1)        # float         temperature (°C)
 
+        self.__capacity = Datum.int(capacity)                   # int           mAh
         self.__cycles = Datum.float(cycles, 1)                  # float         percentage
 
 
@@ -67,6 +67,7 @@ class FuelStatus(JSONable):
         jdict['curr'] = self.current
         jdict['g-tmp'] = self.temperature
 
+        jdict['cap'] = self.capacity
         jdict['cyc'] = self.cycles
 
         return jdict
@@ -100,6 +101,11 @@ class FuelStatus(JSONable):
 
 
     @property
+    def capacity(self):
+        return self.__capacity
+
+
+    @property
     def cycles(self):
         return self.__cycles
 
@@ -107,8 +113,8 @@ class FuelStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "FuelStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, cycles:%s}" % \
-               (self.charge, self.tte, self.ttf, self.current, self.temperature, self.cycles)
+        return "BattStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, capacity:%s, cycles:%s}" % \
+               (self.charge, self.tte, self.ttf, self.current, self.temperature, self.capacity, self.cycles)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -128,7 +134,7 @@ class ChargeLevel(JSONable):
         percent = jdict.get('%')
         mah = jdict.get('mah')
 
-        return ChargeLevel(percent, mah)
+        return cls(percent, mah)
 
 
     # ----------------------------------------------------------------------------------------------------------------
