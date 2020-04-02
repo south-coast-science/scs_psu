@@ -100,6 +100,11 @@ class PSUStatus(PSUReport):
 
 
     @property
+    def batt_percent(self):
+        return None
+
+
+    @property
     def watchdog_reset(self):
         return self.__watchdog_reset
 

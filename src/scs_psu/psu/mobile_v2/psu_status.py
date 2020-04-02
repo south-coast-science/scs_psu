@@ -73,6 +73,11 @@ class PSUStatus(PSUReport):
 
 
     @property
+    def batt_percent(self):
+        return None if self.__charge_status is None else self.__charge_status.charge
+
+
+    @property
     def power_in(self):
         return self.__power_in
 
