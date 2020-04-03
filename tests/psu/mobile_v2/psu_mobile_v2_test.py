@@ -14,12 +14,16 @@ from scs_core.data.json import JSONify
 
 from scs_dfe.interface.pzhb.pzhb_mcu_t3_f1 import PZHBMCUt3f1
 
+from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 from scs_psu.psu.mobile_v2.psu_mobile_v2 import PSUMobileV2
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-psu = PSUMobileV2(PZHBMCUt3f1(PZHBMCUt3f1.DEFAULT_ADDR))
+batt_pack = BattPackV1.construct()
+print(batt_pack)
+
+psu = PSUMobileV2(PZHBMCUt3f1(PZHBMCUt3f1.DEFAULT_ADDR), batt_pack)
 print(psu)
 print("-")
 

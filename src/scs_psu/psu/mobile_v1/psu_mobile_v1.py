@@ -34,6 +34,11 @@ class PSUMobileV1(PSU):
 
 
     @classmethod
+    def uses_batt_pack(cls):
+        return False
+
+
+    @classmethod
     def report_class(cls):
         return PSUStatus
 

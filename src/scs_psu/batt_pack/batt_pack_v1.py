@@ -19,6 +19,11 @@ class BattPackV1(object):
     classdocs
     """
 
+    @classmethod
+    def name(cls):
+        return 'PackV1'
+
+
     # TODO: default_params()
 
     # {"r-comp-0": 101, "temp-co": 8766, "full-cap-rep": 10589, "full-cap-nom": 38181, "cycles": 596}
