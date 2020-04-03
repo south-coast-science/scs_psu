@@ -6,8 +6,8 @@ Created on 1 Apr 2020
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Datum
 from scs_core.data.datetime import Timedelta
+from scs_core.data.datum import Datum
 from scs_core.data.json import JSONable
 
 from scs_core.psu.psu_report import PSUReport
@@ -20,7 +20,7 @@ class PSUStatus(PSUReport):
     classdocs
     """
 
-    CHARGE_MINIMUM =        5           # percent
+    CHARGE_MINIMUM =        8           # percent - was 5
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -62,6 +62,9 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self):
+        if self.charge_status.tte is None:
+            return False                                        # device is not running on battery
+
         return self.charge_status.charge < self.CHARGE_MINIMUM
 
 

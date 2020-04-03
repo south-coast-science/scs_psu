@@ -10,17 +10,12 @@ from scs_core.data.datum import Datum
 from scs_core.psu.psu_report import PSUReport
 
 
-# TODO: set a correct value for POWER_IN_MINIMUM
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class PSUStatus(PSUReport):
     """
     classdocs
     """
-
-    POWER_IN_MINIMUM =        3.0           # Volts
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -59,7 +54,7 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self):
-        return self.power_in < self.POWER_IN_MINIMUM
+        return False                                        # power threshold cannot be identified
 
 
     # ----------------------------------------------------------------------------------------------------------------
