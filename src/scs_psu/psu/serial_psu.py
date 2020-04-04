@@ -37,6 +37,11 @@ class SerialPSU(PSU):
         return False
 
 
+    @classmethod
+    def uses_batt_pack(cls):
+        return False
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, uart):

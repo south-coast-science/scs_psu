@@ -3,10 +3,11 @@ Created on 21 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-specifies which PSU board is present, if any
+specifies which PSU is present, if any
 
 example JSON:
-{"model": "OsloV1", "reporting-interval": 10, "report-file": "/tmp/southcoastscience/psu_report.json"}
+{"model": "MobileV2", "batt-model": "PackV1", "reporting-interval": 10,
+"report-file": "/tmp/southcoastscience/psu_status_report.json"}
 """
 
 from collections import OrderedDict
@@ -17,6 +18,8 @@ from scs_core.data.json import PersistentJSONable
 from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
 from scs_dfe.interface.pzhb.pzhb_mcu_t2_f1 import PZHBMCUt2f1
 from scs_dfe.interface.pzhb.pzhb_mcu_t3_f1 import PZHBMCUt3f1
+
+from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 
 from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 from scs_psu.psu.mobile_v2.psu_mobile_v2 import PSUMobileV2
@@ -41,7 +44,7 @@ class PSUConf(PersistentJSONable):
         return host.conf_dir(), cls.__FILENAME
 
 
-    __MODELS = {
+    __PSU_CLASSES = {
         PSUMobileV1.name():  PSUMobileV1,
         PSUMobileV2.name():  PSUMobileV2,
         PSUOsloV1.name(): PSUOsloV1,
@@ -49,8 +52,17 @@ class PSUConf(PersistentJSONable):
     }
 
     @classmethod
-    def models(cls):
-        return sorted(cls.__MODELS.keys())
+    def psu_models(cls):
+        return sorted(cls.__PSU_CLASSES.keys())
+
+
+    __BATT_CLASSES = {
+        BattPackV1.name():  BattPackV1
+    }
+
+    @classmethod
+    def batt_models(cls):
+        return sorted(cls.__BATT_CLASSES.keys())
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -58,22 +70,26 @@ class PSUConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return PSUConf(None, None, None)
+            return PSUConf(None, None, None, None)
 
-        model = jdict.get('model')
+        psu_model = jdict.get('model')
+        batt_model = jdict.get('batt-model')
+
         reporting_interval = jdict.get('reporting-interval')
         report_file = jdict.get('report-file')
 
-        return PSUConf(model, reporting_interval, report_file)
+        return PSUConf(psu_model, batt_model, reporting_interval, report_file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, model, reporting_interval, report_file):
+    def __init__(self, psu_model, batt_model, reporting_interval, report_file):
         """
         Constructor
         """
-        self.__model = model
+        self.__psu_model = psu_model
+        self.__batt_model = batt_model
+
         self.__reporting_interval = Datum.int(reporting_interval)
         self.__report_file = report_file
 
@@ -81,15 +97,18 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def psu(self, host, interface_model):
-        if self.model is None:
+        if self.psu_model is None:
             return None
 
-        if self.model not in self.__MODELS.keys():
-            raise ValueError('unknown psu model: %s' % self.model)
+        if self.psu_model not in self.__PSU_CLASSES.keys():
+            raise ValueError('unknown PSU model: %s' % self.psu_model)
 
-        psu_class = self.__MODELS[self.__model]
+        psu_class = self.__PSU_CLASSES[self.__psu_model]
 
-        if self.model == PSUMobileV1.name():
+        batt_class = None if self.__batt_model is None else self.__BATT_CLASSES[self.__batt_model]
+        batt_pack = None if batt_class is None else batt_class.construct()
+
+        if self.psu_model == PSUMobileV1.name():
             if interface_model == 'PZHBt1':
                 return psu_class(PZHBMCUt1f1(PZHBMCUt1f1.DEFAULT_ADDR))
 
@@ -98,9 +117,9 @@ class PSUConf(PersistentJSONable):
 
             raise ValueError('incompatible interface model for MobileV1: %s' % interface_model)
 
-        if self.model == PSUMobileV2.name():
+        if self.psu_model == PSUMobileV2.name():
             if interface_model == 'PZHBt3':
-                return psu_class(PZHBMCUt3f1(PZHBMCUt3f1.DEFAULT_ADDR))
+                return psu_class(PZHBMCUt3f1(PZHBMCUt3f1.DEFAULT_ADDR), batt_pack)
 
             raise ValueError('incompatible interface model for MobileV2: %s' % interface_model)
 
@@ -116,8 +135,12 @@ class PSUConf(PersistentJSONable):
         return PSUMonitor(host, psu, auto_shutdown)
 
 
+    def psu_class(self):
+        return self.__PSU_CLASSES[self.__psu_model]
+
+
     def psu_report_class(self):
-        psu_class = self.__MODELS[self.__model]                 # may raise KeyError
+        psu_class = self.__PSU_CLASSES[self.__psu_model]                 # may raise KeyError
 
         return psu_class.report_class()
 
@@ -125,8 +148,13 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def model(self):
-        return self.__model
+    def psu_model(self):
+        return self.__psu_model
+
+
+    @property
+    def batt_model(self):
+        return self.__batt_model
 
 
     @property
@@ -144,7 +172,9 @@ class PSUConf(PersistentJSONable):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['model'] = self.__model
+        jdict['model'] = self.__psu_model
+        jdict['batt-model'] = self.__batt_model
+
         jdict['reporting-interval'] = self.__reporting_interval
         jdict['report-file'] = self.__report_file
 
@@ -154,5 +184,5 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf:{model:%s, reporting_interval:%s, report_file:%s}" % \
-               (self.model, self.reporting_interval, self.report_file)
+        return "PSUConf:{psu_model:%s, batt_model:%s, reporting_interval:%s, report_file:%s}" % \
+               (self.psu_model, self.batt_model, self.reporting_interval, self.report_file)

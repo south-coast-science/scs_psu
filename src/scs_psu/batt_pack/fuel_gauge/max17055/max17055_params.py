@@ -6,27 +6,23 @@ Created on 3 Oct 2016
 Values stored here shall be in their raw (16-bit unsigned int) form.
 
 https://www.maximintegrated.com/en/design/technical-documents/userguides-and-manuals/6/6365.html
+
+Document example:
+{"r-comp-0": 171, "temp-co": 8766, "full-cap-rep": 16712, "full-cap-nom": 41298, "cycles": 966}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import PersistentJSONable
+from scs_core.data.json import JSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Params(PersistentJSONable):
+class MAX17055Params(JSONable):
     """
     classdocs
     """
-
-    __FILENAME = "max17055_params.json"
-
-    @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
-
 
     # ----------------------------------------------------------------------------------------------------------------
 

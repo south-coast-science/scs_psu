@@ -205,7 +205,7 @@ class MAX17055(object):
             self.release_lock()
 
 
-    def write_learned_params(self, params: MAX17055Params):
+    def write_params(self, params: MAX17055Params):
         try:
             self.obtain_lock()
 

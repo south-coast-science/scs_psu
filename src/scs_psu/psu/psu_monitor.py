@@ -5,6 +5,7 @@ Created on 25 Oct 2017
 """
 
 import sys
+import time
 
 from collections import OrderedDict
 from multiprocessing import Manager
@@ -82,8 +83,8 @@ class PSUMonitor(SynchronisedProcess):
                 if status.standby:
                     self.__enter_host_shutdown("standby")
 
-                # if status.below_power_threshold():
-                #     self.__enter_host_shutdown("below power threshold")
+                if status.below_power_threshold(self.__psu.charge_min()):
+                    self.__enter_host_shutdown("below power threshold")
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
@@ -101,6 +102,8 @@ class PSUMonitor(SynchronisedProcess):
 
         self.__psu.host_shutdown_initiated()
         self.__shutdown_initiated = True
+
+        time.sleep(2.0)                         # allow reporting to be completed
 
         self.__host.shutdown()
 
