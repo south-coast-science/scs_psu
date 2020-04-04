@@ -26,7 +26,7 @@ try:
     I2C.open(Host.I2C_SENSORS)
 
     pack = BattPackV1.construct()
-    loaded = pack.initialise(Host, force_config=True)
+    loaded = pack.initialise(force_config=True)
 
     print(pack, file=sys.stderr)
     print("loaded: %s" % loaded, file=sys.stderr)

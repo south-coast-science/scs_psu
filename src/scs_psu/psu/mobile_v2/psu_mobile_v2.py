@@ -72,7 +72,7 @@ class PSUMobileV2(PSU):
         power_in = self.__header.read_batt_v()
 
         try:
-            batt_status = self.__batt_pack.sample_fuel_status()
+            batt_status = self.batt_pack.sample_fuel_status()
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
 
         except (AttributeError, OSError):
@@ -82,7 +82,7 @@ class PSUMobileV2(PSU):
 
 
     def charge_min(self):
-        return None if self.__batt_pack is None else self.__batt_pack.CHARGE_MINIMUM
+        return None if self.batt_pack is None else self.__batt_pack.charge_min()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -121,5 +121,12 @@ class PSUMobileV2(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def batt_pack(self):
+        return self.__batt_pack
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.__header, self.__batt_pack)
+        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.__header, self.batt_pack)
