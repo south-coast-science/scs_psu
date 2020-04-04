@@ -61,6 +61,10 @@ class PSUOsloV1(SerialPSU):
             return None
 
 
+    def charge_min(self):
+        return None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):

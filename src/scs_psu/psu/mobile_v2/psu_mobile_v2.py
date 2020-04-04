@@ -81,6 +81,10 @@ class PSUMobileV2(PSU):
         return PSUStatus(standby, power_in, charge_status)
 
 
+    def charge_min(self):
+        return None if self.__batt_pack is None else self.__batt_pack.CHARGE_MINIMUM
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):

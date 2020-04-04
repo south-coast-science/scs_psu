@@ -19,6 +19,10 @@ class BattPackV1(object):
     classdocs
     """
 
+    CHARGE_MINIMUM =        5           # percent           # TODO: do not expose this
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def name(cls):
         return 'PackV1'
@@ -91,4 +95,3 @@ class BattPackV1(object):
 
     def __str__(self, *args, **kwargs):
         return "BattPackV1:{gauge:%s}" %  self.__gauge
-

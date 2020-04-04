@@ -53,7 +53,7 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def below_power_threshold(self):
+    def below_power_threshold(self, _charge_min):
         return False                                        # power threshold cannot be identified
 
 

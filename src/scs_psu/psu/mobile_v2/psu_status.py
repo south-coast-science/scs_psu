@@ -20,8 +20,6 @@ class PSUStatus(PSUReport):
     classdocs
     """
 
-    CHARGE_MINIMUM =        3           # percent
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -61,14 +59,14 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def below_power_threshold(self):
+    def below_power_threshold(self, charge_min):
         if self.charge_status is None:
             return False                                            # power threshold cannot be identified
 
         if self.charge_status.tte is None:
             return False                                            # device is not running on battery
 
-        return self.charge_status.charge < self.CHARGE_MINIMUM
+        return self.charge_status.charge < charge_min
 
 
     # ----------------------------------------------------------------------------------------------------------------

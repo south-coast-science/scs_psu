@@ -83,7 +83,7 @@ class PSUMonitor(SynchronisedProcess):
                 if status.standby:
                     self.__enter_host_shutdown("standby")
 
-                if status.below_power_threshold():
+                if status.below_power_threshold(self.__psu.charge_min()):
                     self.__enter_host_shutdown("below power threshold")
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):

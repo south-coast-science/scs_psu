@@ -73,6 +73,10 @@ class PSUMobileV1(PSU):
         return PSUStatus(standby, power_in)
 
 
+    def charge_min(self):
+        return None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
