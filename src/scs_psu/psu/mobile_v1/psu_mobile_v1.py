@@ -34,6 +34,11 @@ class PSUMobileV1(PSU):
 
 
     @classmethod
+    def uses_batt_pack(cls):
+        return False
+
+
+    @classmethod
     def report_class(cls):
         return PSUStatus
 
@@ -68,6 +73,10 @@ class PSUMobileV1(PSU):
         return PSUStatus(standby, power_in)
 
 
+    def charge_min(self):
+        return None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
@@ -99,6 +108,13 @@ class PSUMobileV1(PSU):
 
 
     def charge_dead(self, on):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def batt_pack(self):
         return None
 
 

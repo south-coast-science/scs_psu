@@ -11,7 +11,6 @@ from scs_core.psu.psu import PSU
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
-from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 from scs_psu.psu.mobile_v2.psu_status import PSUStatus, ChargeStatus
 
 
@@ -35,18 +34,23 @@ class PSUMobileV2(PSU):
 
 
     @classmethod
+    def uses_batt_pack(cls):
+        return True
+
+
+    @classmethod
     def report_class(cls):
         return PSUStatus
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, header):
+    def __init__(self, header, batt_pack):
         """
         Constructor
         """
         self.__header = header                                      # PZHB
-        self.__batt_pack = BattPackV1.construct()                   # BattPackV1
+        self.__batt_pack = batt_pack                                # BattPackV1
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,13 +72,17 @@ class PSUMobileV2(PSU):
         power_in = self.__header.read_batt_v()
 
         try:
-            batt_status = self.__batt_pack.sample_fuel_status()
+            batt_status = self.batt_pack.sample_fuel_status()
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
 
-        except OSError:
+        except (AttributeError, OSError):
             charge_status = None
 
         return PSUStatus(standby, power_in, charge_status)
+
+
+    def charge_min(self):
+        return None if self.batt_pack is None else self.__batt_pack.charge_min()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -113,5 +121,12 @@ class PSUMobileV2(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def batt_pack(self):
+        return self.__batt_pack
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
-        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.__header, self.__batt_pack)
+        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.__header, self.batt_pack)
