@@ -61,10 +61,10 @@ class PSUStatus(PSUReport):
 
     def below_power_threshold(self, charge_min):
         if self.charge_status is None:
-            return False                                            # power threshold cannot be identified
+            return False                                    # power threshold cannot be identified
 
         if self.charge_status.tte is None:
-            return False                                            # device is not running on battery
+            return False                                    # device is not running on battery or gauge disconnected
 
         return self.charge_status.charge < charge_min
 

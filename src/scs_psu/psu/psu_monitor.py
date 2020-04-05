@@ -63,6 +63,17 @@ class PSUMonitor(SynchronisedProcess):
 
 
     def run(self):
+        # initialise fuel guage...
+        batt_pack = self.__psu.batt_pack
+
+        if batt_pack is not None:
+            initialised = batt_pack.initialise(force_config=False)
+
+            if initialised:
+                print("PSUMonitor.run: battery pack initialised.", file=sys.stderr)
+                sys.stderr.flush()
+
+        # monitor PSU...
         try:
             timer = IntervalTimer(self.__MONITOR_INTERVAL)
 

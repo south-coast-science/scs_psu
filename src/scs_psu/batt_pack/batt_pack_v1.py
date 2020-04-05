@@ -21,9 +21,9 @@ class BattPackV1(object):
     classdocs
     """
 
-    __CHARGE_MINIMUM =        5         # percent
+    __CHARGE_MINIMUM =        3         # percent
 
-    __DEFAULT_PARAMS =  '{"r-comp-0": 171, "temp-co": 8766, "full-cap-rep": 16712, "full-cap-nom": 41298, "cycles": 1}'
+    __DEFAULT_PARAMS =  '{"r-comp-0": 255, "temp-co": 8766, "full-cap-rep": 16712, "full-cap-nom": 41298, "cycles": 1}'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -76,25 +76,50 @@ class BattPackV1(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def initialise(self, force_config=False):
-        if not self.__gauge.read_power_on_reset() and not force_config:
+        try:
+            if not self.__gauge.read_power_on_reset() and not force_config:
+                return False
+
+            self.__gauge.initialise(force_config=force_config)
+            self.__gauge.write_params(self.default_params())
+            self.__gauge.clear_power_on_reset()
+            return True
+
+        except OSError:
             return False
-
-        self.__gauge.initialise(force_config=force_config)
-        self.write_params(self.default_params())
-
-        return True
 
 
     def read_learned_params(self):
-        return self.__gauge.read_learned_params()
+        try:
+            return self.__gauge.read_learned_params()
+        except OSError:
+            return None
 
 
     def write_params(self, params: MAX17055Params):
-        self.__gauge.write_params(params)
+        try:
+            self.__gauge.write_params(params)
+            return True
+
+        except OSError:
+            return False
 
 
-    def sample_fuel_status(self):
-        return self.__gauge.sample()
+    def sample(self):
+        try:
+            return self.__gauge.sample()
+        except OSError:
+            return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def cycles(self):
+        try:
+            return self.__gauge.read_learned_params().cycles
+        except OSError:
+            return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
