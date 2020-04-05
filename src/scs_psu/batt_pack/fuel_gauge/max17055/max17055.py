@@ -5,6 +5,10 @@ Created on 30 Sep 2019
 
 Maxim Integrated 1-Cell Fuel Gauge with ModelGauge m5 EZ
 
+4.5 Save learned parameters
+It is recommended to save the learned capacity parameters every time bit 6 of the Cycles register toggles
+(so that it is saved every 64% change in the battery) so that if power is lost the values can easily be restored.
+
 https://www.maximintegrated.com/en/products/power/battery-management/MAX17055.html
 https://www.maximintegrated.com/en/design/technical-documents/userguides-and-manuals/6/6365.html
 https://github.com/electricimp/MAX17055

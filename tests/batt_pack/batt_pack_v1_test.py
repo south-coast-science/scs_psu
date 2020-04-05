@@ -35,7 +35,7 @@ try:
     timer = IntervalTimer(10.0)
 
     while timer.true():
-        datum = pack.sample_fuel_status()
+        datum = pack.sample()
 
         print(JSONify.dumps(datum))
         # print(datum)
