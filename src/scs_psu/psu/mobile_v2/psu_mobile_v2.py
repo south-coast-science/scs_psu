@@ -72,7 +72,7 @@ class PSUMobileV2(PSU):
         power_in = self.__header.read_batt_v()
 
         try:
-            batt_status = self.batt_pack.sample_fuel_status()
+            batt_status = self.batt_pack.sample()
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
 
         except (AttributeError, OSError):
