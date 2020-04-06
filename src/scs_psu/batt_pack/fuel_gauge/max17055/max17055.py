@@ -137,8 +137,20 @@ class MAX17055(object):
 
             self.__write_reg(self.__REG_V_EMPTY, (empty_v_target << 7) | recovery_v)
 
+
+            # // Simplified
+            # from example code: (desCap / 32) * (dPAccCoefficient / descap) = dPAccCoefficient / 32
+
+            # if (ChargeVoltage > 4.275)
+            #     WriteRegister(0x46, 0x0C80); // Write dPAcc 3200
+            #     WriteRegister(0xDB, 0x8400); // WriteModelCFG
+            # Else
+            # WriteRegister(0x46, 0x0AC7); // Write dPAcc 2759
+            # WriteRegister(0xDB, 0x8000); // WriteModelCFG
+
             # refactored from: (des_Cap / 32) * (dPAccCoefficient / des_cap) = dPAccCoefficient / 32
-            dp_acc = int(51200 / 32) if self.__conf.chrg_v else int(44138 / 32)
+            #             1600                                         1379
+            dp_acc = int(51200 / 32) if self.__conf.chrg_v else int(44138 / 32)                     # TODO: problem?
             self.__write_reg(self.__REG_D_P_ACC, dp_acc)
 
             # model Refresh (bit 15), VChg (bit 10), ModelId (bits 4-7)
