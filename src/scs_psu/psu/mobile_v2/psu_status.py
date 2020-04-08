@@ -113,12 +113,8 @@ class ChargeStatus(JSONable):
             return None
 
         charge = jdict.get('chg')
-
-        seconds = jdict.get('tte')
-        tte = None if seconds is None else Timedelta(seconds=seconds)
-
-        seconds = jdict.get('ttf')
-        ttf = None if seconds is None else Timedelta(seconds=seconds)
+        tte = Timedelta.construct_from_jdict(jdict.get('tte'))
+        ttf = Timedelta.construct_from_jdict(jdict.get('ttf'))
 
         return cls(charge, tte, ttf)
 
