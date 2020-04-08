@@ -152,8 +152,8 @@ class ChargeStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['chg'] = self.charge
-        jdict['tte'] = None if self.tte is None else int(self.tte.total_seconds())
-        jdict['ttf'] = None if self.ttf is None else int(self.ttf.total_seconds())
+        jdict['tte'] = self.tte
+        jdict['ttf'] = self.ttf
 
         return jdict
 
