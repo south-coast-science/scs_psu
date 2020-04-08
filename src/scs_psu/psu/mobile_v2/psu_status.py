@@ -52,7 +52,7 @@ class PSUStatus(PSUReport):
 
         jdict['standby'] = self.standby
         jdict['pwr-in'] = self.power_in
-        jdict['batt'] = self.charge_status
+        jdict['batt'] = None if self.charge_status is None else self.charge_status.as_json()
 
         return jdict
 
@@ -148,8 +148,8 @@ class ChargeStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['chg'] = self.charge
-        jdict['tte'] = self.tte
-        jdict['ttf'] = self.ttf
+        jdict['tte'] = None if self.tte is None else self.tte.as_json()
+        jdict['ttf'] = None if self.ttf is None else self.ttf.as_json()
 
         return jdict
 

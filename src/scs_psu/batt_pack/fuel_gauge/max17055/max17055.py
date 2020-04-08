@@ -203,7 +203,8 @@ class MAX17055(object):
             self.__write_reg(self.__REG_D_Q_ACC, dq_acc)
 
             # WriteRegister (0x1E , IchgTerm) ; // Write IchgTerm
-            self.__write_reg(self.__REG_I_CHRG_TERM, conf.chrg_term)
+            chrg_therm = int(round(conf.chrg_term / self.__current_lsb()))
+            self.__write_reg(self.__REG_I_CHRG_TERM, chrg_therm)
 
             # WriteRegister (0x3A , VEmpty) ; // Write VEmpty
             # mt = (settings.emptyVTarget * 100).tointeger();

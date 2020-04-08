@@ -61,8 +61,8 @@ class BattStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['chrg'] = self.charge
-        jdict['tte'] = self.tte
-        jdict['ttf'] = self.ttf
+        jdict['tte'] = None if self.tte is None else self.tte.as_json()
+        jdict['ttf'] = None if self.ttf is None else self.ttf.as_json()
 
         jdict['curr'] = self.current
         jdict['g-tmp'] = self.temperature
