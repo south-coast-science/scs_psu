@@ -35,6 +35,8 @@ class MAX17055(object):
     classdocs
     """
 
+    __PARAM_SAVE_INTERVAL =     20              # percent change in charge after which params should be saved
+
     __ADDR =                    0x36
 
     __LOCK_TIMEOUT =            1.0             # seconds
@@ -91,6 +93,13 @@ class MAX17055(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @classmethod
+    def param_save_interval(cls):
+        return cls.__PARAM_SAVE_INTERVAL
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self, conf: MAX17055Config):
         """
         Constructor
@@ -100,7 +109,7 @@ class MAX17055(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def initialise(self, force_config=False):
+    def initialise_as_github(self, force_config=False):
         # PoR?...
         if not self.read_power_on_reset() and not force_config:
             self.clear_power_on_reset()
@@ -137,17 +146,6 @@ class MAX17055(object):
 
             self.__write_reg(self.__REG_V_EMPTY, (empty_v_target << 7) | recovery_v)
 
-
-            # // Simplified
-            # from example code: (desCap / 32) * (dPAccCoefficient / descap) = dPAccCoefficient / 32
-
-            # if (ChargeVoltage > 4.275)
-            #     WriteRegister(0x46, 0x0C80); // Write dPAcc 3200
-            #     WriteRegister(0xDB, 0x8400); // WriteModelCFG
-            # Else
-            # WriteRegister(0x46, 0x0AC7); // Write dPAcc 2759
-            # WriteRegister(0xDB, 0x8000); // WriteModelCFG
-
             # refactored from: (des_Cap / 32) * (dPAccCoefficient / des_cap) = dPAccCoefficient / 32
             #             1600                                         1379
             dp_acc = int(51200 / 32) if self.__conf.chrg_v else int(44138 / 32)                     # TODO: problem?
@@ -159,6 +157,82 @@ class MAX17055(object):
 
             # wait for reload...
             self.__wait_for_reg_value(self.__REG_MODEL_CFG, 0x8000, 0)
+
+            # restore hibernate configuration...
+            self.__write_reg(self.__REG_HIB_CFG, hib_cfg)
+
+            # clear boot status...
+            status = self.__read_reg(self.__REG_STATUS, False)
+            self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
+
+            # clear PoR bit...
+            self.__write_and_verify_reg(self.__REG_STATUS, 0xfffd)
+
+            return True                                             # configuration updated
+
+        finally:
+            self.release_lock()
+
+
+    def initialise(self, force_config=False):
+        # PoR?...
+        if not self.read_power_on_reset() and not force_config:
+            self.clear_power_on_reset()
+            return False                                        # configuration is not updated
+
+        try:
+            self.obtain_lock()
+
+            # wait for DNR to clear...
+            self.__wait_for_reg_value(self.__REG_FSTAT, 0x0001, 0)
+
+            # store hibernate configuration...
+            hib_cfg = self.__read_reg(self.__REG_HIB_CFG)
+
+            self.__write_reg(self.__REG_HIB_MODE, 0x90)
+            self.__write_reg(self.__REG_HIB_CFG, 0x00)
+            self.__write_reg(self.__REG_HIB_MODE, 0x00)
+
+            conf = self.__conf
+
+            # WriteRegister (0x18 , DesignCap) ; // Write DesignCap
+            self.__write_reg(self.__REG_DESIGN_CAP, conf.des_cap)
+
+            # WriteRegister (0x45 , DesignCap/16) ; //Write dQAcc
+            dq_acc = int(round(conf.des_cap / 16))
+            self.__write_reg(self.__REG_D_Q_ACC, dq_acc)
+
+            # WriteRegister (0x1E , IchgTerm) ; // Write IchgTerm
+            self.__write_reg(self.__REG_I_CHRG_TERM, conf.chrg_term)
+
+            # WriteRegister (0x3A , VEmpty) ; // Write VEmpty
+            # mt = (settings.emptyVTarget * 100).tointeger();
+            # recovery = (settings.recoveryV * 25).tointeger();
+            v_empty = int(conf.empty_v_target * 100)
+            v_recovery = int(conf.recovery_v * 25)
+
+            # print("v_empty: %d" % v_empty)
+            # print("v_recovery: %d" % v_recovery)
+
+            # combined = (v_empty << 7) | v_recovery
+            # print("combined: 0x%04x" % combined)
+
+            self.__write_reg(self.__REG_V_EMPTY, (v_empty << 7) | v_recovery)
+
+            # WriteRegister (0x28 , LearnCFG) ;// (Optional in the INI) Write LearnCFG
+
+            # WriteRegister (0x46 , dQAcc*44138/DesignCap); //Write dPAcc
+            d_p_acc = int(dq_acc * 44138 / conf.des_cap)
+
+            # print("d_p_acc: 0x%04x" % d_p_acc)
+
+            self.__write_reg(self.__REG_D_P_ACC, d_p_acc)      # 0x0ac7
+
+            model_cfg = (0x8000 | (conf.chrg_v << 10) | (conf.batt_type << 4))
+            self.__write_reg(self.__REG_MODEL_CFG, model_cfg)
+
+            # wait for reload...
+            self.__wait_for_reg_value(self.__REG_MODEL_CFG, model_cfg, 0)
 
             # restore hibernate configuration...
             self.__write_reg(self.__REG_HIB_CFG, hib_cfg)

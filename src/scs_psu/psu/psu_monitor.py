@@ -39,6 +39,7 @@ class PSUMonitor(SynchronisedProcess):
         self.__auto_shutdown = auto_shutdown
 
         self.__shutdown_initiated = False
+        self.__prev_charge = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,7 +68,7 @@ class PSUMonitor(SynchronisedProcess):
         batt_pack = self.__psu.batt_pack
 
         if batt_pack is not None:
-            initialised = batt_pack.initialise(force_config=False)
+            initialised = batt_pack.initialise(self.__host, force_config=False)
 
             if initialised:
                 print("PSUMonitor.run: battery pack initialised.", file=sys.stderr)
@@ -87,15 +88,19 @@ class PSUMonitor(SynchronisedProcess):
                 with self._lock:
                     status.as_list(self._value)
 
-                # monitor...
+                # fuel gauge...
+                if status.charge_status is not None:
+                    self.__save_fuel_gauge_params(batt_pack, status.charge_status)
+
+                # shutdown...
                 if not self.__auto_shutdown:
                     continue
 
                 if status.standby:
-                    self.__enter_host_shutdown("standby")
+                    self.__enter_host_shutdown("STANDBY")
 
                 if status.below_power_threshold(self.__psu.charge_min()):
-                    self.__enter_host_shutdown("below power threshold")
+                    self.__enter_host_shutdown("BELOW POWER THRESHOLD")
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
@@ -103,6 +108,20 @@ class PSUMonitor(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
     # process special operations...
+
+    def __save_fuel_gauge_params(self, batt_pack, charge_status):
+        if batt_pack is None or charge_status is None:
+            return
+
+        if self.__prev_charge is None:
+            self.__prev_charge = charge_status.charge
+
+        elif abs(charge_status.charge - self.__prev_charge) > batt_pack.param_save_interval():
+            self.__prev_charge = charge_status.charge
+
+            params = batt_pack.read_learned_params()
+            params.save(self.__host)
+
 
     def __enter_host_shutdown(self, reason):
         if self.__shutdown_initiated:
@@ -138,5 +157,5 @@ class PSUMonitor(SynchronisedProcess):
     def __str__(self, *args, **kwargs):
         host_name = None if self.__host is None else self.__host.name()
 
-        return "PSUMonitor:{value:%s, host:%s, psu:%s, auto_shutdown:%s, shutdown_initiated:%s}" % \
-               (self._value, host_name, self.__psu, self.__auto_shutdown, self.__shutdown_initiated)
+        return "PSUMonitor:{value:%s, host:%s, psu:%s, auto_shutdown:%s,  prev_charge:%s, shutdown_initiated:%s}" % \
+               (self._value, host_name, self.__psu, self.__auto_shutdown, self.__prev_charge, self.__shutdown_initiated)
