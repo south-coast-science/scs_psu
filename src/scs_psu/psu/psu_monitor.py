@@ -122,6 +122,9 @@ class PSUMonitor(SynchronisedProcess):
             params = batt_pack.read_learned_params()
             params.save(self.__host)
 
+            print("PSUMonitor.save_fuel_gauge_params: done.", file=sys.stderr)
+            sys.stderr.flush()
+
 
     def __enter_host_shutdown(self, reason):
         if self.__shutdown_initiated:
@@ -157,5 +160,5 @@ class PSUMonitor(SynchronisedProcess):
     def __str__(self, *args, **kwargs):
         host_name = None if self.__host is None else self.__host.name()
 
-        return "PSUMonitor:{value:%s, host:%s, psu:%s, auto_shutdown:%s,  prev_charge:%s, shutdown_initiated:%s}" % \
+        return "PSUMonitor:{value:%s, host:%s, psu:%s, auto_shutdown:%s, prev_charge:%s, shutdown_initiated:%s}" % \
                (self._value, host_name, self.__psu, self.__auto_shutdown, self.__prev_charge, self.__shutdown_initiated)

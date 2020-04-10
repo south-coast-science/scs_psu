@@ -32,12 +32,20 @@ class BattPackV1(object):
     def name():
         return 'PackV1'
 
+    # designCap = 0x1450
+    # ichgterm = 0x333
+    # modelcfg = 0x8000
+    # QRTable00 = 0x1050
+    # QRTable10 = 0x2012
+    # VEmpty = 0xa561
+    # RCOMP0 = 0x004d
+    # TempCo = 0x223e
 
     @staticmethod
     def gauge_conf():
         des_cap = 6200                  # mAh
         sense_res = 0.01                # Ω
-        chrg_term = 20                  # mA
+        chrg_term = 1000                # mA
         empty_v_target = 3.3            # V
         recovery_v = 3.8                # V
 

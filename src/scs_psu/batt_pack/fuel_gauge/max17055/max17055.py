@@ -198,15 +198,14 @@ class MAX17055(object):
             # WriteRegister (0x18 , DesignCap) ; // Write DesignCap
             self.__write_reg(self.__REG_DESIGN_CAP, conf.des_cap)
 
-            # WriteRegister (0x45 , DesignCap/16) ; //Write dQAcc
-            dq_acc = int(round(conf.des_cap / 16))
+            # WriteRegister (0x45 , DesignCap/32) ; //Write dQAcc
+            dq_acc = int(conf.des_cap / 32)
             self.__write_reg(self.__REG_D_Q_ACC, dq_acc)
 
             # WriteRegister (0x1E , IchgTerm) ; // Write IchgTerm
-            chrg_therm = int(round(conf.chrg_term / self.__current_lsb()))
-            self.__write_reg(self.__REG_I_CHRG_TERM, chrg_therm)
+            self.__write_reg(self.__REG_I_CHRG_TERM, conf.chrg_term)
 
-            # WriteRegister (0x3A , VEmpty) ; // Write VEmpty
+            # WriteRegister (0x3A , VEmpty) ; // Write VEmpty       0xa561
             # mt = (settings.emptyVTarget * 100).tointeger();
             # recovery = (settings.recoveryV * 25).tointeger();
             v_empty = int(conf.empty_v_target * 100)
@@ -224,9 +223,6 @@ class MAX17055(object):
 
             # WriteRegister (0x46 , dQAcc*44138/DesignCap); //Write dPAcc
             d_p_acc = int(dq_acc * 44138 / conf.des_cap)
-
-            # print("d_p_acc: 0x%04x" % d_p_acc)
-
             self.__write_reg(self.__REG_D_P_ACC, d_p_acc)      # 0x0ac7
 
             model_cfg = (0x8000 | (conf.chrg_v << 10) | (conf.batt_type << 4))
