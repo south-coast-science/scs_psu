@@ -28,7 +28,7 @@ jstr = JSONify.dumps(conf)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr, object_hook=OrderedDict)
 conf = MAX17055Config.construct_from_jdict(jdict)
 print(conf)
 
