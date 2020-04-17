@@ -33,7 +33,7 @@ jstr = JSONify.dumps(datum)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_pairs_hook=OrderedDict)
+jdict = json.loads(jstr, object_hook=OrderedDict)
 
 datum = BattStatus.construct_from_jdict(jdict)
 print(datum)

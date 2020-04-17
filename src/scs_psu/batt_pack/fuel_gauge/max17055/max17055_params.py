@@ -14,17 +14,25 @@ Document example:
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
-from scs_core.data.json import JSONable
+from scs_core.data.json import PersistentJSONable
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Params(JSONable):
+class MAX17055Params(PersistentJSONable):
     """
     classdocs
     """
 
+    __FILENAME = "max17055_params.json"
+
+    @classmethod
+    def persistence_location(cls, host):
+        return host.conf_dir(), cls.__FILENAME
+
+
     # ----------------------------------------------------------------------------------------------------------------
+
 
     @classmethod
     def construct_from_jdict(cls, jdict):
