@@ -26,8 +26,8 @@ class BattStatus(JSONable):
             return None
 
         charge = ChargeLevel.construct_from_jdict(jdict.get('chrg'))
-        tte = Timedelta(seconds=jdict.get('tte'))
-        ttf = Timedelta(seconds=jdict.get('ttf'))
+        tte = Timedelta.construct_from_jdict(jdict.get('tte'))
+        ttf = Timedelta.construct_from_jdict(jdict.get('ttf'))
 
         current = jdict.get('curr')
         temperature = jdict.get('g-tmp')
@@ -61,8 +61,8 @@ class BattStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['chrg'] = self.charge
-        jdict['tte'] = None if self.tte is None else int(self.tte.total_seconds())
-        jdict['ttf'] = None if self.ttf is None else int(self.ttf.total_seconds())
+        jdict['tte'] = None if self.tte is None else self.tte.as_json()
+        jdict['ttf'] = None if self.ttf is None else self.ttf.as_json()
 
         jdict['curr'] = self.current
         jdict['g-tmp'] = self.temperature

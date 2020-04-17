@@ -23,7 +23,8 @@ class BattPackV1(object):
 
     __CHARGE_MINIMUM =        3         # percent
 
-    __DEFAULT_PARAMS =  '{"r-comp-0": 255, "temp-co": 8766, "full-cap-rep": 16712, "full-cap-nom": 41298, "cycles": 1}'
+    __DEFAULT_PARAMS =  '{"r-comp-0": 175, "temp-co": 8766, "full-cap-rep": 14003, "full-cap-nom": 51186, ' \
+                        '"cycles": 740}'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -31,24 +32,39 @@ class BattPackV1(object):
     def name():
         return 'PackV1'
 
+    # designCap = 0x1450
+    # ichgterm = 0x333
+    # modelcfg = 0x8000
+    # QRTable00 = 0x1050
+    # QRTable10 = 0x2012
+    # VEmpty = 0xa561
+    # RCOMP0 = 0x004d
+    # TempCo = 0x223e
 
     @staticmethod
     def gauge_conf():
         des_cap = 6200                  # mAh
         sense_res = 0.01                # Ω
-        chrg_term = 40                  # mA
+        chrg_term = 1000                # mA
         empty_v_target = 3.3            # V
-        recovery_v = 3.5                # V
+        recovery_v = 3.8                # V
 
-        chrg_v = MAX17055Config.CHRG_V_4_2              # was CHRG_V_4_4_OR_4_35
+        chrg_v = MAX17055Config.CHRG_V_4_2
         batt_type = MAX17055Config.BATT_TYPE_LiCoO2
 
         return MAX17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     @classmethod
     def charge_min(cls):
         return cls.__CHARGE_MINIMUM
+
+
+    @classmethod
+    def param_save_interval(cls):
+        return MAX17055.param_save_interval()
 
 
     @classmethod
@@ -75,18 +91,24 @@ class BattPackV1(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def initialise(self, force_config=False):
+    def initialise(self, host, force_config=False):
         try:
             if not self.__gauge.read_power_on_reset() and not force_config:
-                return False
+                return None
+
+            params = MAX17055Params.load(host)
+
+            if params is None:
+                params = self.default_params()
 
             self.__gauge.initialise(force_config=force_config)
-            self.__gauge.write_params(self.default_params())
+            self.__gauge.write_params(params)
             self.__gauge.clear_power_on_reset()
-            return True
+
+            return params
 
         except OSError:
-            return False
+            return None
 
 
     def read_learned_params(self):

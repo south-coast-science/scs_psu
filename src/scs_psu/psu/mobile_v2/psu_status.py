@@ -52,7 +52,7 @@ class PSUStatus(PSUReport):
 
         jdict['standby'] = self.standby
         jdict['pwr-in'] = self.power_in
-        jdict['batt'] = self.charge_status
+        jdict['batt'] = None if self.charge_status is None else self.charge_status.as_json()
 
         return jdict
 
@@ -113,12 +113,8 @@ class ChargeStatus(JSONable):
             return None
 
         charge = jdict.get('chg')
-
-        seconds = jdict.get('tte')
-        tte = None if seconds is None else Timedelta(seconds=seconds)
-
-        seconds = jdict.get('ttf')
-        ttf = None if seconds is None else Timedelta(seconds=seconds)
+        tte = Timedelta.construct_from_jdict(jdict.get('tte'))
+        ttf = Timedelta.construct_from_jdict(jdict.get('ttf'))
 
         return cls(charge, tte, ttf)
 
@@ -152,8 +148,8 @@ class ChargeStatus(JSONable):
         jdict = OrderedDict()
 
         jdict['chg'] = self.charge
-        jdict['tte'] = None if self.tte is None else int(self.tte.total_seconds())
-        jdict['ttf'] = None if self.ttf is None else int(self.ttf.total_seconds())
+        jdict['tte'] = None if self.tte is None else self.tte.as_json()
+        jdict['ttf'] = None if self.ttf is None else self.ttf.as_json()
 
         return jdict
 
