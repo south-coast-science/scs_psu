@@ -58,6 +58,7 @@ class PSUStatus(PSUReport):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # PSUReport properties...
 
     @property
     def standby(self):
@@ -72,6 +73,11 @@ class PSUStatus(PSUReport):
     @property
     def power_in(self):
         return self.__power_in
+
+
+    @property
+    def charge_status(self):
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
