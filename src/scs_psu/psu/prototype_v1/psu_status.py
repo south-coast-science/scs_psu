@@ -91,11 +91,7 @@ class PSUStatus(PSUReport):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def power_reset(self):
-        return self.__power_reset
-
+    # PSUReport properties...
 
     @property
     def standby(self):
@@ -105,6 +101,23 @@ class PSUStatus(PSUReport):
     @property
     def batt_percent(self):
         return None
+
+
+    @property
+    def power_in(self):
+        return self.__power_in
+
+
+    @property
+    def charge_status(self):
+        return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def power_reset(self):
+        return self.__power_reset
 
 
     @property
@@ -120,11 +133,6 @@ class PSUStatus(PSUReport):
     @property
     def host_3v3(self):
         return self.__host_3v3
-
-
-    @property
-    def power_in(self):
-        return self.__power_in
 
 
     @property

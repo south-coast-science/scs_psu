@@ -70,6 +70,7 @@ class PSUStatus(PSUReport):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # PSUReport properties...
 
     @property
     def standby(self):
