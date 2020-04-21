@@ -148,7 +148,7 @@ class MAX17055(object):
 
             # refactored from: (des_Cap / 32) * (dPAccCoefficient / des_cap) = dPAccCoefficient / 32
             #             1600                                         1379
-            dp_acc = int(51200 / 32) if self.__conf.chrg_v else int(44138 / 32)                     # TODO: problem?
+            dp_acc = int(51200 / 32) if self.__conf.chrg_v else int(44138 / 32)
             self.__write_reg(self.__REG_D_P_ACC, dp_acc)
 
             # model Refresh (bit 15), VChg (bit 10), ModelId (bits 4-7)
