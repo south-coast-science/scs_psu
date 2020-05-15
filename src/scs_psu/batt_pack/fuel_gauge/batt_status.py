@@ -25,7 +25,10 @@ class BattStatus(JSONable):
         if not jdict:
             return None
 
+        input_power_present = jdict.get('in')
+
         charge = ChargeLevel.construct_from_jdict(jdict.get('chrg'))
+
         tte = Timedelta.construct_from_jdict(jdict.get('tte'))
         ttf = Timedelta.construct_from_jdict(jdict.get('ttf'))
 
@@ -35,16 +38,19 @@ class BattStatus(JSONable):
         capacity = jdict.get('cap')
         cycles = jdict.get('cyc')
 
-        return cls(charge, tte, ttf, current, temperature, capacity, cycles)
+        return cls(input_power_present, charge, tte, ttf, current, temperature, capacity, cycles)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, charge, tte, ttf, current, temperature, capacity, cycles):
+    def __init__(self, input_power_present, charge, tte, ttf, current, temperature, capacity, cycles):
         """
         Constructor
         """
+        self.__input_power_present = input_power_present        # bool
+
         self.__charge = charge                                  # ChargeLevel
+
         self.__tte = tte                                        # TimeDelta     time to empty
         self.__ttf = ttf                                        # TimeDelta     time to full
 
@@ -60,7 +66,10 @@ class BattStatus(JSONable):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['in'] = self.input_power_present
+
         jdict['chrg'] = self.charge
+
         jdict['tte'] = None if self.tte is None else self.tte.as_json()
         jdict['ttf'] = None if self.ttf is None else self.ttf.as_json()
 
@@ -74,6 +83,11 @@ class BattStatus(JSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def input_power_present(self):
+        return self.__input_power_present
+
 
     @property
     def charge(self):
@@ -113,8 +127,10 @@ class BattStatus(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "BattStatus:{charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, capacity:%s, cycles:%s}" % \
-               (self.charge, self.tte, self.ttf, self.current, self.temperature, self.capacity, self.cycles)
+        return "BattStatus:{input_power_present:%s, charge:%s, tte:%s, ttf:%s, current:%s, temperature:%s, " \
+               "capacity:%s, cycles:%s}" % \
+               (self.input_power_present, self.charge, self.tte, self.ttf, self.current, self.temperature,
+                self.capacity, self.cycles)
 
 
 # --------------------------------------------------------------------------------------------------------------------
