@@ -162,7 +162,7 @@ class MAX17055(object):
             self.__write_reg(self.__REG_HIB_CFG, hib_cfg)
 
             # clear boot status...
-            status = self.__read_reg(self.__REG_STATUS, False)
+            status = self.__read_reg(self.__REG_STATUS, signed=False)
             self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
 
             # clear PoR bit...
@@ -235,7 +235,7 @@ class MAX17055(object):
             self.__write_reg(self.__REG_HIB_CFG, hib_cfg)
 
             # clear boot status...
-            status = self.__read_reg(self.__REG_STATUS, False)
+            status = self.__read_reg(self.__REG_STATUS, signed=False)
             self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
 
             # clear PoR bit...
@@ -351,21 +351,21 @@ class MAX17055(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def read_charge_percent(self):
-        raw_percent = self.__read_reg(self.__REG_REP_SOC, True)
+        raw_percent = self.__read_reg(self.__REG_REP_SOC, signed=False)
         percent = raw_percent / 256.0
 
         return round(percent, 1)
 
 
     def read_charge_mah(self):
-        raw_capacity = self.__read_reg(self.__REG_REP_CAP, True)
+        raw_capacity = self.__read_reg(self.__REG_REP_CAP, signed=False)
         milli_amp_hours = raw_capacity * self.__capacity_lsb()
 
         return int(round(milli_amp_hours))
 
 
     def read_time_until_empty(self):
-        raw_tte = self.__read_reg(self.__REG_TTE, True)
+        raw_tte = self.__read_reg(self.__REG_TTE, signed=True)
 
         if raw_tte < 1:
             return None
@@ -376,7 +376,7 @@ class MAX17055(object):
 
 
     def read_time_until_full(self):
-        raw_ttf = self.__read_reg(self.__REG_TTF, True)
+        raw_ttf = self.__read_reg(self.__REG_TTF, signed=True)
 
         if raw_ttf < 1:
             return None
@@ -387,35 +387,36 @@ class MAX17055(object):
 
 
     def read_capacity_avg(self):
-        raw_capacity = self.__read_reg(self.__REG_CAP_AVG, True)
+        raw_capacity = self.__read_reg(self.__REG_CAP_AVG, signed=True)
         milli_amp_hours = raw_capacity * self.__capacity_lsb()
 
         return int(round(milli_amp_hours))
 
 
     def read_current(self):
-        raw_current = self.__read_reg(self.__REG_CURRENT, True)
+        raw_current = self.__read_reg(self.__REG_CURRENT, signed=True)
         milli_amps = raw_current * self.__current_lsb()
 
         return int(round(milli_amps))
 
 
     def read_current_avg(self):
-        raw_current = self.__read_reg(self.__REG_CURRENT_AVG, True)
+        raw_current = self.__read_reg(self.__REG_CURRENT_AVG, signed=True)
         milli_amps = raw_current * self.__current_lsb()
 
         return int(round(milli_amps))
 
 
     def read_voltage(self):
-        raw_voltage = self.__read_reg(self.__REG_V_CELL, True)
+        raw_voltage = self.__read_reg(self.__REG_V_CELL, signed=False)
+
         volts = (raw_voltage * 0.078125) / 1000.0
 
         return round(volts, 1)
 
 
     def read_temperature(self):
-        raw_temp = self.__read_reg(self.__REG_TEMP, True)
+        raw_temp = self.__read_reg(self.__REG_TEMP, signed=True)
         centigrade = raw_temp / 256.0
 
         return round(centigrade, 1)
