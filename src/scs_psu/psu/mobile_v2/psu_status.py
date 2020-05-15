@@ -28,21 +28,23 @@ class PSUStatus(PSUReport):
             return None
 
         standby = jdict.get('standby')
-        power_in = jdict.get('pwr-in')
+        input_power_present = jdict.get('in')
+        v_in = jdict.get('pwr-in')
         charge_status = ChargeStatus.construct_from_jdict(jdict.get('batt'))
 
-        return PSUStatus(standby, power_in, charge_status)
+        return PSUStatus(standby, input_power_present, v_in, charge_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, standby, power_in, charge_status):
+    def __init__(self, standby, input_power_present, v_in, charge_status):
         """
         Constructor
         """
-        self.__standby = standby                                # bool
-        self.__power_in = Datum.float(power_in, 1)              # PSU input voltage  float
-        self.__charge_status = charge_status                    # ChargeStatus
+        self.__standby = standby                                    # bool
+        self.__input_power_present = input_power_present            # bool
+        self.__v_in = Datum.float(v_in, 1)                          # PSU input voltage  float
+        self.__charge_status = charge_status                        # ChargeStatus
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -51,7 +53,8 @@ class PSUStatus(PSUReport):
         jdict = OrderedDict()
 
         jdict['standby'] = self.standby
-        jdict['pwr-in'] = self.power_in
+        jdict['in'] = self.input_power_present
+        jdict['pwr-in'] = self.v_in
         jdict['batt'] = None if self.charge_status is None else self.charge_status.as_json()
 
         return jdict
@@ -78,13 +81,18 @@ class PSUStatus(PSUReport):
 
 
     @property
-    def batt_percent(self):
-        return None if self.__charge_status is None else self.__charge_status.charge
+    def input_power_present(self):
+        return self.__input_power_present
 
 
     @property
-    def power_in(self):
-        return self.__power_in
+    def v_in(self):
+        return self.__v_in
+
+
+    @property
+    def batt_percent(self):
+        return None if self.__charge_status is None else self.__charge_status.charge
 
 
     @property
@@ -95,8 +103,8 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{standby:%s, power_in:%s, charge_status:%s}" % \
-               (self.standby, self.power_in, self.charge_status)
+        return "PSUStatus:{standby:%s, input_power_present:%s, v_in:%s, charge_status:%s}" % \
+               (self.standby, self.input_power_present, self.v_in, self.charge_status)
 
 
 # --------------------------------------------------------------------------------------------------------------------
