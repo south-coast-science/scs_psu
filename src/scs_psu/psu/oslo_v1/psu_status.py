@@ -104,8 +104,8 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self, _charge_min):
-        if self.v_in > self.POWER_IN_MINIMUM:
-            return False                                        # device is not running on battery
+        if self.input_power_present:
+            return False
 
         return self.prot_batt < self.BATTERY_MINIMUM
 
@@ -120,7 +120,7 @@ class PSUStatus(PSUReport):
 
     @property
     def input_power_present(self):
-        return self.v_in < self.POWER_IN_MINIMUM
+        return self.v_in >= self.POWER_IN_MINIMUM
 
 
     @property
