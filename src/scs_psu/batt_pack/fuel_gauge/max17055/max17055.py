@@ -211,11 +211,7 @@ class MAX17055(object):
             v_empty = int(conf.empty_v_target * 100)
             v_recovery = int(conf.recovery_v * 25)
 
-            # print("v_empty: %d" % v_empty)
-            # print("v_recovery: %d" % v_recovery)
-
             # combined = (v_empty << 7) | v_recovery
-            # print("combined: 0x%04x" % combined)
 
             self.__write_reg(self.__REG_V_EMPTY, (v_empty << 7) | v_recovery)
 
@@ -251,6 +247,9 @@ class MAX17055(object):
         try:
             self.obtain_lock()
 
+            # input power...
+            input_power_present = self.input_power_present()
+
             # charge...
             percent = self.read_charge_percent()
             mah = self.read_charge_mah()
@@ -267,7 +266,7 @@ class MAX17055(object):
             capacity = self.read_capacity_avg()
             cycles = self.read_cycles()
 
-            return BattStatus(charge, tte, ttf, current, temperature, capacity, cycles)
+            return BattStatus(input_power_present, charge, tte, ttf, current, temperature, capacity, cycles)
 
         finally:
             self.release_lock()
@@ -346,6 +345,12 @@ class MAX17055(object):
 
         finally:
             self.release_lock()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def input_power_present(self):
+        return self.read_current() >= 0.0
 
 
     # ----------------------------------------------------------------------------------------------------------------

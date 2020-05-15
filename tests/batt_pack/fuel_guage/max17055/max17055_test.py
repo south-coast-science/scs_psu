@@ -65,6 +65,10 @@ try:
         print("gauge temperature:%s°C" % temperature)
         print()
 
+        input_power_present = gauge.input_power_present()
+        print("input power present:%s" % input_power_present)
+        print()
+
         print("-")
         print()
         time.sleep(5.0)

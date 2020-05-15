@@ -44,6 +44,8 @@ class PSUStatus(PSUReport):
                 'host-3v3' not in jdict or 'pwr-in' not in jdict or 'prot-batt' not in jdict:
             return None
 
+        v_in = jdict.get('pwr-in')
+
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
 
         standby = jdict.get('standby')
@@ -53,15 +55,14 @@ class PSUStatus(PSUReport):
         battery_fault = jdict.get('batt-flt')
 
         host_3v3 = jdict.get('host-3v3')
-        power_in = jdict.get('pwr-in')
         prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(reset, standby, charger, battery_fault, host_3v3, power_in, prot_batt)
+        return PSUStatus(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, reset, standby, charger, battery_fault, host_3v3, power_in, prot_batt):
+    def __init__(self, reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt):
         """
         Constructor
         """
@@ -74,7 +75,7 @@ class PSUStatus(PSUReport):
         self.__battery_fault = battery_fault                # battery fault                             bool
 
         self.__host_3v3 = Datum.float(host_3v3, 1)          # host 3V3 voltage                          float
-        self.__power_in = Datum.float(power_in, 1)          # PSU input voltage                         float
+        self.__v_in = Datum.float(v_in, 1)                  # PSU input voltage                         float
         self.__prot_batt = Datum.float(prot_batt, 1)        # battery voltage                           float
 
 
@@ -83,16 +84,18 @@ class PSUStatus(PSUReport):
     def as_json(self):
         jdict = OrderedDict()
 
-        jdict['rst'] = self.reset
-
         jdict['standby'] = self.standby
+
+        jdict['in'] = self.input_power_present
+        jdict['pwr-in'] = self.v_in
+
+        jdict['rst'] = self.reset
 
         jdict['chg'] = self.charger
 
         jdict['batt-flt'] = self.battery_fault
 
         jdict['host-3v3'] = self.host_3v3
-        jdict['pwr-in'] = self.power_in
         jdict['prot-batt'] = self.prot_batt
 
         return jdict
@@ -101,7 +104,7 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self, _charge_min):
-        if self.power_in > self.POWER_IN_MINIMUM:
+        if self.v_in > self.POWER_IN_MINIMUM:
             return False                                        # device is not running on battery
 
         return self.prot_batt < self.BATTERY_MINIMUM
@@ -116,13 +119,18 @@ class PSUStatus(PSUReport):
 
 
     @property
-    def batt_percent(self):
-        return None
+    def input_power_present(self):
+        return self.v_in < self.POWER_IN_MINIMUM
 
 
     @property
-    def power_in(self):
-        return self.__power_in
+    def v_in(self):
+        return self.__v_in
+
+
+    @property
+    def batt_percent(self):
+        return None
 
 
     @property
@@ -160,9 +168,9 @@ class PSUStatus(PSUReport):
 
     def __str__(self, *args, **kwargs):
         return "PSUStatus:{reset:%s, standby:%s, charger:%s, battery_fault:%s, " \
-               "host_3v3:%s, power_in:%s, prot_batt:%s}" \
+               "host_3v3:%s, v_in:%s, prot_batt:%s}" \
                % (self.reset, self.standby, self.charger, self.battery_fault,
-                  self.host_3v3, self.power_in, self.prot_batt)
+                  self.host_3v3, self.v_in, self.prot_batt)
 
 
 # --------------------------------------------------------------------------------------------------------------------

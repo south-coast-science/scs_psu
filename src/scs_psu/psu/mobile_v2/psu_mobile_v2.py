@@ -73,12 +73,14 @@ class PSUMobileV2(PSU):
 
         try:
             batt_status = self.batt_pack.sample()
+            input_power_present = batt_status.input_power_present
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
 
         except (AttributeError, OSError):
+            input_power_present = None
             charge_status = None
 
-        return PSUStatus(standby, power_in, charge_status)
+        return PSUStatus(standby, input_power_present, power_in, charge_status)
 
 
     def charge_min(self):

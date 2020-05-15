@@ -25,19 +25,19 @@ class PSUStatus(PSUReport):
             return None
 
         standby = jdict.get('standby')
-        power_in = jdict.get('pwr-in')
+        v_in = jdict.get('pwr-in')
 
-        return PSUStatus(standby, power_in)
+        return PSUStatus(standby, v_in)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, standby, power_in):
+    def __init__(self, standby, v_in):
         """
         Constructor
         """
         self.__standby = standby                            # bool
-        self.__power_in = Datum.float(power_in, 1)          # PSU input voltage  float
+        self.__v_in = Datum.float(v_in, 1)                  # PSU input voltage  float
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ class PSUStatus(PSUReport):
         jdict = OrderedDict()
 
         jdict['standby'] = self.standby
-        jdict['pwr-in'] = self.power_in
+        jdict['pwr-in'] = self.v_in
 
         return jdict
 
@@ -66,13 +66,18 @@ class PSUStatus(PSUReport):
 
 
     @property
-    def batt_percent(self):
+    def input_power_present(self):
         return None
 
 
     @property
-    def power_in(self):
-        return self.__power_in
+    def v_in(self):
+        return self.__v_in
+
+
+    @property
+    def batt_percent(self):
+        return None
 
 
     @property
@@ -83,4 +88,4 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{standby:%s, power_in:%s}" % (self.standby, self.power_in)
+        return "PSUStatus:{standby:%s, v_in:%s}" % (self.standby, self.v_in)
