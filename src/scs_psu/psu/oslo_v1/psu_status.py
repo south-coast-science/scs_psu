@@ -44,8 +44,6 @@ class PSUStatus(PSUReport):
                 'host-3v3' not in jdict or 'pwr-in' not in jdict or 'prot-batt' not in jdict:
             return None
 
-        v_in = jdict.get('pwr-in')
-
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
 
         standby = jdict.get('standby')
@@ -55,6 +53,7 @@ class PSUStatus(PSUReport):
         battery_fault = jdict.get('batt-flt')
 
         host_3v3 = jdict.get('host-3v3')
+        v_in = jdict.get('pwr-in')
         prot_batt = jdict.get('prot-batt')
 
         return PSUStatus(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
@@ -136,6 +135,7 @@ class PSUStatus(PSUReport):
     @property
     def charge_status(self):
         return None
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
