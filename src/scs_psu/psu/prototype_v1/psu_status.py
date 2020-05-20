@@ -4,7 +4,8 @@ Created on 13 Nov 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 document example:
-{"p-rst": false, "w-rst": false, "batt-flt": false, "host-3v3": 3.4, "pwr-in": 9.6, "prot-batt": 5.0}
+{"standby": "False", "in": "True", "pwr-in": 12.5, "rst": 0, "chg": 1000, "batt-flt": "False", "host-3v3": 3.3,
+"prot-batt": 8.4}}
 """
 
 from collections import OrderedDict
