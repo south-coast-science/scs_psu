@@ -35,7 +35,7 @@ class MAX17055(object):
     classdocs
     """
 
-    __PARAM_SAVE_INTERVAL =     20              # percent change in charge after which params should be saved
+    __PARAM_SAVE_INTERVAL =     10              # percent change in charge after which params should be saved
 
     __ADDR =                    0x36
 
