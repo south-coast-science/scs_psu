@@ -136,10 +136,16 @@ class PSUConf(PersistentJSONable):
 
 
     def psu_class(self):
+        if self.__psu_model is None:
+            return None
+
         return self.__PSU_CLASSES[self.__psu_model]
 
 
     def psu_report_class(self):
+        if self.__psu_model is None:
+            return None
+
         psu_class = self.__PSU_CLASSES[self.__psu_model]                 # may raise KeyError
 
         return psu_class.report_class()
