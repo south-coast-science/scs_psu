@@ -21,7 +21,6 @@ class PSUOsloV1(SerialPSU):
 
     __BAUD_RATE =               1200
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -57,7 +56,7 @@ class PSUOsloV1(SerialPSU):
             jdict = json.loads(response)
             return PSUStatus.construct_from_jdict(jdict)
 
-        except ValueError:
+        except (TypeError, ValueError):
             return None
 
 
