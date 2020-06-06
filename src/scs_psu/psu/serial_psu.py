@@ -26,8 +26,8 @@ class SerialPSU(PSU):
 
     __EOL =                     "\n"
 
-    __SERIAL_LOCK_TIMEOUT =     6.0         # seconds
-    __SERIAL_COMMS_TIMEOUT =    4.0         # seconds
+    __SERIAL_LOCK_TIMEOUT =     4.0         # seconds
+    __SERIAL_COMMS_TIMEOUT =    3.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -141,6 +141,10 @@ class SerialPSU(PSU):
 
     def communicate(self, command):
         self._serial.write_line(command.strip(), self.__EOL)
-        response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
+
+        try:
+            response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
+        except TimeoutError:
+            return None
 
         return response
