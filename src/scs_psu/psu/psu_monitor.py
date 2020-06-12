@@ -26,7 +26,7 @@ class PSUMonitor(SynchronisedProcess):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, host, psu: PSU, auto_shutdown):
+    def __init__(self, host, psu: PSU, ignore_standby, ignore_threshold):
         """
         Constructor
         """
@@ -34,9 +34,11 @@ class PSUMonitor(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, manager.list())
 
-        self.__host = host
-        self.__psu = psu
-        self.__auto_shutdown = auto_shutdown
+        self.__host = host                                                  # Host
+        self.__psu = psu                                                    # PSU
+
+        self.__ignore_standby = ignore_standby                              # bool
+        self.__ignore_threshold = ignore_threshold                          # bool
 
         self.__shutdown_initiated = False
         self.__prev_charge = None
@@ -93,13 +95,10 @@ class PSUMonitor(SynchronisedProcess):
                     self.__save_fuel_gauge_params(batt_pack, status.charge_status)
 
                 # shutdown...
-                if not self.__auto_shutdown:
-                    continue
-
-                if status.standby:
+                if not self.__ignore_standby and status.standby:
                     self.__enter_host_shutdown("STANDBY")
 
-                if status.below_power_threshold(self.__psu.charge_min()):
+                if not self.__ignore_threshold and status.below_power_threshold(self.__psu.charge_min()):
                     self.__enter_host_shutdown("BELOW POWER THRESHOLD")
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
@@ -160,5 +159,7 @@ class PSUMonitor(SynchronisedProcess):
     def __str__(self, *args, **kwargs):
         host_name = None if self.__host is None else self.__host.name()
 
-        return "PSUMonitor:{value:%s, host:%s, psu:%s, auto_shutdown:%s, prev_charge:%s, shutdown_initiated:%s}" % \
-               (self._value, host_name, self.__psu, self.__auto_shutdown, self.__prev_charge, self.__shutdown_initiated)
+        return "PSUMonitor:{value:%s, host:%s, psu:%s, ignore_standby:%s, ignore_threshold:%s, prev_charge:%s, " \
+               "shutdown_initiated:%s}" % \
+               (self._value, host_name, self.__psu, self.__ignore_standby, self.__ignore_threshold, self.__prev_charge,
+                self.__shutdown_initiated)
