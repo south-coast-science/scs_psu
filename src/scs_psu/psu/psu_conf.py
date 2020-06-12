@@ -6,13 +6,12 @@ Created on 21 Jun 2017
 specifies which PSU is present, if any
 
 example JSON:
-{"model": "MobileV2", "batt-model": "PackV1", "reporting-interval": 10,
+{"model": "MobileV2", "batt-model": "PackV1", "ignore-threshold": true, "reporting-interval": 10,
 "report-file": "/tmp/southcoastscience/psu_status_report.json"}
 """
 
 from collections import OrderedDict
 
-from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
 
 from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
@@ -70,28 +69,30 @@ class PSUConf(PersistentJSONable):
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
-            return PSUConf(None, None, None, None)
+            return PSUConf(None, None, False, 0, None)
 
         psu_model = jdict.get('model')
         batt_model = jdict.get('batt-model')
+        ignore_threshold = jdict.get('ignore-threshold', False)
 
         reporting_interval = jdict.get('reporting-interval')
         report_file = jdict.get('report-file')
 
-        return PSUConf(psu_model, batt_model, reporting_interval, report_file)
+        return PSUConf(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, psu_model, batt_model, reporting_interval, report_file):
+    def __init__(self, psu_model, batt_model, ignore_threshold, reporting_interval, report_file):
         """
         Constructor
         """
-        self.__psu_model = psu_model
-        self.__batt_model = batt_model
+        self.__psu_model = psu_model                                        # string
+        self.__batt_model = batt_model                                      # string
+        self.__ignore_threshold = ignore_threshold                          # bool
 
-        self.__reporting_interval = Datum.int(reporting_interval)
-        self.__report_file = report_file
+        self.__reporting_interval = int(reporting_interval)                 # int
+        self.__report_file = report_file                                    # string
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -126,13 +127,13 @@ class PSUConf(PersistentJSONable):
         return psu_class(host.psu_device())
 
 
-    def psu_monitor(self, host, interface_model, auto_shutdown):
+    def psu_monitor(self, host, interface_model, ignore_standby):
         psu = self.psu(host, interface_model)
 
         if psu is None:
             return None
 
-        return PSUMonitor(host, psu, auto_shutdown)
+        return PSUMonitor(host, psu, ignore_standby, self.__ignore_threshold)
 
 
     def psu_class(self):
@@ -164,6 +165,11 @@ class PSUConf(PersistentJSONable):
 
 
     @property
+    def ignore_threshold(self):
+        return self.__ignore_threshold
+
+
+    @property
     def report_file(self):
         return self.__report_file
 
@@ -180,6 +186,7 @@ class PSUConf(PersistentJSONable):
 
         jdict['model'] = self.__psu_model
         jdict['batt-model'] = self.__batt_model
+        jdict['ignore-threshold'] = self.__ignore_threshold
 
         jdict['reporting-interval'] = self.__reporting_interval
         jdict['report-file'] = self.__report_file
@@ -190,5 +197,5 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf:{psu_model:%s, batt_model:%s, reporting_interval:%s, report_file:%s}" % \
-               (self.psu_model, self.batt_model, self.reporting_interval, self.report_file)
+        return "PSUConf:{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s, report_file:%s}" % \
+               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval, self.report_file)
