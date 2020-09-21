@@ -28,6 +28,7 @@ from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 from scs_psu.psu.mobile_v2.psu_mobile_v2 import PSUMobileV2
 
 from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
+
 from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
 
 from scs_psu.psu.psu_monitor import PSUMonitor
