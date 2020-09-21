@@ -3,7 +3,7 @@ Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Lightweight system Raspberry Pi Zero header + mobile power pack + fuel gauge
+Lightweight system Raspberry Pi Zero controller + mobile power pack + fuel gauge
 """
 
 from scs_core.psu.psu import PSU
@@ -11,7 +11,7 @@ from scs_core.psu.psu import PSU
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
-from scs_psu.psu.mobile_v2.psu_status import PSUStatus, ChargeStatus
+from scs_psu.psu.opcube_v1.psu_status import PSUStatus, ChargeStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -45,20 +45,18 @@ class PSUOPCubeV1(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, header, batt_pack):
+    def __init__(self, controller, batt_pack):
         """
         Constructor
         """
-        self.__header = header                                      # PZHB
-        self.__batt_pack = batt_pack                                # BattPackV1
+        self.__controller = controller                          # OPCubeMCU
+        self.__batt_pack = batt_pack                            # BattPackV1
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def open(self):
         I2C.open(Host.I2C_SENSORS)
-
-        self.__header.button_enable()
 
 
     def close(self):
@@ -68,11 +66,11 @@ class PSUOPCubeV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
-        standby = self.__header.button_pressed()
-        power_in = self.__header.read_batt_v()
+        standby = not self.__controller.switch_state()
 
         try:
             batt_status = self.batt_pack.sample()
+
             input_power_present = None if batt_status is None else batt_status.input_power_present
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
 
@@ -80,7 +78,7 @@ class PSUOPCubeV1(PSU):
             input_power_present = None
             charge_status = None
 
-        return PSUStatus(standby, input_power_present, power_in, charge_status)
+        return PSUStatus(standby, input_power_present, None, charge_status)
 
 
     def charge_min(self):
@@ -90,7 +88,7 @@ class PSUOPCubeV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
-        return self.__header.version_ident()
+        return self.__controller.version_ident()
 
 
     def uptime(self):
@@ -98,7 +96,7 @@ class PSUOPCubeV1(PSU):
 
 
     def host_shutdown_initiated(self):
-        return self.__header.host_shutdown_initiated()
+        return self.__controller.host_shutdown_initiated()
 
 
     def watchdog_start(self, interval):
@@ -131,4 +129,4 @@ class PSUOPCubeV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUOPCubeV1:{header:%s, batt_pack:%s}" % (self.__header, self.batt_pack)
+        return "PSUOPCubeV1:{controller:%s, batt_pack:%s}" % (self.__controller, self.batt_pack)
