@@ -14,16 +14,21 @@ from collections import OrderedDict
 
 from scs_core.data.json import PersistentJSONable
 
+from scs_dfe.interface.opcube.opcube_mcu_t1 import OPCubeMCUt1
+
 from scs_dfe.interface.pzhb.pzhb_mcu_t1_f1 import PZHBMCUt1f1
 from scs_dfe.interface.pzhb.pzhb_mcu_t2_f1 import PZHBMCUt2f1
 from scs_dfe.interface.pzhb.pzhb_mcu_t3_f1 import PZHBMCUt3f1
 
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 
+from scs_psu.psu.opcube_v1.psu_opcube_v1 import PSUOPCubeV1
+
 from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 from scs_psu.psu.mobile_v2.psu_mobile_v2 import PSUMobileV2
 
 from scs_psu.psu.oslo_v1.psu_oslo_v1 import PSUOsloV1
+
 from scs_psu.psu.prototype_v1.psu_prototype_v1 import PSUPrototypeV1
 
 from scs_psu.psu.psu_monitor import PSUMonitor
@@ -39,13 +44,14 @@ class PSUConf(PersistentJSONable):
     __FILENAME = "psu_conf.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     __PSU_CLASSES = {
         PSUMobileV1.name():  PSUMobileV1,
         PSUMobileV2.name():  PSUMobileV2,
+        PSUOPCubeV1.name(): PSUOPCubeV1,
         PSUOsloV1.name(): PSUOsloV1,
         PSUPrototypeV1.name(): PSUPrototypeV1
     }
@@ -123,6 +129,9 @@ class PSUConf(PersistentJSONable):
                 return psu_class(PZHBMCUt3f1(PZHBMCUt3f1.DEFAULT_ADDR), batt_pack)
 
             raise ValueError('incompatible interface model for MobileV2: %s' % interface_model)
+
+        if self.psu_model == PSUOPCubeV1.name():
+            return psu_class(OPCubeMCUt1(OPCubeMCUt1.DEFAULT_ADDR), batt_pack)
 
         return psu_class(host.psu_device())
 

@@ -27,8 +27,8 @@ class MAX17055Params(PersistentJSONable):
     __FILENAME = "max17055_params.json"
 
     @classmethod
-    def persistence_location(cls, host):
-        return host.conf_dir(), cls.__FILENAME
+    def persistence_location(cls):
+        return cls.conf_dir(), cls.__FILENAME
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,10 @@
 Created on 25 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+shutdown warning:
+Please retry operation after closing inhibitors and logging out other users.
+Alternatively, ignore inhibitors and users with 'systemctl poweroff -i'.
 """
 
 import sys
