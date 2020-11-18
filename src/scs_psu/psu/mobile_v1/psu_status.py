@@ -17,6 +17,8 @@ class PSUStatus(PSUReport):
     classdocs
     """
 
+    __SOURCE = 'Mv1'
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -45,6 +47,8 @@ class PSUStatus(PSUReport):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['src'] = self.source
+
         jdict['standby'] = self.standby
         jdict['pwr-in'] = self.v_in
 
@@ -59,6 +63,11 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
     # PSUReport properties...
+
+    @property
+    def source(self):
+        return self.__SOURCE
+
 
     @property
     def standby(self):

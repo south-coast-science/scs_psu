@@ -24,6 +24,7 @@ class PSUStatus(PSUReport):
     POWER_IN_MINIMUM =        7.0           # Volts
     BATTERY_MINIMUM =         6.4           # Volts
 
+    __SOURCE = 'Pv1'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -80,6 +81,8 @@ class PSUStatus(PSUReport):
     def as_json(self):
         jdict = OrderedDict()
 
+        jdict['src'] = self.source
+
         jdict['in'] = self.input_power_present
         jdict['pwr-in'] = self.v_in
 
@@ -96,6 +99,11 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
     # PSUReport properties...
+
+    @property
+    def source(self):
+        return self.__SOURCE
+
 
     @property
     def standby(self):
