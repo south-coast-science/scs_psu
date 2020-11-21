@@ -40,17 +40,9 @@ class PSUStatus(PSUReport):
         if not jdict:
             return None
 
-        # check for well-formedness...
-        if 'rst' not in jdict or 'standby' not in jdict or 'chg' not in jdict or 'batt-flt' not in jdict or \
-                'host-3v3' not in jdict or 'pwr-in' not in jdict or 'prot-batt' not in jdict:
-            return None
-
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
-
         standby = jdict.get('standby')
-
         charger = ChargerStatus.construct_from_jdict(jdict.get('chg'))
-
         battery_fault = jdict.get('batt-flt')
 
         host_3v3 = jdict.get('host-3v3')

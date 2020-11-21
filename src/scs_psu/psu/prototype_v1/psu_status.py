@@ -33,11 +33,6 @@ class PSUStatus(PSUReport):
         if not jdict:
             return None
 
-        # check for well-formedness...
-        if 'p-rst' not in jdict or 'w-rst' not in jdict or 'batt-flt' not in jdict or \
-                'host-3v3' not in jdict or 'pwr-in' not in jdict or 'prot-batt' not in jdict:
-            return None
-
         v_in = jdict.get('pwr-in')
 
         power_reset = jdict.get('p-rst')

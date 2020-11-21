@@ -15,8 +15,8 @@ from scs_psu.psu.oslo_v1.psu_status import PSUStatus
 
 # --------------------------------------------------------------------------------------------------------------------
 
-jstr = '{"rst": "10", "link-in": false, "chg": "1010", "batt-flt": false, ' \
-       '"host-3v3": 3.4, "pwr-in": 12.3, "prot-batt": 9.9}'
+jstr = '{"rst": "00", "standby": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.3, "pwr-in": 13.0, ' \
+       '"prot-batt": 0.0}'
 print(jstr)
 print("-")
 
