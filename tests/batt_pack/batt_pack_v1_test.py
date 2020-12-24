@@ -14,7 +14,7 @@ from scs_core.sync.interval_timer import IntervalTimer
 
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 
-from scs_host.bus.i2c import I2C
+from scs_host.bus.i2c import UtilityI2C
 from scs_host.sys.host import Host
 
 
@@ -23,7 +23,7 @@ from scs_host.sys.host import Host
 pack = None
 
 try:
-    I2C.open(Host.I2C_SENSORS)
+    UtilityI2C.open()
 
     pack = BattPackV1.construct()
     loaded = pack.initialise(Host, force_config=True)
@@ -52,4 +52,4 @@ except KeyboardInterrupt:
     print()
 
 finally:
-    I2C.close()
+    UtilityI2C.close()

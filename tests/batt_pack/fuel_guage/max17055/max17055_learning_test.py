@@ -9,14 +9,13 @@ Created on 3 Oct 2016
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import MAX17055
 
-from scs_host.bus.i2c import I2C
-from scs_host.sys.host import Host
+from scs_host.bus.i2c import UtilityI2C
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 try:
-    I2C.open(Host.I2C_SENSORS)
+    UtilityI2C.open()
 
     conf = BattPackV1.gauge_conf()
 
@@ -41,4 +40,4 @@ except KeyboardInterrupt:
     print()
 
 finally:
-    I2C.close()
+    UtilityI2C.close()

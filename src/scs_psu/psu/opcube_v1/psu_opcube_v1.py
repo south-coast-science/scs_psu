@@ -8,8 +8,7 @@ Lightweight system Raspberry Pi Zero controller + mobile power pack + fuel gauge
 
 from scs_core.psu.psu import PSU
 
-from scs_host.bus.i2c import I2C
-from scs_host.sys.host import Host
+from scs_host.bus.i2c import UtilityI2C
 
 from scs_psu.psu.opcube_v1.psu_status import PSUStatus, ChargeStatus
 
@@ -56,11 +55,11 @@ class PSUOPCubeV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def open(self):
-        I2C.open(Host.I2C_SENSORS)
+        UtilityI2C.open()
 
 
     def close(self):
-        I2C.close()
+        UtilityI2C.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
