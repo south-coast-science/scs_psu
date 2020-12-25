@@ -11,7 +11,7 @@ import time
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import MAX17055
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ print(conf)
 print("-")
 
 try:
-    UtilityI2C.open()
+    I2C.Utilities.open()
 
     gauge = MAX17055(conf)
     loaded = gauge.initialise(False)
@@ -76,4 +76,4 @@ except KeyboardInterrupt:
     print()
 
 finally:
-    UtilityI2C.close()
+    I2C.Utilities.close()

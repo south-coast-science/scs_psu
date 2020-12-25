@@ -8,7 +8,7 @@ Lightweight system Raspberry Pi Zero header + mobile power pack + fuel gauge
 
 from scs_core.psu.psu import PSU
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 
 from scs_psu.psu.mobile_v2.psu_status import PSUStatus, ChargeStatus
 
@@ -55,13 +55,13 @@ class PSUMobileV2(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def open(self):
-        UtilityI2C.open()
+        I2C.Utilities.open()
 
         self.__header.button_enable()
 
 
     def close(self):
-        UtilityI2C.close()
+        I2C.Utilities.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------

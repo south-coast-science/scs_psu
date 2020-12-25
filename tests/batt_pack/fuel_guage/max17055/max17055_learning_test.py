@@ -9,13 +9,13 @@ Created on 3 Oct 2016
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import MAX17055
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 try:
-    UtilityI2C.open()
+    I2C.Utilities.open()
 
     conf = BattPackV1.gauge_conf()
 
@@ -40,4 +40,4 @@ except KeyboardInterrupt:
     print()
 
 finally:
-    UtilityI2C.close()
+    I2C.Utilities.close()

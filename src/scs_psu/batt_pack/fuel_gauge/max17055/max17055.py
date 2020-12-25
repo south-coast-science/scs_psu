@@ -19,7 +19,7 @@ import time
 from scs_core.data.datum import Decode
 from scs_core.data.timedelta import Timedelta
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
 from scs_psu.batt_pack.fuel_gauge.batt_status import BattStatus, ChargeLevel
@@ -472,41 +472,41 @@ class MAX17055(object):
 
     def __read_reg(self, reg, signed=False):
         try:
-            UtilityI2C.start_tx(self.__ADDR)
+            I2C.Utilities.start_tx(self.__ADDR)
 
-            read_bytes = UtilityI2C.read_cmd(reg, 2)
+            read_bytes = I2C.Utilities.read_cmd(reg, 2)
             time.sleep(0.001)
 
             return Decode.int(read_bytes, '<') if signed else Decode.unsigned_int(read_bytes, '<')
 
         finally:
-            UtilityI2C.end_tx()
+            I2C.Utilities.end_tx()
 
 
     def __write_reg(self, reg, value):
         try:
-            UtilityI2C.start_tx(self.__ADDR)
+            I2C.Utilities.start_tx(self.__ADDR)
 
-            UtilityI2C.write_addr(reg, value & 0x00ff, value >> 8)
+            I2C.Utilities.write_addr(reg, value & 0x00ff, value >> 8)
             time.sleep(0.001)
 
         finally:
-            UtilityI2C.end_tx()
+            I2C.Utilities.end_tx()
 
 
     def __write_and_verify_reg(self, reg, value):
         read_value = None
 
         try:
-            UtilityI2C.start_tx(self.__ADDR)
+            I2C.Utilities.start_tx(self.__ADDR)
 
             for _ in range(3):
                 # write...
-                UtilityI2C.write_addr(reg, value & 0x00ff, value >> 8)
+                I2C.Utilities.write_addr(reg, value & 0x00ff, value >> 8)
                 time.sleep(0.001)
 
                 # read...
-                read_bytes = UtilityI2C.read_cmd(reg, 2)
+                read_bytes = I2C.Utilities.read_cmd(reg, 2)
                 time.sleep(0.001)
 
                 read_value = Decode.unsigned_int(read_bytes, '<')
@@ -517,7 +517,7 @@ class MAX17055(object):
             raise RuntimeError("reg:0x%02x value:0x%04x got:0x%04x" % (reg, value, read_value))
 
         finally:
-            UtilityI2C.end_tx()
+            I2C.Utilities.end_tx()
 
 
     # ----------------------------------------------------------------------------------------------------------------
