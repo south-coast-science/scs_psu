@@ -3,6 +3,8 @@ Created on 25 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+From MAX17055 Software Implementation Guide p12:
+
     # designCap = 0x1450
     # ichgterm = 0x333
     # modelcfg = 0x8000
