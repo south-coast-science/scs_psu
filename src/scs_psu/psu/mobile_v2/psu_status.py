@@ -112,7 +112,7 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{standby:%s, input_power_present:%s, v_in:%s, charge_status:%s}" % \
+        return "PSUStatus(mobile_v2):{standby:%s, input_power_present:%s, v_in:%s, charge_status:%s}" % \
                (self.standby, self.input_power_present, self.v_in, self.charge_status)
 
 

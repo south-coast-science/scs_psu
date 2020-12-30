@@ -166,7 +166,7 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus:{reset:%s, standby:%s, charger:%s, battery_fault:%s, " \
+        return "PSUStatus(oslo_v1):{reset:%s, standby:%s, charger:%s, battery_fault:%s, " \
                "host_3v3:%s, v_in:%s, prot_batt:%s}" \
                % (self.reset, self.standby, self.charger, self.battery_fault,
                   self.host_3v3, self.v_in, self.prot_batt)

@@ -472,41 +472,41 @@ class MAX17055(object):
 
     def __read_reg(self, reg, signed=False):
         try:
-            I2C.start_tx(self.__ADDR)
+            I2C.Utilities.start_tx(self.__ADDR)
 
-            read_bytes = I2C.read_cmd(reg, 2)
+            read_bytes = I2C.Utilities.read_cmd(reg, 2)
             time.sleep(0.001)
 
             return Decode.int(read_bytes, '<') if signed else Decode.unsigned_int(read_bytes, '<')
 
         finally:
-            I2C.end_tx()
+            I2C.Utilities.end_tx()
 
 
     def __write_reg(self, reg, value):
         try:
-            I2C.start_tx(self.__ADDR)
+            I2C.Utilities.start_tx(self.__ADDR)
 
-            I2C.write_addr(reg, value & 0x00ff, value >> 8)
+            I2C.Utilities.write_addr(reg, value & 0x00ff, value >> 8)
             time.sleep(0.001)
 
         finally:
-            I2C.end_tx()
+            I2C.Utilities.end_tx()
 
 
     def __write_and_verify_reg(self, reg, value):
         read_value = None
 
         try:
-            I2C.start_tx(self.__ADDR)
+            I2C.Utilities.start_tx(self.__ADDR)
 
             for _ in range(3):
                 # write...
-                I2C.write_addr(reg, value & 0x00ff, value >> 8)
+                I2C.Utilities.write_addr(reg, value & 0x00ff, value >> 8)
                 time.sleep(0.001)
 
                 # read...
-                read_bytes = I2C.read_cmd(reg, 2)
+                read_bytes = I2C.Utilities.read_cmd(reg, 2)
                 time.sleep(0.001)
 
                 read_value = Decode.unsigned_int(read_bytes, '<')
@@ -517,7 +517,7 @@ class MAX17055(object):
             raise RuntimeError("reg:0x%02x value:0x%04x got:0x%04x" % (reg, value, read_value))
 
         finally:
-            I2C.end_tx()
+            I2C.Utilities.end_tx()
 
 
     # ----------------------------------------------------------------------------------------------------------------
