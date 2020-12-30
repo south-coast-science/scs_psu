@@ -21,6 +21,7 @@ from scs_dfe.interface.pzhb.pzhb_mcu_t2_f1 import PZHBMCUt2f1
 from scs_dfe.interface.pzhb.pzhb_mcu_t3_f1 import PZHBMCUt3f1
 
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
+from scs_psu.batt_pack.batt_pack_v2 import BattPackV2
 
 from scs_psu.psu.opcube_v1.psu_opcube_v1 import PSUOPCubeV1
 
@@ -62,7 +63,8 @@ class PSUConf(PersistentJSONable):
 
 
     __BATT_CLASSES = {
-        BattPackV1.name():  BattPackV1
+        BattPackV1.name(): BattPackV1,
+        BattPackV2.name(): BattPackV2
     }
 
     @classmethod
