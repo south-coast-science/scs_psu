@@ -71,7 +71,7 @@ class PSUOPCubeV1(PSU):
             batt_status = self.batt_pack.sample()
 
             input_power_present = None if batt_status is None else batt_status.input_power_present
-            charge_status = ChargeStatus.construct_from_batt_status(batt_status)
+            charge_status = ChargeStatus.construct_from_batt_status(batt_status)        # TODO: untangle this!
 
         except (AttributeError, OSError):
             input_power_present = None
