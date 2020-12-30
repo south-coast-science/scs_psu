@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Created on 2 Oct 2016
+Created on 26 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -32,10 +32,10 @@ try:
     # print("default params: %s" % JSONify.dumps(params))
     # params.save(Host)
 
-    loaded = pack.initialise(Host, force_config=True)
+    # loaded = pack.initialise(Host, force_config=True)
     # loaded = pack.initialise(Host)
-    print("loaded: %s" % loaded, file=sys.stderr)
-    sys.stderr.flush()
+    # print("loaded: %s" % loaded, file=sys.stderr)
+    # sys.stderr.flush()
 
     timer = IntervalTimer(10.0)
 
@@ -48,7 +48,7 @@ try:
 
         params = pack.read_learned_params()
         print(JSONify.dumps(params), file=sys.stderr)
-        params.save(Host)
+        # params.save(Host)
 
         print("-", file=sys.stderr)
         sys.stdout.flush()

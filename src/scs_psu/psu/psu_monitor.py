@@ -46,6 +46,7 @@ class PSUMonitor(SynchronisedProcess):
 
         self.__shutdown_initiated = False
         self.__prev_charge = None
+        self.__prev_params = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -95,8 +96,7 @@ class PSUMonitor(SynchronisedProcess):
                     status.as_list(self._value)
 
                 # fuel gauge...
-                if status.charge_status is not None:
-                    self.__save_fuel_gauge_params(batt_pack, status.charge_status)
+                self.__save_fuel_gauge_params(batt_pack)
 
                 # shutdown...
                 if not self.__ignore_standby and status.standby:
@@ -112,23 +112,19 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # process special operations...
 
-    def __save_fuel_gauge_params(self, batt_pack, charge_status):
-        if batt_pack is None or charge_status is None:
+    def __save_fuel_gauge_params(self, batt_pack):
+        if batt_pack is None:
             return
-
-        if self.__prev_charge is None:
-            self.__prev_charge = charge_status.charge
-            return
-
-        if abs(charge_status.charge - self.__prev_charge) < batt_pack.param_save_interval():
-            return
-
-        self.__prev_charge = charge_status.charge
 
         params = batt_pack.read_learned_params()
-        params.save(self.__host)
 
-        print("PSUMonitor.save_fuel_gauge_params at %s charge: %s" % (charge_status.charge, params), file=sys.stderr)
+        if self.__prev_params is not None and params == self.__prev_params:
+            return
+
+        params.save(self.__host)
+        self.__prev_params = params
+
+        print("PSUMonitor: %s" % params, file=sys.stderr)
         sys.stderr.flush()
 
 
