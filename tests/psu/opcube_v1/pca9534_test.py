@@ -25,7 +25,7 @@ try:
 
     io.init()
 
-    for i in range(4):
+    for i in range(2):
         io.set_leds(False, False)
         time.sleep(2.0)
 
@@ -38,10 +38,12 @@ try:
         io.set_leds(True, True)
         time.sleep(2.0)
 
+    io.set_leds(False, False)
+
     print("=")
 
     while True:
-        status = io.read_status()
+        status = io.sample()
         print(status)
 
         print(JSONify.dumps(status))

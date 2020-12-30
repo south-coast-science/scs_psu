@@ -74,10 +74,10 @@ class PSUMonitor(SynchronisedProcess):
         batt_pack = self.__psu.batt_pack
 
         if batt_pack is not None:
-            initialised = batt_pack.initialise(self.__host, force_config=False)
+            params = batt_pack.initialise(self.__host, force_config=False)
 
-            if initialised:
-                print("PSUMonitor.run: battery pack initialised.", file=sys.stderr)
+            if params:
+                print("PSUMonitor.run: battery pack initialised: %s" % params, file=sys.stderr)
                 sys.stderr.flush()
 
         # monitor PSU...
@@ -118,15 +118,18 @@ class PSUMonitor(SynchronisedProcess):
 
         if self.__prev_charge is None:
             self.__prev_charge = charge_status.charge
+            return
 
-        elif abs(charge_status.charge - self.__prev_charge) > batt_pack.param_save_interval():
-            self.__prev_charge = charge_status.charge
+        if abs(charge_status.charge - self.__prev_charge) < batt_pack.param_save_interval():
+            return
 
-            params = batt_pack.read_learned_params()
-            params.save(self.__host)
+        self.__prev_charge = charge_status.charge
 
-            print("PSUMonitor.save_fuel_gauge_params: done.", file=sys.stderr)
-            sys.stderr.flush()
+        params = batt_pack.read_learned_params()
+        params.save(self.__host)
+
+        print("PSUMonitor.save_fuel_gauge_params at %s charge: %s" % (charge_status.charge, params), file=sys.stderr)
+        sys.stderr.flush()
 
 
     def __enter_host_shutdown(self, reason):

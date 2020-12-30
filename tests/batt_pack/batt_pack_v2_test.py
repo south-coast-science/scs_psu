@@ -32,9 +32,8 @@ try:
     # print("default params: %s" % JSONify.dumps(params))
     # params.save(Host)
 
+    loaded = pack.initialise(Host, force_config=True)
     # loaded = pack.initialise(Host)
-    # loaded = pack.initialise(Host, force_config=True)
-    loaded = pack.initialise(Host)
     print("loaded: %s" % loaded, file=sys.stderr)
     sys.stderr.flush()
 

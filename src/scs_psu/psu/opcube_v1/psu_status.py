@@ -30,23 +30,29 @@ class PSUStatus(PSUReport):
             return None
 
         standby = jdict.get('standby')
+        charger_status = ChargerStatus.construct_from_jdict(jdict.get('chg'))
         input_power_present = jdict.get('in')
         v_in = jdict.get('pwr-in')
-        charge_status = ChargeStatus.construct_from_jdict(jdict.get('batt'))
 
-        return PSUStatus(standby, input_power_present, v_in, charge_status)
+        charge_status = ChargeStatus.construct_from_jdict(jdict.get('batt'))
+        prot_batt = jdict.get('prot-batt')
+
+        return PSUStatus(standby, charger_status, input_power_present, v_in, charge_status, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, standby, input_power_present, v_in, charge_status):
+    def __init__(self, standby, charger_status, input_power_present, v_in, charge_status, prot_batt):
         """
         Constructor
         """
-        self.__standby = standby                                    # bool
-        self.__input_power_present = input_power_present            # bool
-        self.__v_in = Datum.float(v_in, 1)                          # PSU input voltage  float
-        self.__charge_status = charge_status                        # ChargeStatus
+        self.__standby = standby                                # bool
+        self.__charger_status = charger_status                  # ChargerStatus
+        self.__input_power_present = input_power_present        # bool
+        self.__v_in = Datum.float(v_in, 1)                      # PSU input voltage  float
+
+        self.__charge_status = charge_status                    # ChargeStatus
+        self.__prot_batt = Datum.float(prot_batt, 1)            # battery voltage  float
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -59,7 +65,10 @@ class PSUStatus(PSUReport):
         jdict['standby'] = self.standby
         jdict['in'] = self.input_power_present
         jdict['pwr-in'] = self.v_in
+        jdict['chg'] = self.charger_status
+
         jdict['batt'] = None if self.charge_status is None else self.charge_status.as_json()
+        jdict['prot-batt'] = self.prot_batt
 
         return jdict
 
@@ -90,6 +99,11 @@ class PSUStatus(PSUReport):
 
 
     @property
+    def charger_status(self):
+        return self.__charger_status
+
+
+    @property
     def input_power_present(self):
         return self.__input_power_present
 
@@ -109,11 +123,18 @@ class PSUStatus(PSUReport):
         return self.__charge_status
 
 
+    @property
+    def prot_batt(self):
+        return self.__prot_batt
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus(opcube_v1):{standby:%s, input_power_present:%s, v_in:%s, charge_status:%s}" % \
-               (self.standby, self.input_power_present, self.v_in, self.charge_status)
+        return "PSUStatus(opcube_v1):{standby:%s, charger_status:%s, input_power_present:%s, v_in:%s, " \
+               "charge_status:%s, prot_batt:%s}" % \
+               (self.standby, self.charger_status, self.input_power_present, self.v_in,
+                self.charge_status, self.prot_batt)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -193,3 +214,78 @@ class ChargeStatus(JSONable):
 
     def __str__(self, *args, **kwargs):
         return "ChargeStatus:{charge:%s, tte:%s, ttf:%s}" %  (self.charge, self.tte, self.ttf)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class ChargerStatus(JSONable):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def construct_from_jdict(cls, jdict):
+        if not jdict:
+            return None
+
+        items = list(str(jdict))
+
+        ready = bool(int(items[0]))
+        fault = bool(int(items[1]))
+        charging = bool(int(items[2]))
+        power_fail = bool(int(items[3]))
+
+        return ChargerStatus(ready, fault, charging, power_fail)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, ready, fault, charging, power_fail):
+        """
+        Constructor
+        """
+        self.__ready = ready                                # bool
+        self.__fault = fault                                # bool
+        self.__charging = charging                          # bool
+        self.__power_fail = power_fail                      # bool
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        items = (self.ready, self.fault, self.charging, self.power_fail)
+
+        item_string = ''.join(['1' if item else '0' for item in items])
+
+        return item_string
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def ready(self):
+        return self.__ready
+
+
+    @property
+    def fault(self):
+        return self.__fault
+
+
+    @property
+    def charging(self):
+        return self.__charging
+
+
+    @property
+    def power_fail(self):
+        return self.__power_fail
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "ChargerStatus:{ready:%s, fault:%s, charging:%s, power_fail:%s}" % \
+               (self.ready, self.fault, self.charging, self.power_fail)

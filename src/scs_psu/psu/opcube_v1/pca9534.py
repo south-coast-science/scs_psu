@@ -6,7 +6,7 @@ Created on 29 Dec 2020
 
 from scs_host.bus.i2c import I2C
 
-from scs_psu.charger.charger_status import ChargerStatus
+from scs_psu.psu.opcube_v1.psu_status import ChargerStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -57,15 +57,15 @@ class PCA9534(object):
         self.__output(led1_mask | led2_mask)
 
 
-    def read_status(self):
+    def sample(self):
         state = self.__input()
 
         ready = bool(state & self.__MASK_BAT_READY)
-        fault = bool(state & self.__MASK_BAT_FAULT)
-        charging = bool(state & self.__MASK_BAT_CHARGE)
-        top_off_charge = bool(state & self.__MASK_BAT_TOC)
+        fault = not bool(state & self.__MASK_BAT_FAULT)
+        charging = not bool(state & self.__MASK_BAT_CHARGE)
+        power_fail = not bool(state & self.__MASK_BAT_TOC)
 
-        return ChargerStatus(ready, fault, charging, top_off_charge)
+        return ChargerStatus(ready, fault, charging, power_fail)
 
 
     # ----------------------------------------------------------------------------------------------------------------

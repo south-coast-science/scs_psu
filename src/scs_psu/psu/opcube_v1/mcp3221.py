@@ -16,11 +16,11 @@ class MCP3221(object):
     Microchip MCP3221A 12-bit ADC
     """
 
-    DEFAULT_ADDR =      0x4d
+    DEFAULT_ADDR =      0x48
 
     __VDD =             3.3             # Volts
     __RANGE =           4095            # count
-    __DIVISION =        10              # voltage divider is 10:1
+    __DIVISION =        11              # voltage divider is 10:1
 
     __LSB =             __VDD / __RANGE
     __CONV =            __LSB * __DIVISION
@@ -39,8 +39,6 @@ class MCP3221(object):
     def sample(self):
         byte_values = self.__convert()
         code = Decode.unsigned_int(byte_values, '>')
-        print("code: %s" % code)
-
         v = code * self.__CONV
 
         return round(v, 1)

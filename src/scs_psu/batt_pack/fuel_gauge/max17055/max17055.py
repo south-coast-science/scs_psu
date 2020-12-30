@@ -35,7 +35,7 @@ class MAX17055(object):
     classdocs
     """
 
-    __PARAM_SAVE_INTERVAL =     10              # percent change in charge after which params should be saved
+    __PARAM_SAVE_INTERVAL =     5               # % change in charge after which params should be saved
 
     __ADDR =                    0x36
 
@@ -260,13 +260,14 @@ class MAX17055(object):
             tte = self.read_time_until_empty()
             ttf = self.read_time_until_full()
 
+            v = self.read_voltage()
             current = self.read_current_avg()
             temperature = self.read_temperature()
 
             capacity = self.read_capacity_avg()
             cycles = self.read_cycles()
 
-            return BattStatus(input_power_present, charge, tte, ttf, current, temperature, capacity, cycles)
+            return BattStatus(input_power_present, charge, tte, ttf, v, current, temperature, capacity, cycles)
 
         finally:
             self.release_lock()
