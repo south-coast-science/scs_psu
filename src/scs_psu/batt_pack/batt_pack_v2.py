@@ -25,11 +25,7 @@ class BattPackV2(BattPack):
 
     __CHARGE_MINIMUM =        1         # percent
 
-    # __DEFAULT_PARAMS =  '{"r-comp-0": 255, "temp-co": 8766, "full-cap-rep": 2909, "full-cap-nom": 54934, ' \
-    #                     '"cycles": 173}'
-
-    __DEFAULT_PARAMS =  '{"r-comp-0": 1, "temp-co": 8766, "full-cap-rep": 1200, "full-cap-nom": 1200, ' \
-                        '"cycles": 100}'
+    __DEFAULT_PARAMS =  '{"r-comp-0": 469, "temp-co": 8766, "full-cap-rep": 1735, "full-cap-nom": 1200, "cycles": 529}'
 
 
     # ----------------------------------------------------------------------------------------------------------------

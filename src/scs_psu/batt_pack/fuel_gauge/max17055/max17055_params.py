@@ -63,6 +63,13 @@ class MAX17055Params(PersistentJSONable):
         self.__cycles = Datum.int(cycles)               # unsigned int
 
 
+    def __eq__(self, other):                            # ignore cycles
+        return self.r_comp_0 == other.r_comp_0 and \
+               self.temp_co == other.temp_co and \
+               self.full_cap_rep == other.full_cap_rep and \
+               self.full_cap_nom == other.full_cap_nom
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def as_json(self):
