@@ -16,7 +16,7 @@ from scs_core.sync.interval_timer import IntervalTimer
 from scs_psu.batt_pack.batt_pack_v2 import BattPackV2
 
 from scs_host.bus.i2c import I2C
-from scs_host.sys.host import Host
+# from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
