@@ -46,6 +46,7 @@ class PSUMonitor(SynchronisedProcess):
 
         self.__shutdown_initiated = False
         self.__prev_charge = None
+        self.__prev_params = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -74,10 +75,10 @@ class PSUMonitor(SynchronisedProcess):
         batt_pack = self.__psu.batt_pack
 
         if batt_pack is not None:
-            initialised = batt_pack.initialise(self.__host, force_config=False)
+            params = batt_pack.initialise(self.__host, force_config=False)
 
-            if initialised:
-                print("PSUMonitor.run: battery pack initialised.", file=sys.stderr)
+            if params:
+                print("PSUMonitor.run: battery pack initialised: %s" % params, file=sys.stderr)
                 sys.stderr.flush()
 
         # monitor PSU...
@@ -95,8 +96,7 @@ class PSUMonitor(SynchronisedProcess):
                     status.as_list(self._value)
 
                 # fuel gauge...
-                if status.charge_status is not None:
-                    self.__save_fuel_gauge_params(batt_pack, status.charge_status)
+                self.__save_fuel_gauge_params(batt_pack)
 
                 # shutdown...
                 if not self.__ignore_standby and status.standby:
@@ -112,21 +112,20 @@ class PSUMonitor(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
     # process special operations...
 
-    def __save_fuel_gauge_params(self, batt_pack, charge_status):
-        if batt_pack is None or charge_status is None:
+    def __save_fuel_gauge_params(self, batt_pack):
+        if batt_pack is None:
             return
 
-        if self.__prev_charge is None:
-            self.__prev_charge = charge_status.charge
+        params = batt_pack.read_learned_params()
 
-        elif abs(charge_status.charge - self.__prev_charge) > batt_pack.param_save_interval():
-            self.__prev_charge = charge_status.charge
+        if self.__prev_params is not None and params == self.__prev_params:
+            return
 
-            params = batt_pack.read_learned_params()
-            params.save(self.__host)
+        params.save(self.__host)
+        self.__prev_params = params
 
-            print("PSUMonitor.save_fuel_gauge_params: done.", file=sys.stderr)
-            sys.stderr.flush()
+        print("PSUMonitor: %s" % params, file=sys.stderr)
+        sys.stderr.flush()
 
 
     def __enter_host_shutdown(self, reason):
