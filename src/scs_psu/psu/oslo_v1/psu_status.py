@@ -84,7 +84,7 @@ class PSUStatus(PSUReport):
 
         jdict['rst'] = self.reset
 
-        jdict['chgr'] = str(self.charger)
+        jdict['chgr'] = str(self.charger.as_json())
 
         jdict['batt-flt'] = self.battery_fault
 
