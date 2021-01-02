@@ -245,10 +245,10 @@ class ChargerStatus(JSONable):
         if not jdict:
             return None
 
-        ready = jdict[0] == 'T'
-        fault = jdict[1] == 'T'
-        charging = jdict[2] == 'T'
-        top_off_charge = jdict[3] == 'T'
+        ready = jdict[0] in ('T', 1)
+        fault = jdict[1] in ('T', 1)
+        charging = jdict[2] in ('T', 1)
+        top_off_charge = jdict[3] in ('T', 1)
 
         return ChargerStatus(ready, fault, charging, top_off_charge)
 
