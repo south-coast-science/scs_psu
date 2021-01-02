@@ -40,16 +40,18 @@ class PSUStatus(PSUReport):
         if not jdict:
             return None
 
+        charger_jdict = jdict.get('chgr') if 'chgr' in jdict else jdict.get('chg')
+
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
         standby = jdict.get('standby')
-        charger = ChargerStatus.construct_from_jdict(jdict.get('chgr'))
+        charger = ChargerStatus.construct_from_jdict(charger_jdict)
         battery_fault = jdict.get('batt-flt')
 
         host_3v3 = jdict.get('host-3v3')
         v_in = jdict.get('pwr-in')
         prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
+        return cls(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -243,10 +245,10 @@ class ChargerStatus(JSONable):
         if not jdict:
             return None
 
-        ready = jdict[0] == 'T'
-        fault = jdict[1] == 'T'
-        charging = jdict[2] == 'T'
-        top_off_charge = jdict[3] == 'T'
+        ready = jdict[0] in ('T', 1)
+        fault = jdict[1] in ('T', 1)
+        charging = jdict[2] in ('T', 1)
+        top_off_charge = jdict[3] in ('T', 1)
 
         return ChargerStatus(ready, fault, charging, top_off_charge)
 
