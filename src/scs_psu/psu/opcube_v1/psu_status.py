@@ -230,12 +230,10 @@ class ChargerStatus(JSONable):
         if not jdict:
             return None
 
-        items = list(str(jdict))
-
-        ready = bool(int(items[0]))
-        fault = bool(int(items[1]))
-        charging = bool(int(items[2]))
-        power_fail = bool(int(items[3]))
+        ready = jdict[0] == 'T'
+        fault = jdict[1] == 'T'
+        charging = jdict[2] == 'T'
+        power_fail = jdict[3] == 'T'
 
         return ChargerStatus(ready, fault, charging, power_fail)
 
@@ -257,7 +255,7 @@ class ChargerStatus(JSONable):
     def as_json(self):
         items = (self.ready, self.fault, self.charging, self.power_fail)
 
-        item_string = ''.join(['1' if item else '0' for item in items])
+        item_string = ''.join(['T' if item else 'F' for item in items])
 
         return item_string
 
