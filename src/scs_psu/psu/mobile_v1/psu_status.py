@@ -29,7 +29,7 @@ class PSUStatus(PSUReport):
         standby = jdict.get('standby')
         v_in = jdict.get('pwr-in')
 
-        return PSUStatus(standby, v_in)
+        return cls(standby, v_in)
 
 
     # ----------------------------------------------------------------------------------------------------------------

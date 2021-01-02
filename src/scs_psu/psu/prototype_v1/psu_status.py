@@ -43,7 +43,7 @@ class PSUStatus(PSUReport):
         host_3v3 = jdict.get('host-3v3')
         prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(power_reset, watchdog_reset, battery_fault, host_3v3, v_in, prot_batt)
+        return cls(power_reset, watchdog_reset, battery_fault, host_3v3, v_in, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
