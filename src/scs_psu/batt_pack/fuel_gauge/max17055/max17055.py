@@ -286,7 +286,7 @@ class MAX17055(object):
 
             cycles = self.__read_reg(self.__REG_CYCLES)
 
-            return MAX17055Params(r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
+            return MAX17055Params(None, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
 
         finally:
             self.release_lock()
