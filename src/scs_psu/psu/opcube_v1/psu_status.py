@@ -30,7 +30,7 @@ class PSUStatus(PSUReport):
             return None
 
         standby = jdict.get('standby')
-        charger_status = ChargerStatus.construct_from_jdict(jdict.get('chg'))
+        charger_status = ChargerStatus.construct_from_jdict(jdict.get('chgr'))
         input_power_present = jdict.get('in')
         v_in = jdict.get('pwr-in')
 
@@ -65,7 +65,7 @@ class PSUStatus(PSUReport):
         jdict['standby'] = self.standby
         jdict['in'] = self.input_power_present
         jdict['pwr-in'] = self.v_in
-        jdict['chg'] = self.charger_status
+        jdict['chgr'] = self.charger_status
 
         jdict['batt'] = None if self.charge_status is None else self.charge_status.as_json()
         jdict['prot-batt'] = self.prot_batt

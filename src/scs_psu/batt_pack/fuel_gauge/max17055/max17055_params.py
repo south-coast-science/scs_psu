@@ -8,13 +8,15 @@ Values stored here shall be in their raw (16-bit unsigned int) form.
 https://www.maximintegrated.com/en/design/technical-documents/userguides-and-manuals/6/6365.html
 
 Document example:
-{"r-comp-0": 171, "temp-co": 8766, "full-cap-rep": 16712, "full-cap-nom": 41298, "cycles": 966}
+{"calibrated-on": "2021-01-02T09:34:48Z",
+"r-comp-0": 201, "temp-co": 9278, "full-cap-rep": 1790, "full-cap-nom": 4896, "cycles": 210}
 """
 
 from collections import OrderedDict
 
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
+from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -33,11 +35,12 @@ class MAX17055Params(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-
     @classmethod
     def construct_from_jdict(cls, jdict):
         if not jdict:
             return None
+
+        calibrated_on = LocalizedDatetime.construct_from_iso8601(jdict.get('calibrated-on'))
 
         r_comp_0 = jdict.get('r-comp-0')
         temp_co = jdict.get('temp-co')
@@ -46,15 +49,17 @@ class MAX17055Params(PersistentJSONable):
 
         cycles = jdict.get('cycles')
 
-        return MAX17055Params(r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
+        return cls(calibrated_on, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles):
+    def __init__(self, calibrated_on, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles):
         """
         Constructor
         """
+        self.__calibrated_on = calibrated_on            # unsigned int
+
         self.__r_comp_0 = r_comp_0                      # unsigned int
         self.__temp_co = temp_co                        # unsigned int
         self.__full_cap_rep = full_cap_rep              # unsigned int
@@ -63,7 +68,7 @@ class MAX17055Params(PersistentJSONable):
         self.__cycles = Datum.int(cycles)               # unsigned int
 
 
-    def __eq__(self, other):                            # ignore cycles
+    def __eq__(self, other):                            # ignore calibrated_on, cycles
         return self.r_comp_0 == other.r_comp_0 and \
                self.temp_co == other.temp_co and \
                self.full_cap_rep == other.full_cap_rep and \
@@ -72,8 +77,15 @@ class MAX17055Params(PersistentJSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def save(self, manager, encryption_key=None):
+        self.__calibrated_on = LocalizedDatetime.now()
+        super().save(manager, encryption_key=None)
+
+
     def as_json(self):
         jdict = OrderedDict()
+
+        jdict['calibrated-on'] = None if self.calibrated_on is None else self.calibrated_on.as_iso8601()
 
         jdict['r-comp-0'] = self.r_comp_0
         jdict['temp-co'] = self.temp_co
@@ -86,6 +98,11 @@ class MAX17055Params(PersistentJSONable):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def calibrated_on(self):
+        return self.__calibrated_on
+
 
     @property
     def r_comp_0(self):
@@ -115,5 +132,7 @@ class MAX17055Params(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Params:{r_comp_0:%s, temp_co:%s, full_cap_rep:%s, full_cap_nom:%s, cycles:%s}" % \
-               (self.r_comp_0, self.temp_co, self.full_cap_rep, self.full_cap_nom, self.cycles)
+        return "MAX17055Params:{calibrated_on:%s, r_comp_0:%s, temp_co:%s, full_cap_rep:%s, full_cap_nom:%s, " \
+               "cycles:%s}" % \
+               (self.calibrated_on, self.r_comp_0, self.temp_co, self.full_cap_rep, self.full_cap_nom,
+                self.cycles)
