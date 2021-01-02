@@ -14,9 +14,9 @@ Document example:
 
 from collections import OrderedDict
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Datum
 from scs_core.data.json import PersistentJSONable
-from scs_core.data.datetime import LocalizedDatetime
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -78,7 +78,9 @@ class MAX17055Params(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
-        self.__calibrated_on = LocalizedDatetime.now()
+        if not self.__calibrated_on:
+            self.__calibrated_on = LocalizedDatetime.now()
+
         super().save(manager, encryption_key=None)
 
 
