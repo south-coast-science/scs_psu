@@ -5,7 +5,7 @@ Created on 1 Apr 2020
 
 example document:
 {"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFTF",
-"batt": {"chg": 40, "tte": null, "ttf": "00-03:06:34"}, "prot-batt": 3.8}
+"batt": {"chg": 99, "tte": null, "ttf": null}, "prot-batt": 4.1}
 """
 
 from collections import OrderedDict
