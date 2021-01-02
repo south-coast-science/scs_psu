@@ -40,9 +40,11 @@ class PSUStatus(PSUReport):
         if not jdict:
             return None
 
+        charger_jdict = jdict.get('chgr') if 'chgr' in jdict else jdict.get('chg')
+
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
         standby = jdict.get('standby')
-        charger = ChargerStatus.construct_from_jdict(jdict.get('chgr'))
+        charger = ChargerStatus.construct_from_jdict(charger_jdict)
         battery_fault = jdict.get('batt-flt')
 
         host_3v3 = jdict.get('host-3v3')
