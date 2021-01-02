@@ -2,6 +2,10 @@
 Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+example document:
+{"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFTF",
+"batt": {"chg": 40, "tte": null, "ttf": "00-03:06:34"}, "prot-batt": 3.8}
 """
 
 from collections import OrderedDict
@@ -65,7 +69,7 @@ class PSUStatus(PSUReport):
         jdict['standby'] = self.standby
         jdict['in'] = self.input_power_present
         jdict['pwr-in'] = self.v_in
-        jdict['chgr'] = str(self.charger_status.as_json())
+        jdict['chgr'] = self.charger_status.as_json()
 
         jdict['batt'] = None if self.charge_status is None else self.charge_status.as_json()
         jdict['prot-batt'] = self.prot_batt
