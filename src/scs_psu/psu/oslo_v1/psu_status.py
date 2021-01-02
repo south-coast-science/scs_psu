@@ -82,9 +82,8 @@ class PSUStatus(PSUReport):
         jdict['in'] = self.input_power_present
         jdict['pwr-in'] = self.v_in
 
-        jdict['rst'] = self.reset
-
-        jdict['chgr'] = str(self.charger.as_json())
+        jdict['rst'] = self.reset.as_json()
+        jdict['chgr'] = self.charger.as_json()
 
         jdict['batt-flt'] = self.battery_fault
 
@@ -186,10 +185,8 @@ class ResetStatus(JSONable):
         if not jdict:
             return None
 
-        items = list(str(jdict))
-
-        power_reset = bool(int(items[0]))
-        watchdog_reset = bool(int(items[1]))
+        power_reset = jdict[0] == 'T'
+        watchdog_reset = jdict[1] == 'T'
 
         return ResetStatus(power_reset, watchdog_reset)
 
@@ -209,7 +206,7 @@ class ResetStatus(JSONable):
     def as_json(self):
         items = (self.power_reset, self.watchdog_reset)
 
-        item_string = ''.join(['1' if item else '0' for item in items])
+        item_string = ''.join(['T' if item else 'F' for item in items])
 
         return item_string
 
