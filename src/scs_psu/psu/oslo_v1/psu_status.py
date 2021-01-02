@@ -51,7 +51,7 @@ class PSUStatus(PSUReport):
         v_in = jdict.get('pwr-in')
         prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
+        return cls(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@ class PSUStatus(PSUReport):
         charge_status = ChargeStatus.construct_from_jdict(jdict.get('batt'))
         prot_batt = jdict.get('prot-batt')
 
-        return PSUStatus(standby, charger_status, input_power_present, v_in, charge_status, prot_batt)
+        return cls(standby, charger_status, input_power_present, v_in, charge_status, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
