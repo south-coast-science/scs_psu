@@ -42,7 +42,7 @@ class PSUStatus(PSUReport):
 
         reset = ResetStatus.construct_from_jdict(jdict.get('rst'))
         standby = jdict.get('standby')
-        charger = ChargerStatus.construct_from_jdict(jdict.get('chg'))
+        charger = ChargerStatus.construct_from_jdict(jdict.get('chgr'))
         battery_fault = jdict.get('batt-flt')
 
         host_3v3 = jdict.get('host-3v3')
@@ -84,7 +84,7 @@ class PSUStatus(PSUReport):
 
         jdict['rst'] = self.reset
 
-        jdict['chg'] = self.charger
+        jdict['chgr'] = self.charger
 
         jdict['batt-flt'] = self.battery_fault
 
