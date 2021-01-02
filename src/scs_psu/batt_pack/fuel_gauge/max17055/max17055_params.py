@@ -78,7 +78,9 @@ class MAX17055Params(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def save(self, manager, encryption_key=None):
-        self.__calibrated_on = LocalizedDatetime.now()
+        if not self.__calibrated_on:
+            self.__calibrated_on = LocalizedDatetime.now()
+
         super().save(manager, encryption_key=None)
 
 

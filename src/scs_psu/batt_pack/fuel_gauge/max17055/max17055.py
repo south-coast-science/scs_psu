@@ -16,6 +16,7 @@ https://github.com/electricimp/MAX17055
 
 import time
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Decode
 from scs_core.data.timedelta import Timedelta
 
@@ -279,6 +280,8 @@ class MAX17055(object):
         try:
             self.obtain_lock()
 
+            calibrated_on = LocalizedDatetime.now()
+
             r_comp_0 = self.__read_reg(self.__REG_R_COMP_0)
             temp_co = self.__read_reg(self.__REG_TEMP_CO)
             full_cap_rep = self.__read_reg(self.__REG_FULL_CAP_REP)
@@ -286,7 +289,7 @@ class MAX17055(object):
 
             cycles = self.__read_reg(self.__REG_CYCLES)
 
-            return MAX17055Params(None, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
+            return MAX17055Params(calibrated_on, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
 
         finally:
             self.release_lock()
