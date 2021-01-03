@@ -3,14 +3,9 @@ Created on 13 Nov 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-document example - charging:
-{"rst": "00", "standby": false, "chg": "1010", "batt-flt": false, "host-3v3": 3.3, "pwr-in": 12.6, "prot-batt": 9.2}
-
-document example - no DC in:
-{"rst": "00", "standby": false, "chg": "1111", "batt-flt": false, "host-3v3": 3.3, "pwr-in": 3.3, "prot-batt": 8.9}
-
-document example - no battery:
-{"rst": "00", "standby": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.3, "pwr-in": 13.0, "prot-batt": 0.0}
+document example:
+{"src": "Ov1", "standby": false, "in": true, "pwr-in": 12.5, "rst": "FF", "chgr": "TFFF", "batt-flt": false,
+"host-3v3": 3.3, "prot-batt": 8.9}
 """
 
 from collections import OrderedDict
