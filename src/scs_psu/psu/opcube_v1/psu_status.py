@@ -26,6 +26,8 @@ class PSUStatus(PSUReport):
 
     __SOURCE = 'Cv1'
 
+    __MIN_CHARGE_VIN = 3.2      # Volts
+
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
@@ -83,8 +85,8 @@ class PSUStatus(PSUReport):
         if self.charge_status is None:
             return False                                    # power threshold cannot be identified
 
-        if self.charge_status.tte is None:
-            return False                                    # device is not running on battery or gauge disconnected
+        if self.v_in > self.__MIN_CHARGE_VIN:               # DC input power is available or battery is charged
+            return False
 
         return self.charge_status.charge < charge_min
 
