@@ -5,7 +5,7 @@ Created on 1 Apr 2020
 
 example document:
 {"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFTF",
-"batt": {"chg": 40, "tte": null, "ttf": "00-03:06:34"}, "prot-batt": 3.8}
+"batt": {"chg": 99, "tte": null, "ttf": null}, "prot-batt": 4.1}
 """
 
 from collections import OrderedDict
@@ -25,6 +25,8 @@ class PSUStatus(PSUReport):
     """
 
     __SOURCE = 'Cv1'
+
+    __MIN_CHARGE_VIN = 3.2      # Volts
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -83,8 +85,8 @@ class PSUStatus(PSUReport):
         if self.charge_status is None:
             return False                                    # power threshold cannot be identified
 
-        if self.charge_status.tte is None:
-            return False                                    # device is not running on battery or gauge disconnected
+        if self.v_in > self.__MIN_CHARGE_VIN:               # DC input power is available or battery is charged
+            return False
 
         return self.charge_status.charge < charge_min
 
