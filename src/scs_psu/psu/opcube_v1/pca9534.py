@@ -25,7 +25,7 @@ class PCA9534(object):
 
     __CONFIG =              0xcf        # 1100 1111
 
-    __MASK_BAT_TOC =        0x01        # 0000 0001
+    __MASK_BAT_TOC =        0x01        # 0000 0001     (mislabeled as TOC on schematic)
     __MASK_BAT_READY =      0x02        # 0000 0010
     __MASK_BAT_FAULT =      0x04        # 0000 0100
     __MASK_BAT_CHARGE =     0x08        # 0000 1000
