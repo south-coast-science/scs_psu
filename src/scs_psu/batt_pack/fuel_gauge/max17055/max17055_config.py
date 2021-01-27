@@ -14,7 +14,7 @@ from scs_core.data.json import JSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Config(JSONable):
+class Max17055Config(JSONable):
     """
     classdocs
     """
@@ -41,7 +41,7 @@ class MAX17055Config(JSONable):
         chrg_v = jdict.get('chrg-v')
         batt_type = jdict.get('batt-type')
 
-        return MAX17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
+        return Max17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ class MAX17055Config(JSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Config:{des_cap:%s, sense_res:%s, chrg_term:%s, empty_v_target:%s, " \
+        return "Max17055Config:{des_cap:%s, sense_res:%s, chrg_term:%s, empty_v_target:%s, " \
                "recovery_v:%s, chrg_v:%s, batt_type:%s}" % \
                (self.des_cap, self.sense_res, self.chrg_term, self.empty_v_target,
                 self.recovery_v, self.chrg_v, self.batt_type)
