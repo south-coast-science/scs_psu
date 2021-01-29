@@ -66,7 +66,7 @@ class PSUConf(AbstractPSUConf):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return PSUConf(None, None, False, 0, None)
 
