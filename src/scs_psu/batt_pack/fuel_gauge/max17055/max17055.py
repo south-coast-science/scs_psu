@@ -20,14 +20,13 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.datum import Decode
 from scs_core.data.timedelta import Timedelta
 
-from scs_core.psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
-
 from scs_host.bus.i2c import I2C
 from scs_host.lock.lock import Lock
 
 from scs_psu.batt_pack.fuel_gauge.batt_status import BattStatus, ChargeLevel
 
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import Max17055Config
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------

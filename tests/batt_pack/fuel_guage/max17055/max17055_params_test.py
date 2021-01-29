@@ -11,7 +11,7 @@ https://github.com/electricimp/MAX17055
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
-from scs_core.psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------

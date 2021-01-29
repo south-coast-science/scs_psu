@@ -17,9 +17,8 @@ From Max17055 Software Implementation Guide p12:
 
 from abc import ABC, abstractmethod
 
-from scs_core.psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
-
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import Max17055
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------
