@@ -3,7 +3,7 @@ Created on 25 Dec 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-From MAX17055 Software Implementation Guide p12:
+From Max17055 Software Implementation Guide p12:
 
     # designCap = 0x1450
     # ichgterm = 0x333
@@ -17,8 +17,8 @@ From MAX17055 Software Implementation Guide p12:
 
 from abc import ABC, abstractmethod
 
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import MAX17055
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import Max17055
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ class BattPack(ABC):
 
     @classmethod
     def param_save_interval(cls):
-        return MAX17055.param_save_interval()
+        return Max17055.param_save_interval()
 
 
     @classmethod
     def construct(cls):
         conf = cls.gauge_conf()
-        gauge = MAX17055(conf)
+        gauge = Max17055(conf)
 
         return cls(gauge)
 
@@ -83,7 +83,7 @@ class BattPack(ABC):
             if not self.__gauge.read_power_on_reset() and not force_config:
                 return None
 
-            params = MAX17055Params.load(host)
+            params = Max17055Params.load(host)
 
             if params is None:
                 params = self.default_params()
@@ -105,7 +105,7 @@ class BattPack(ABC):
             return None
 
 
-    def write_params(self, params: MAX17055Params):
+    def write_params(self, params: Max17055Params):
         try:
             self.__gauge.write_params(params)
             return True

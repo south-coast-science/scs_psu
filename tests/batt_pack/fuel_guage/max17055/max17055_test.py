@@ -9,7 +9,7 @@ Created on 30 Sep 2019
 import time
 
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import MAX17055
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055 import Max17055
 
 from scs_host.bus.i2c import I2C
 
@@ -23,7 +23,7 @@ print("-")
 try:
     I2C.Utilities.open()
 
-    gauge = MAX17055(conf)
+    gauge = Max17055(conf)
     loaded = gauge.initialise(False)
     print("conf loaded: %s" % loaded)
     print(gauge)

@@ -21,7 +21,7 @@ from scs_core.data.json import PersistentJSONable
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055Params(PersistentJSONable):
+class Max17055Params(PersistentJSONable):
     """
     classdocs
     """
@@ -36,7 +36,7 @@ class MAX17055Params(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return None
 
@@ -134,7 +134,7 @@ class MAX17055Params(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "MAX17055Params:{calibrated_on:%s, r_comp_0:%s, temp_co:%s, full_cap_rep:%s, full_cap_nom:%s, " \
+        return "Max17055Params:{calibrated_on:%s, r_comp_0:%s, temp_co:%s, full_cap_rep:%s, full_cap_nom:%s, " \
                "cycles:%s}" % \
                (self.calibrated_on, self.r_comp_0, self.temp_co, self.full_cap_rep, self.full_cap_nom,
                 self.cycles)

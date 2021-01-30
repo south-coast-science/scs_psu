@@ -15,7 +15,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONify
 
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import MAX17055Config
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import Max17055Config
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -29,6 +29,6 @@ print(jstr)
 print("-")
 
 jdict = json.loads(jstr, object_hook=OrderedDict)
-conf = MAX17055Config.construct_from_jdict(jdict)
+conf = Max17055Config.construct_from_jdict(jdict)
 print(conf)
 
