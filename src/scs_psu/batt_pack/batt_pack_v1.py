@@ -12,9 +12,8 @@ https://www.nitecore.co.uk/Shop/Products/Batteries/13663-Nitecore-IMR-18650-Batt
 import json
 
 from scs_psu.batt_pack.batt_pack import BattPack
-
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import MAX17055Config
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import Max17055Config
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -45,10 +44,10 @@ class BattPackV1(BattPack):
         empty_v_target = 3.3            # V
         recovery_v = 3.8                # V
 
-        chrg_v = MAX17055Config.CHRG_V_4_2
-        batt_type = MAX17055Config.BATT_TYPE_LiCoO2
+        chrg_v = Max17055Config.CHRG_V_4_2
+        batt_type = Max17055Config.BATT_TYPE_LiCoO2
 
-        return MAX17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
+        return Max17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,7 +59,7 @@ class BattPackV1(BattPack):
 
     @classmethod
     def default_params(cls):
-        return MAX17055Params.construct_from_jdict(json.loads(cls.__DEFAULT_PARAMS))
+        return Max17055Params.construct_from_jdict(json.loads(cls.__DEFAULT_PARAMS))
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -25,13 +25,13 @@ from scs_host.lock.lock import Lock
 
 from scs_psu.batt_pack.fuel_gauge.batt_status import BattStatus, ChargeLevel
 
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import MAX17055Config
-from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import MAX17055Params
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import Max17055Config
+from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class MAX17055(object):
+class Max17055(object):
     """
     classdocs
     """
@@ -101,7 +101,7 @@ class MAX17055(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, conf: MAX17055Config):
+    def __init__(self, conf: Max17055Config):
         """
         Constructor
         """
@@ -289,13 +289,13 @@ class MAX17055(object):
 
             cycles = self.__read_reg(self.__REG_CYCLES)
 
-            return MAX17055Params(calibrated_on, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
+            return Max17055Params(calibrated_on, r_comp_0, temp_co, full_cap_rep, full_cap_nom, cycles)
 
         finally:
             self.release_lock()
 
 
-    def write_params(self, params: MAX17055Params):
+    def write_params(self, params: Max17055Params):
         try:
             self.obtain_lock()
 

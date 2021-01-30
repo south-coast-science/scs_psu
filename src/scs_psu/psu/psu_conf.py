@@ -10,9 +10,7 @@ example JSON:
 "report-file": "/tmp/southcoastscience/psu_status_report.json"}
 """
 
-from collections import OrderedDict
-
-from scs_core.data.json import PersistentJSONable
+from scs_core.psu.psu_conf import PSUConf as AbstractPSUConf
 
 from scs_dfe.interface.opcube.opcube_mcu_t1 import OPCubeMCUt1
 
@@ -37,17 +35,10 @@ from scs_psu.psu.psu_monitor import PSUMonitor
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUConf(PersistentJSONable):
+class PSUConf(AbstractPSUConf):
     """
     classdocs
     """
-
-    __FILENAME = "psu_conf.json"
-
-    @classmethod
-    def persistence_location(cls):
-        return cls.conf_dir(), cls.__FILENAME
-
 
     __PSU_CLASSES = {
         PSUMobileV1.name():  PSUMobileV1,
@@ -75,7 +66,7 @@ class PSUConf(PersistentJSONable):
     # ----------------------------------------------------------------------------------------------------------------
 
     @classmethod
-    def construct_from_jdict(cls, jdict):
+    def construct_from_jdict(cls, jdict, default=True):
         if not jdict:
             return PSUConf(None, None, False, 0, None)
 
@@ -86,7 +77,7 @@ class PSUConf(PersistentJSONable):
         reporting_interval = jdict.get('reporting-interval')
         report_file = jdict.get('report-file')
 
-        return PSUConf(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
+        return cls(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -95,12 +86,7 @@ class PSUConf(PersistentJSONable):
         """
         Constructor
         """
-        self.__psu_model = psu_model                                        # string
-        self.__batt_model = batt_model                                      # string
-        self.__ignore_threshold = ignore_threshold                          # bool
-
-        self.__reporting_interval = int(reporting_interval)                 # int
-        self.__report_file = report_file                                    # string
+        super().__init__(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -144,69 +130,29 @@ class PSUConf(PersistentJSONable):
         if psu is None:
             return None
 
-        return PSUMonitor(host, psu, ignore_standby, self.__ignore_threshold)
+        return PSUMonitor(host, psu, ignore_standby, self.ignore_threshold)
 
 
     def psu_class(self):
-        if self.__psu_model is None:
+        if self.psu_model is None:
             return None
 
-        return self.__PSU_CLASSES[self.__psu_model]
+        return self.__PSU_CLASSES[self.psu_model]
 
 
     def psu_report_class(self):
-        if self.__psu_model is None:
+        if self.psu_model is None:
             return None
 
-        psu_class = self.__PSU_CLASSES[self.__psu_model]                 # may raise KeyError
+        psu_class = self.__PSU_CLASSES[self.psu_model]                 # may raise KeyError
 
         return psu_class.report_class()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def psu_model(self):
-        return self.__psu_model
-
-
-    @property
-    def batt_model(self):
-        return self.__batt_model
-
-
-    @property
-    def ignore_threshold(self):
-        return self.__ignore_threshold
-
-
-    @property
-    def report_file(self):
-        return self.__report_file
-
-
-    @property
-    def reporting_interval(self):
-        return self.__reporting_interval
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def as_json(self):
-        jdict = OrderedDict()
-
-        jdict['model'] = self.__psu_model
-        jdict['batt-model'] = self.__batt_model
-        jdict['ignore-threshold'] = self.__ignore_threshold
-
-        jdict['reporting-interval'] = self.__reporting_interval
-        jdict['report-file'] = self.__report_file
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
     def __str__(self, *args, **kwargs):
-        return "PSUConf:{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s, report_file:%s}" % \
-               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval, self.report_file)
+        return "PSUConf(psu):{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s, " \
+               "report_file:%s}" % \
+               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval,
+                self.report_file)
