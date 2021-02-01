@@ -3,7 +3,7 @@ Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Lightweight system Raspberry Pi Zero controller + mobile power pack + fuel gauge
+Cube board + OPCube PSU power pack + fuel gauge
 """
 
 from scs_core.psu.psu import PSU
@@ -78,19 +78,17 @@ class PSUOPCubeV1(PSU):
             batt_status = self.batt_pack.sample()
 
             charger_status = self.charger.sample()
-            input_power_present = None if batt_status is None else batt_status.input_power_present
             v_in = self.v_in_monitor.sample()
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
             prot_batt = None if batt_status is None else batt_status.v
 
-        except AttributeError:          # TODO: was (AttributeError, OSError) - fix OS issue
+        except AttributeError:
             charger_status = None
-            input_power_present = None
             v_in = None
             charge_status = None
             prot_batt = None
 
-        return PSUStatus(standby, charger_status, input_power_present, v_in, charge_status, prot_batt)
+        return PSUStatus(standby, charger_status, v_in, charge_status, prot_batt)
 
 
     def charge_min(self):
