@@ -3,7 +3,7 @@ Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Lightweight system Raspberry Pi Zero controller + mobile power pack + fuel gauge
+Cube board + OPCube PSU power pack + fuel gauge
 """
 
 from scs_core.psu.psu import PSU
