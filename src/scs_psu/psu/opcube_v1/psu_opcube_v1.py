@@ -83,7 +83,7 @@ class PSUOPCubeV1(PSU):
             charge_status = ChargeStatus.construct_from_batt_status(batt_status)
             prot_batt = None if batt_status is None else batt_status.v
 
-        except (AttributeError, OSError):
+        except AttributeError:          # TODO: was (AttributeError, OSError) - fix OS issue
             charger_status = None
             input_power_present = None
             v_in = None
