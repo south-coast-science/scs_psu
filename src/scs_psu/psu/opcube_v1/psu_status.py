@@ -24,9 +24,10 @@ class PSUStatus(PSUReport):
     classdocs
     """
 
-    __SOURCE = 'Cv1'
+    POWER_IN_MINIMUM =        7.0           # Volts
+    BATTERY_MINIMUM =         3.2           # Volts
 
-    __MIN_CHARGE_VIN = 3.2      # Volts
+    __SOURCE = 'Cv1'
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -37,24 +38,22 @@ class PSUStatus(PSUReport):
 
         standby = jdict.get('standby')
         charger_status = ChargerStatus.construct_from_jdict(jdict.get('chgr'))
-        input_power_present = jdict.get('in')
         v_in = jdict.get('pwr-in')
 
         charge_status = ChargeStatus.construct_from_jdict(jdict.get('batt'))
         prot_batt = jdict.get('prot-batt')
 
-        return cls(standby, charger_status, input_power_present, v_in, charge_status, prot_batt)
+        return cls(standby, charger_status, v_in, charge_status, prot_batt)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, standby, charger_status, input_power_present, v_in, charge_status, prot_batt):
+    def __init__(self, standby, charger_status, v_in, charge_status, prot_batt):
         """
         Constructor
         """
         self.__standby = standby                                # bool
         self.__charger_status = charger_status                  # ChargerStatus
-        self.__input_power_present = input_power_present        # bool
         self.__v_in = Datum.float(v_in, 1)                      # PSU input voltage  float
 
         self.__charge_status = charge_status                    # ChargeStatus
@@ -85,7 +84,7 @@ class PSUStatus(PSUReport):
         if self.charge_status is None:
             return False                                    # power threshold cannot be identified
 
-        if self.v_in > self.__MIN_CHARGE_VIN:               # DC input power is available or battery is charged
+        if self.v_in > self.BATTERY_MINIMUM:                # DC input power is available or battery is charged
             return False
 
         return self.charge_status.charge < charge_min
@@ -111,7 +110,7 @@ class PSUStatus(PSUReport):
 
     @property
     def input_power_present(self):
-        return self.__input_power_present
+        return self.v_in is not None and self.v_in >= self.POWER_IN_MINIMUM
 
 
     @property
@@ -137,10 +136,8 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUStatus(opcube_v1):{standby:%s, charger_status:%s, input_power_present:%s, v_in:%s, " \
-               "charge_status:%s, prot_batt:%s}" % \
-               (self.standby, self.charger_status, self.input_power_present, self.v_in,
-                self.charge_status, self.prot_batt)
+        return "PSUStatus(opcube_v1):{standby:%s, charger_status:%s, v_in:%s, charge_status:%s, prot_batt:%s}" % \
+               (self.standby, self.charger_status, self.v_in, self.charge_status, self.prot_batt)
 
 
 # --------------------------------------------------------------------------------------------------------------------
