@@ -6,16 +6,15 @@ Created on 13 Jun 2019
 Lightweight system Raspberry Pi Zero header + mobile power pack
 """
 
-from scs_core.psu.psu import PSU
-
 from scs_host.bus.i2c import I2C
 
+from scs_psu.psu.i2c_psu import I2CPSU
 from scs_psu.psu.mobile_v1.psu_status import PSUStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUMobileV1(PSU):
+class PSUMobileV1(I2CPSU):
     """
     classdocs
     """
@@ -44,11 +43,12 @@ class PSUMobileV1(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, header):
+    def __init__(self, controller):
         """
         Constructor
         """
-        self.__header = header                                      # PZHB
+        super().__init__(controller)
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ class PSUMobileV1(PSU):
     def open(self):
         I2C.Utilities.open()
 
-        self.__header.button_enable()
+        self.controller.button_enable()
 
 
     def close(self):
@@ -66,8 +66,8 @@ class PSUMobileV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
-        standby = self.__header.button_pressed()
-        power_in = self.__header.read_batt_v()
+        standby = self.controller.button_pressed()
+        power_in = self.controller.read_batt_v()
 
         return PSUStatus(standby, power_in)
 
@@ -79,7 +79,7 @@ class PSUMobileV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
-        return self.__header.version_ident()
+        return self.controller.version_ident()
 
 
     def uptime(self):
@@ -87,7 +87,7 @@ class PSUMobileV1(PSU):
 
 
     def host_shutdown_initiated(self):
-        return self.__header.host_shutdown_initiated()
+        return self.controller.host_shutdown_initiated()
 
 
     def watchdog_start(self, interval):
@@ -120,4 +120,4 @@ class PSUMobileV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUMobileV1:{header:%s}" % self.__header
+        return "PSUMobileV1:{header:%s}" % self.controller
