@@ -3,7 +3,7 @@ Created on 13 Jun 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-An abstract PSU
+An abstract PSU that communicates over a UART
 """
 
 import json
