@@ -73,6 +73,9 @@ class PSUOPCubeV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
+        if command == 'name':
+            return JSONify.dumps(self.name())
+
         if command == 'status':
             return JSONify.dumps(self.status())
 
@@ -80,6 +83,7 @@ class PSUOPCubeV1(PSU):
             return JSONify.dumps(self.version())
 
         return None
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
