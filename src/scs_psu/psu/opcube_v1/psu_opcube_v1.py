@@ -6,6 +6,7 @@ Created on 1 Apr 2020
 Cube board + OPCube PSU power pack + fuel gauge
 """
 
+from scs_core.data.json import JSONify
 from scs_core.psu.psu import PSU
 
 from scs_host.bus.i2c import I2C
@@ -68,6 +69,17 @@ class PSUOPCubeV1(PSU):
     def close(self):
         I2C.Utilities.close()
 
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def communicate(self, command):
+        if command == 'status':
+            return JSONify.dumps(self.status())
+
+        if command == 'version':
+            return JSONify.dumps(self.version())
+
+        return None
 
     # ----------------------------------------------------------------------------------------------------------------
 
