@@ -6,16 +6,15 @@ Created on 1 Apr 2020
 Lightweight system Raspberry Pi Zero header + mobile power pack + fuel gauge
 """
 
-from scs_core.psu.psu import PSU
-
 from scs_host.bus.i2c import I2C
 
+from scs_psu.psu.i2c_psu import I2CPSU
 from scs_psu.psu.mobile_v2.psu_status import PSUStatus, ChargeStatus
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUMobileV2(PSU):
+class PSUMobileV2(I2CPSU):
     """
     classdocs
     """
@@ -44,11 +43,12 @@ class PSUMobileV2(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, header, batt_pack):
+    def __init__(self, controller, batt_pack):
         """
         Constructor
         """
-        self.__header = header                                      # PZHB
+        super().__init__(controller)
+
         self.__batt_pack = batt_pack                                # BattPackV1
 
 
@@ -56,19 +56,14 @@ class PSUMobileV2(PSU):
 
     def open(self):
         I2C.Utilities.open()
-
-        self.__header.button_enable()
-
-
-    def close(self):
-        I2C.Utilities.close()
+        self.controller.button_enable()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
-        standby = self.__header.button_pressed()
-        power_in = self.__header.read_batt_v()
+        standby = self.controller.button_pressed()
+        power_in = self.controller.read_batt_v()
 
         try:
             batt_status = self.batt_pack.sample()
@@ -89,7 +84,7 @@ class PSUMobileV2(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
-        return self.__header.version_ident()
+        return self.controller.version_ident()
 
 
     def uptime(self):
@@ -97,7 +92,7 @@ class PSUMobileV2(PSU):
 
 
     def host_shutdown_initiated(self):
-        return self.__header.host_shutdown_initiated()
+        return self.controller.host_shutdown_initiated()
 
 
     def watchdog_start(self, interval):
@@ -130,4 +125,4 @@ class PSUMobileV2(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.__header, self.batt_pack)
+        return "PSUMobileV2:{header:%s, batt_pack:%s}" % (self.controller, self.batt_pack)

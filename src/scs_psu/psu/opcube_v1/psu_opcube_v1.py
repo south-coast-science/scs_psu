@@ -6,10 +6,9 @@ Created on 1 Apr 2020
 Cube board + OPCube PSU power pack + fuel gauge
 """
 
-from scs_core.psu.psu import PSU
-
 from scs_host.bus.i2c import I2C
 
+from scs_psu.psu.i2c_psu import I2CPSU
 from scs_psu.psu.opcube_v1.mcp3221 import MCP3221
 from scs_psu.psu.opcube_v1.pca9534 import PCA9534
 
@@ -18,7 +17,7 @@ from scs_psu.psu.opcube_v1.psu_status import PSUStatus, ChargeStatus
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUOPCubeV1(PSU):
+class PSUOPCubeV1(I2CPSU):
     """
     classdocs
     """
@@ -28,11 +27,6 @@ class PSUOPCubeV1(PSU):
     @classmethod
     def name(cls):
         return 'OPCubeV1'
-
-
-    @classmethod
-    def requires_interface(cls):
-        return True
 
 
     @classmethod
@@ -51,7 +45,8 @@ class PSUOPCubeV1(PSU):
         """
         Constructor
         """
-        self.__controller = controller                          # OPCubeMCU
+        super().__init__(controller)
+
         self.__batt_pack = batt_pack                            # BattPackV2
 
         self.__charger = PCA9534(PCA9534.DEFAULT_ADDR)
@@ -65,14 +60,10 @@ class PSUOPCubeV1(PSU):
         self.charger.init()
 
 
-    def close(self):
-        I2C.Utilities.close()
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def status(self):
-        standby = not self.__controller.switch_state()
+        standby = not self.controller.switch_state()
 
         try:
             batt_status = self.batt_pack.sample()
@@ -98,7 +89,7 @@ class PSUOPCubeV1(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
-        return self.__controller.version_ident()
+        return self.controller.version_ident()
 
 
     def uptime(self):
@@ -106,7 +97,7 @@ class PSUOPCubeV1(PSU):
 
 
     def host_shutdown_initiated(self):
-        return self.__controller.host_shutdown_initiated()
+        return self.controller.host_shutdown_initiated()
 
 
     def watchdog_start(self, interval):
@@ -150,4 +141,4 @@ class PSUOPCubeV1(PSU):
 
     def __str__(self, *args, **kwargs):
         return "PSUOPCubeV1:{controller:%s, charger:%s, batt_pack:%s, v_in_monitor:%s}" % \
-               (self.__controller, self.charger, self.batt_pack, self.v_in_monitor)
+               (self.controller, self.charger, self.batt_pack, self.v_in_monitor)
