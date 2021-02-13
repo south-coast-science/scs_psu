@@ -138,6 +138,8 @@ class PSUMonitor(SynchronisedProcess):
         self.__psu.host_shutdown_initiated()
         self.__shutdown_initiated = True
 
+        self.__psu.power_peripherals(False)
+
         time.sleep(2.0)                         # allow reporting to be completed
 
         self.__host.shutdown()
