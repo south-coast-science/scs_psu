@@ -70,6 +70,19 @@ class SerialPSU(PSU):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def communicate(self, command):
+        self._serial.write_line(command.strip(), self.__EOL)
+
+        try:
+            response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
+        except TimeoutError:
+            return None
+
+        return response
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def version(self):
         response = self.communicate("version")
 
@@ -137,14 +150,5 @@ class SerialPSU(PSU):
         return response
 
 
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def communicate(self, command):
-        self._serial.write_line(command.strip(), self.__EOL)
-
-        try:
-            response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
-        except TimeoutError:
-            return None
-
-        return response
+    def power_peripherals(self, on):
+        pass
