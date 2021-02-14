@@ -111,8 +111,8 @@ class SerialPSU(PSU):
         return response
 
 
-    def do_not_resuscitate(self, enable):
-        param = 1 if bool(enable) else 0
+    def do_not_resuscitate(self, on):
+        param = 1 if bool(on) else 0
         response = self.communicate("dnr %d" % param)
 
         return response
