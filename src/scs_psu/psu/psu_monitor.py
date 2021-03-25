@@ -138,7 +138,7 @@ class PSUMonitor(SynchronisedProcess):
         self.__psu.host_shutdown_initiated()
         self.__shutdown_initiated = True
 
-        self.__psu.power_peripherals(False)
+        # self.__psu.power_peripherals(False)   # see Tim email on 2021-03-24
 
         time.sleep(2.0)                         # allow reporting to be completed
 
