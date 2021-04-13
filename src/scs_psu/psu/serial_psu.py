@@ -7,6 +7,7 @@ An abstract PSU that communicates over a UART
 """
 
 import json
+import sys
 
 from abc import abstractmethod
 
@@ -88,6 +89,7 @@ class SerialPSU(PSU):
 
     def version(self):
         response = self.communicate("version")
+        print("response: %s" % response, file=sys.stderr)
 
         try:
             jdict = json.loads(response)
