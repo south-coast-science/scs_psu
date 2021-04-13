@@ -94,7 +94,7 @@ class PSUOPCubeV1(I2CPSU):
         id = self.controller.version_ident()
         tag = self.controller.version_tag()
 
-        return PSUVersion(id, tag, None, None)
+        return PSUVersion.construct(id, tag)
 
 
     def uptime(self):
