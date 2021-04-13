@@ -26,8 +26,8 @@ class SerialPSU(PSU):
 
     __EOL =                     "\n"
 
-    __SERIAL_LOCK_TIMEOUT =     4.0         # seconds
-    __SERIAL_COMMS_TIMEOUT =    3.0         # seconds
+    __SERIAL_LOCK_TIMEOUT =     3.0         # seconds
+    __SERIAL_COMMS_TIMEOUT =    2.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
