@@ -6,12 +6,14 @@ Created on 1 Apr 2020
 Cube board + OPCube PSU power pack + fuel gauge
 """
 
+from scs_core.psu.psu_version import PSUVersion
+
 from scs_host.bus.i2c import I2C
 
 from scs_psu.psu.i2c_psu import I2CPSU
+
 from scs_psu.psu.opcube_v1.mcp3221 import MCP3221
 from scs_psu.psu.opcube_v1.pca9534 import PCA9534
-
 from scs_psu.psu.opcube_v1.psu_status import PSUStatus, ChargeStatus
 
 
@@ -89,7 +91,10 @@ class PSUOPCubeV1(I2CPSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
-        return self.controller.version_ident()
+        id = self.controller.version_ident()
+        tag = self.controller.version_tag()
+
+        return PSUVersion.construct(id, tag)
 
 
     def uptime(self):

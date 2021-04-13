@@ -26,8 +26,8 @@ class SerialPSU(PSU):
 
     __EOL =                     "\n"
 
-    __SERIAL_LOCK_TIMEOUT =     4.0         # seconds
-    __SERIAL_COMMS_TIMEOUT =    3.0         # seconds
+    __SERIAL_LOCK_TIMEOUT =     3.0         # seconds
+    __SERIAL_COMMS_TIMEOUT =    2.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,10 @@ class SerialPSU(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
-        self._serial.write_line(command.strip(), self.__EOL)
+        try:
+            self._serial.write_line(command.strip(), self.__EOL)
+        except AttributeError:
+            return None
 
         try:
             response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
@@ -90,7 +93,7 @@ class SerialPSU(PSU):
             jdict = json.loads(response)
             return PSUVersion.construct_from_jdict(jdict)
 
-        except ValueError:
+        except (TypeError, ValueError):
             return None
 
 
@@ -101,7 +104,7 @@ class SerialPSU(PSU):
             jdict = json.loads(response)
             return PSUUptime.construct_from_jdict(jdict)
 
-        except ValueError:
+        except (TypeError, ValueError):
             return None
 
 

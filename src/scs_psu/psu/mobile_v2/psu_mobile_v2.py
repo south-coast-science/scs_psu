@@ -6,6 +6,8 @@ Created on 1 Apr 2020
 Lightweight system Raspberry Pi Zero header + mobile power pack + fuel gauge
 """
 
+from scs_core.psu.psu_version import PSUVersion
+
 from scs_host.bus.i2c import I2C
 
 from scs_psu.psu.i2c_psu import I2CPSU
@@ -84,7 +86,10 @@ class PSUMobileV2(I2CPSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def version(self):
-        return self.controller.version_ident()
+        id = self.controller.version_ident()
+        tag = self.controller.version_tag()
+
+        return PSUVersion.construct(id, tag)
 
 
     def uptime(self):
