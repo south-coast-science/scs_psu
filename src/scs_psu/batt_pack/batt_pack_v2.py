@@ -11,6 +11,7 @@ Tuned for 1 x battery
 import json
 
 from scs_psu.batt_pack.batt_pack import BattPack
+
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import Max17055Config
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
