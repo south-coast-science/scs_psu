@@ -25,8 +25,8 @@ class BattPackV2(BattPack):
 
     __CHARGE_MINIMUM =        1         # percent
 
-    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-04-17T10:51:25Z", "r-comp-0": 263, "temp-co": 8766, ' \
-                        '"full-cap-rep": 3643, "full-cap-nom": 5429, "cycles": 98}'
+    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-04-17T13:16:10Z", "r-comp-0": 113, "temp-co": 8766, ' \
+                        '"full-cap-rep": 4319, "full-cap-nom": 5429, "cycles": 147}'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ class BattPackV2(BattPack):
 
     @staticmethod
     def gauge_conf():
-        des_cap = 3000                  # mAh was 1200
+        des_cap = 3000                  # mAh
         sense_res = 0.01                # Ω
         chrg_term = 10                  # mA
         empty_v_target = 2.7            # V
