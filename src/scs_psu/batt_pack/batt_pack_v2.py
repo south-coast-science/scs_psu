@@ -25,8 +25,8 @@ class BattPackV2(BattPack):
 
     __CHARGE_MINIMUM =        1         # percent
 
-    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-01-03T09:25:52Z", "r-comp-0": 255, "temp-co": 9278, ' \
-                        '"full-cap-rep": 3000, "full-cap-nom": 3000, "cycles": 150}'
+    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-04-17T07:19:56Z", "r-comp-0": 19, "temp-co": 8766, ' \
+                        '"full-cap-rep": 3643, "full-cap-nom": 5429, "cycles": 49}'
 
     # __DEFAULT_PARAMS =  '{"calibrated-on": "2021-01-03T09:25:52Z", "r-comp-0": 255, "temp-co": 9278, ' \
     #                     '"full-cap-rep": 4173, "full-cap-nom": 1927, "cycles": 150}'
