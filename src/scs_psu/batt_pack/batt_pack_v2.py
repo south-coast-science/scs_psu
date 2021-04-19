@@ -25,8 +25,8 @@ class BattPackV2(BattPack):
 
     __CHARGE_MINIMUM =        1         # percent
 
-    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-04-17T13:16:10Z", "r-comp-0": 113, "temp-co": 8766, ' \
-                        '"full-cap-rep": 4319, "full-cap-nom": 5429, "cycles": 147}'
+    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-04-19T12:28:46Z", "r-comp-0": 19, "temp-co": 8766, ' \
+                        '"full-cap-rep": 3629, "full-cap-nom": 5315, "cycles": 49}'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ class BattPackV2(BattPack):
         recovery_v = 3.8                # V
 
         chrg_v = Max17055Config.CHRG_V_4_2
-        batt_type = Max17055Config.BATT_TYPE_LiCoO2        # was BATT_TYPE_LiCoO2, BATT_TYPE_LiFePO4
+        batt_type = Max17055Config.BATT_TYPE_LiCoO2
 
         return Max17055Config(des_cap, sense_res, chrg_term, empty_v_target, recovery_v, chrg_v, batt_type)
 
