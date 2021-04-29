@@ -88,7 +88,7 @@ class BattPack(ABC):
             if params is None:
                 params = self.default_params()
 
-            self.__gauge.initialise(force_config=force_config)
+            self.__gauge.initialise_as_github(force_config=force_config)    # was initialise
             self.__gauge.write_params(params)
             self.__gauge.clear_power_on_reset()
 

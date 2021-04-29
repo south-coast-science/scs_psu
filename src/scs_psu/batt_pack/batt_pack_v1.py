@@ -3,7 +3,7 @@ Created on 3 Oct 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Used by version 1 handhelds.
+Used by version 1 Handhelds.
 
 Tuned for 2 x Nitecore IMR 18650 (3.7 V, 3100 mAh)
 https://www.nitecore.co.uk/Shop/Products/Batteries/13663-Nitecore-IMR-18650-Battery-for-TM28-Torch.html#Features
@@ -12,6 +12,7 @@ https://www.nitecore.co.uk/Shop/Products/Batteries/13663-Nitecore-IMR-18650-Batt
 import json
 
 from scs_psu.batt_pack.batt_pack import BattPack
+
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_config import Max17055Config
 from scs_psu.batt_pack.fuel_gauge.max17055.max17055_params import Max17055Params
 
@@ -25,8 +26,8 @@ class BattPackV1(BattPack):
 
     __CHARGE_MINIMUM =        1         # percent
 
-    __DEFAULT_PARAMS =  '{"r-comp-0": 96, "temp-co": 8766, "full-cap-rep": 15711, "full-cap-nom": 21759, ' \
-                        '"cycles": 100}'
+    __DEFAULT_PARAMS =  '{"calibrated-on": "2021-04-19T13:29:46+01:00", "r-comp-0": 106, "temp-co": 8766, ' \
+                        '"full-cap-rep": 10396, "full-cap-nom": 40738, "cycles": 245}'
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ class BattPackV1(BattPack):
     def gauge_conf():
         des_cap = 6200                  # mAh
         sense_res = 0.01                # Ω
-        chrg_term = 1000                # mA
+        chrg_term = 10                  # mA
         empty_v_target = 3.3            # V
         recovery_v = 3.8                # V
 
