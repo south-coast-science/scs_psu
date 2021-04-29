@@ -16,7 +16,7 @@ from scs_core.sync.interval_timer import IntervalTimer
 from scs_psu.batt_pack.batt_pack_v2 import BattPackV2
 
 from scs_host.bus.i2c import I2C
-# from scs_host.sys.host import Host
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,14 +28,14 @@ try:
     print(pack)
 
     # overwrite any previous BattPack version...
-    # params = pack.default_params()
-    # print("default params: %s" % JSONify.dumps(params))
-    # params.save(Host)
+    params = pack.default_params()
+    print("default params: %s" % JSONify.dumps(params))
+    params.save(Host)
 
-    # loaded = pack.initialise(Host, force_config=True)
+    loaded = pack.initialise(Host, force_config=True)
     # loaded = pack.initialise(Host)
-    # print("loaded: %s" % loaded, file=sys.stderr)
-    # sys.stderr.flush()
+    print("loaded: %s" % loaded, file=sys.stderr)
+    sys.stderr.flush()
 
     timer = IntervalTimer(10.0)
 
