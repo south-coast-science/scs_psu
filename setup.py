@@ -41,7 +41,7 @@ with open('requirements.txt') as req_txt:
 setup(
     name='scs_psu',
     version=get_version("src/scs_psu/__init__.py"),
-    description='Communication and control of the South Coast Science power supply boards for BeagleBone.',
+    description='Communication and control of the South Coast Science power supply boards.',
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
     url='https://github.com/south-coast-science/scs_psu',
