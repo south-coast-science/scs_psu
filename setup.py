@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Created on 4 Sep 2020
 Updated 23 Mar 2021
@@ -35,9 +37,10 @@ def get_version(rel_path):
 with open('requirements.txt') as req_txt:
     required = [line for line in req_txt.read().splitlines() if line]
 
+
 setup(
     name='scs_psu',
-    version=get_version("scs_psu/__init__.py"),
+    version=get_version("src/scs_psu/__init__.py"),
     description='Communication and control of the South Coast Science power supply boards for BeagleBone.',
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
