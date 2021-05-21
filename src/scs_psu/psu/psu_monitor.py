@@ -118,6 +118,9 @@ class PSUMonitor(SynchronisedProcess):
 
         params = batt_pack.read_learned_params()
 
+        if params is None:
+            return
+
         if self.__prev_params is not None and params == self.__prev_params:
             return
 
