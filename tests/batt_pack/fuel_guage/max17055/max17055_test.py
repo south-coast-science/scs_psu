@@ -24,7 +24,7 @@ try:
     I2C.Utilities.open()
 
     gauge = Max17055(conf)
-    loaded = gauge.initialise(False)
+    loaded = gauge.initialise()
     print("conf loaded: %s" % loaded)
     print(gauge)
 
