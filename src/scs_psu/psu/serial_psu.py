@@ -48,7 +48,7 @@ class SerialPSU(PSU):
         """
         Constructor
         """
-        self._serial = HostSerial(uart, self.baud_rate(), False)
+        self._serial = HostSerial(uart, self.baud_rate())
 
 
     # ----------------------------------------------------------------------------------------------------------------
