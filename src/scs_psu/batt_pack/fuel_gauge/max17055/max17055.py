@@ -163,7 +163,7 @@ class Max17055(object):
             self.__write_reg(self.__REG_HIB_CFG, hib_cfg)
 
             # clear boot status...
-            status = self.__read_reg(self.__REG_STATUS, signed=False)
+            status = self.__read_reg(self.__REG_STATUS)
             self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
 
             # clear PoR bit...
@@ -232,7 +232,7 @@ class Max17055(object):
             self.__write_reg(self.__REG_HIB_CFG, hib_cfg)
 
             # clear boot status...
-            status = self.__read_reg(self.__REG_STATUS, signed=False)
+            status = self.__read_reg(self.__REG_STATUS)
             self.__write_and_verify_reg(self.__REG_STATUS, status & 0x777f)
 
             # clear PoR bit...
@@ -360,14 +360,14 @@ class Max17055(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def read_charge_percent(self):
-        raw_percent = self.__read_reg(self.__REG_REP_SOC, signed=False)
+        raw_percent = self.__read_reg(self.__REG_REP_SOC)
         percent = raw_percent / 256.0
 
         return round(percent, 1)
 
 
     def read_charge_mah(self):
-        raw_capacity = self.__read_reg(self.__REG_REP_CAP, signed=False)
+        raw_capacity = self.__read_reg(self.__REG_REP_CAP)
         milli_amp_hours = raw_capacity * self.__capacity_lsb()
 
         return int(round(milli_amp_hours))
@@ -417,7 +417,7 @@ class Max17055(object):
 
 
     def read_voltage(self):
-        raw_voltage = self.__read_reg(self.__REG_V_CELL, signed=False)
+        raw_voltage = self.__read_reg(self.__REG_V_CELL)
 
         volts = (raw_voltage * 0.078125) / 1000.0
 
