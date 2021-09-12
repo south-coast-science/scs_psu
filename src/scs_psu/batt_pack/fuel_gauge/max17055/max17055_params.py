@@ -58,6 +58,8 @@ class Max17055Params(PersistentJSONable):
         """
         Constructor
         """
+        super().__init__()
+
         self.__calibrated_on = calibrated_on            # unsigned int
 
         self.__r_comp_0 = r_comp_0                      # unsigned int
