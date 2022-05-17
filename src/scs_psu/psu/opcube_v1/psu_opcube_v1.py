@@ -150,7 +150,7 @@ class PSUOPCubeV1(I2CPSU, ABC):
 
 class PSUOPCubeV1p0(PSUOPCubeV1):
     """
-    Cube board + OPCube PSU power pack + fuel gauge + NXP GPIO
+    Cube board + OPCube PSU power pack + fuel gauge + TI PCA9534A GPIO
     """
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ class PSUOPCubeV1p0(PSUOPCubeV1):
         """
         super().__init__(controller, batt_pack)
 
-        self._charger = PCA9534(PCA9534.NXP_ADDR)
+        self._charger = PCA9534(PCA9534.TI_ADDR)                       # address of TI PCA9534A GPIO chip
         self._v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
 
 

@@ -16,8 +16,8 @@ class PCA9534(object):
     Texas Instruments PCA9534A or NXP remote 8-bit I/O expander
     """
 
-    TI_ADDR =               0x38
-    NXP_ADDR =              0x20
+    TI_ADDR =               0x38        # address of TI PCA9534A GPIO chip
+    NXP_ADDR =              0x20        # address of NXP GPIO chip
 
     __ADDR_INPUT =          0x00
     __ADDR_OUTPUT =         0x01
