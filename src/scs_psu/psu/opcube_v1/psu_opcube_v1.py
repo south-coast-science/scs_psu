@@ -3,8 +3,10 @@ Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Cube board + OPCube PSU power pack + fuel gauge
+Cube board + OPCube PSU power pack + fuel gauge + TI GPIO
 """
+
+from abc import ABC
 
 from scs_core.psu.psu_version import PSUVersion
 
@@ -19,17 +21,12 @@ from scs_psu.psu.opcube_v1.psu_status import PSUStatus, ChargeStatus
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PSUOPCubeV1(I2CPSU):
+class PSUOPCubeV1(I2CPSU, ABC):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @classmethod
-    def name(cls):
-        return 'OPCubeV1'
-
 
     @classmethod
     def uses_batt_pack(cls):
@@ -51,8 +48,8 @@ class PSUOPCubeV1(I2CPSU):
 
         self.__batt_pack = batt_pack                            # BattPackV2
 
-        self.__charger = PCA9534(PCA9534.DEFAULT_ADDR)
-        self.__v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
+        self._charger = None
+        self._v_in_monitor = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -134,16 +131,68 @@ class PSUOPCubeV1(I2CPSU):
 
     @property
     def charger(self):
-        return self.__charger
+        return self._charger
 
 
     @property
     def v_in_monitor(self):
-        return self.__v_in_monitor
+        return self._v_in_monitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUOPCubeV1:{controller:%s, charger:%s, batt_pack:%s, v_in_monitor:%s}" % \
+        return self.__class__.name() + ":{controller:%s, charger:%s, batt_pack:%s, v_in_monitor:%s}" % \
                (self.controller, self.charger, self.batt_pack, self.v_in_monitor)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class PSUOPCubeV1p0(PSUOPCubeV1):
+    """
+    Cube board + OPCube PSU power pack + fuel gauge + NXP GPIO
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def name(cls):
+        return 'OPCubeV1'           # name maintains backwards-compatibility with single-version OPCubeV1
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, controller, batt_pack):
+        """
+        Constructor
+        """
+        super().__init__(controller, batt_pack)
+
+        self._charger = PCA9534(PCA9534.NXP_ADDR)
+        self._v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class PSUOPCubeV1p1(PSUOPCubeV1):
+    """
+    Cube board + OPCube PSU power pack + fuel gauge + NXP GPIO
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def name(cls):
+        return 'OPCubeV1.1'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, controller, batt_pack):
+        """
+        Constructor
+        """
+        super().__init__(controller, batt_pack)
+
+        self._charger = PCA9534(PCA9534.NXP_ADDR)                       # address of NXP GPIO chip
+        self._v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)

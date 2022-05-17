@@ -15,7 +15,7 @@ from scs_core.data.json import JSONify
 from scs_dfe.interface.opcube.opcube_mcu_t1 import OPCubeMCUt1
 
 from scs_psu.batt_pack.batt_pack_v2 import BattPackV2
-from scs_psu.psu.opcube_v1.psu_opcube_v1 import PSUOPCubeV1
+from scs_psu.psu.opcube_v1.psu_opcube_v1 import PSUOPCubeV1p1
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ print(controller)
 batt_pack = BattPackV2.construct()
 print(batt_pack)
 
-psu = PSUOPCubeV1(controller, batt_pack)
+psu = PSUOPCubeV1p1(controller, batt_pack)
 print(psu)
 print("-")
 
