@@ -21,7 +21,7 @@ from scs_dfe.interface.pzhb.pzhb_mcu_t3_f1 import PZHBMCUt3f1
 from scs_psu.batt_pack.batt_pack_v1 import BattPackV1
 from scs_psu.batt_pack.batt_pack_v2 import BattPackV2
 
-from scs_psu.psu.opcube_v1.psu_opcube_v1 import PSUOPCubeV1
+from scs_psu.psu.opcube_v1.psu_opcube_v1 import PSUOPCubeV1p0, PSUOPCubeV1p1
 
 from scs_psu.psu.mobile_v1.psu_mobile_v1 import PSUMobileV1
 from scs_psu.psu.mobile_v2.psu_mobile_v2 import PSUMobileV2
@@ -43,7 +43,8 @@ class PSUConf(AbstractPSUConf):
     __PSU_CLASSES = {
         PSUMobileV1.name():  PSUMobileV1,
         PSUMobileV2.name():  PSUMobileV2,
-        PSUOPCubeV1.name(): PSUOPCubeV1,
+        PSUOPCubeV1p0.name(): PSUOPCubeV1p0,
+        PSUOPCubeV1p1.name(): PSUOPCubeV1p1,
         PSUOsloV1.name(): PSUOsloV1,
         PSUPrototypeV1.name(): PSUPrototypeV1
     }
@@ -118,7 +119,7 @@ class PSUConf(AbstractPSUConf):
 
             raise ValueError('incompatible interface model for MobileV2: %s' % interface_model)
 
-        if self.psu_model == PSUOPCubeV1.name():
+        if self.psu_model in (PSUOPCubeV1p0.name(), PSUOPCubeV1p1.name()):
             return psu_class(OPCubeMCUt1(OPCubeMCUt1.DEFAULT_ADDR), batt_pack)
 
         return psu_class(host.psu_device())

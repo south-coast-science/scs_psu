@@ -13,10 +13,11 @@ from scs_psu.psu.opcube_v1.psu_status import ChargerStatus
 
 class PCA9534(object):
     """
-    Texas Instruments PCA9534A remote 8-bit I/O expander
+    Texas Instruments PCA9534A or NXP remote 8-bit I/O expander
     """
 
-    DEFAULT_ADDR =          0x38
+    TI_ADDR =               0x38
+    NXP_ADDR =              0x20
 
     __ADDR_INPUT =          0x00
     __ADDR_OUTPUT =         0x01

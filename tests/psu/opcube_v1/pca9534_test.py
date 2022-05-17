@@ -20,7 +20,7 @@ from scs_psu.psu.opcube_v1.pca9534 import PCA9534
 try:
     I2C.Utilities.open()
 
-    io = PCA9534(PCA9534.DEFAULT_ADDR)
+    io = PCA9534(PCA9534.TI_ADDR)
     print(io)
 
     io.init()
