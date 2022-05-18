@@ -11,13 +11,10 @@ from scs_psu.psu.opcube_v1.psu_status import ChargerStatus
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class PCA9534(object):
+class IOExpander(object):
     """
-    Texas Instruments PCA9534A or NXP remote 8-bit I/O expander
+    Texas Instruments PCA9534A or NXP PCA9849 remote 8-bit I/O expander
     """
-
-    TI_ADDR =               0x38        # address of TI PCA9534A GPIO chip
-    NXP_ADDR =              0x20        # address of NXP GPIO chip
 
     __ADDR_INPUT =          0x00
     __ADDR_OUTPUT =         0x01
@@ -101,4 +98,43 @@ class PCA9534(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PCA9534:{addr:0x%02x}" % self.__addr
+        return self.__class__.__name__ + ":{addr:0x%02x}" % self.__addr
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class PCA9534A(IOExpander):
+    """
+    Texas Instruments PCA9534A remote 8-bit I/O expander
+    """
+
+    DEFAULT_ADDR =              0x38                # I2C address
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self):
+        """
+        Constructor
+        """
+        super().__init__(self.DEFAULT_ADDR)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class PCA9849(IOExpander):
+    """
+    NXP PCA9849 remote 8-bit I/O expander
+    """
+
+    DEFAULT_ADDR =              0x20                # I2C address
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self):
+        """
+        Constructor
+        """
+        super().__init__(self.DEFAULT_ADDR)
+
+
+

@@ -3,7 +3,7 @@ Created on 1 Apr 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Cube board + OPCube PSU power pack + fuel gauge + TI GPIO
+Cube board + OPCube PSU power pack + fuel gauge + TI or NXP remote 8-bit I/O expander
 """
 
 from abc import ABC
@@ -15,7 +15,7 @@ from scs_host.bus.i2c import I2C
 from scs_psu.psu.i2c_psu import I2CPSU
 
 from scs_psu.psu.opcube_v1.mcp3221 import MCP3221
-from scs_psu.psu.opcube_v1.pca9534 import PCA9534
+from scs_psu.psu.opcube_v1.io_expander import PCA9534A, PCA9849
 from scs_psu.psu.opcube_v1.psu_status import PSUStatus, ChargeStatus
 
 
@@ -40,16 +40,15 @@ class PSUOPCubeV1(I2CPSU, ABC):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, controller, batt_pack):
+    def __init__(self, controller, batt_pack, charger, v_in_monitor):
         """
         Constructor
         """
         super().__init__(controller)
 
         self.__batt_pack = batt_pack                            # BattPackV2
-
-        self._charger = None
-        self._v_in_monitor = None
+        self.__charger = charger
+        self.__v_in_monitor = v_in_monitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -131,12 +130,12 @@ class PSUOPCubeV1(I2CPSU, ABC):
 
     @property
     def charger(self):
-        return self._charger
+        return self.__charger
 
 
     @property
     def v_in_monitor(self):
-        return self._v_in_monitor
+        return self.__v_in_monitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -164,12 +163,9 @@ class PSUOPCubeV1p0(PSUOPCubeV1):
 
     def __init__(self, controller, batt_pack):
         """
-        Constructor
+        uses TI PCA9534A GPIO chip
         """
-        super().__init__(controller, batt_pack)
-
-        self._charger = PCA9534(PCA9534.TI_ADDR)                       # address of TI PCA9534A GPIO chip
-        self._v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
+        super().__init__(controller, batt_pack, PCA9534A(), MCP3221(MCP3221.DEFAULT_ADDR))
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -190,9 +186,6 @@ class PSUOPCubeV1p1(PSUOPCubeV1):
 
     def __init__(self, controller, batt_pack):
         """
-        Constructor
+        NXP PCA9849 remote 8-bit I/O expander
         """
-        super().__init__(controller, batt_pack)
-
-        self._charger = PCA9534(PCA9534.NXP_ADDR)                       # address of NXP GPIO chip
-        self._v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
+        super().__init__(controller, batt_pack, PCA9849(), MCP3221(MCP3221.DEFAULT_ADDR))
