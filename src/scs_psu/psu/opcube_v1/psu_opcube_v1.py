@@ -165,7 +165,10 @@ class PSUOPCubeV1p0(PSUOPCubeV1):
         """
         uses TI PCA9534A GPIO chip
         """
-        super().__init__(controller, batt_pack, PCA9534A(), MCP3221(MCP3221.DEFAULT_ADDR))
+        charger = PCA9534A()
+        v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
+
+        super().__init__(controller, batt_pack, charger, v_in_monitor)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -188,4 +191,7 @@ class PSUOPCubeV1p1(PSUOPCubeV1):
         """
         NXP PCA9849 remote 8-bit I/O expander
         """
-        super().__init__(controller, batt_pack, PCA9849(), MCP3221(MCP3221.DEFAULT_ADDR))
+        charger = PCA9849()
+        v_in_monitor = MCP3221(MCP3221.DEFAULT_ADDR)
+
+        super().__init__(controller, batt_pack, charger, v_in_monitor)
