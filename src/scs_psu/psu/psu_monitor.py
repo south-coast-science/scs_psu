@@ -55,6 +55,10 @@ class PSUMonitor(SynchronisedProcess):
     def start(self):
         try:
             self.__psu.open()
+
+            version = self.__psu.version()
+            version.save(self.__host)
+
             super().start()
 
         except KeyboardInterrupt:
