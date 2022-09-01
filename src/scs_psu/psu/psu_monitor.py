@@ -57,7 +57,9 @@ class PSUMonitor(SynchronisedProcess):
             self.__psu.open()
 
             version = self.__psu.version()
-            version.save(self.__host)
+
+            if version:
+                version.save(self.__host)
 
             super().start()
 
