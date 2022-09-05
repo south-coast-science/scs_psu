@@ -1,5 +1,5 @@
 # scs_psu
-Communication and control of the South Coast Science power supply boards for BeagleBone.
+Communication and control of the South Coast Science power supply boards
 
 _Contains library classes only._
 
