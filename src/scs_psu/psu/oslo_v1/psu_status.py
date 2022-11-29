@@ -49,6 +49,11 @@ class PSUStatus(PSUReport):
         return cls(reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt)
 
 
+    @classmethod
+    def null_datum(cls):
+        return cls(None, None, None, None, None, None, None)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, reset, standby, charger, battery_fault, host_3v3, v_in, prot_batt):
@@ -79,8 +84,8 @@ class PSUStatus(PSUReport):
         jdict['in'] = self.input_power_present
         jdict['pwr-in'] = self.v_in
 
-        jdict['rst'] = self.reset.as_json()
-        jdict['chgr'] = self.charger.as_json()
+        jdict['rst'] = None if self.reset is None else self.reset.as_json()
+        jdict['chgr'] = None if self.charger is None else self.charger.as_json()
 
         jdict['batt-flt'] = self.battery_fault
 
