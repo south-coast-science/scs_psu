@@ -55,7 +55,11 @@ class PSUOsloV1(SerialPSU):
         if response is None:
             return PSUStatus.null_datum()
 
-        return PSUStatus.construct_from_jdict(json.loads(response))
+        try:
+            return PSUStatus.construct_from_jdict(json.loads(response))
+        except ValueError:
+            return PSUStatus.null_datum()
+
 
 
     def charge_min(self):
