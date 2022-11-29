@@ -8,7 +8,6 @@ Please retry operation after closing inhibitors and logging out other users.
 Alternatively, ignore inhibitors and users with 'systemctl poweroff -i'.
 """
 
-import sys
 import time
 
 from collections import OrderedDict
@@ -18,6 +17,8 @@ from scs_core.psu.psu import PSU
 
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -47,6 +48,8 @@ class PSUMonitor(SynchronisedProcess):
         self.__shutdown_initiated = False
         self.__prev_charge = None
         self.__prev_params = None
+
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -84,8 +87,7 @@ class PSUMonitor(SynchronisedProcess):
             params = batt_pack.initialise(self.__host, force_config=False)
 
             if params:
-                print("PSUMonitor.run: battery pack initialised: %s" % params, file=sys.stderr)
-                sys.stderr.flush()
+                self.__logger.info("run: battery pack initialised: %s" % params)
 
         # monitor PSU...
         try:
@@ -95,6 +97,7 @@ class PSUMonitor(SynchronisedProcess):
                 status = self.__psu.status()
 
                 if status is None:
+                    self.__logger.error('run: unable to obtain status report')
                     continue
 
                 # report...
@@ -133,16 +136,14 @@ class PSUMonitor(SynchronisedProcess):
         params.save(self.__host)
         self.__prev_params = params
 
-        print("PSUMonitor: %s" % params, file=sys.stderr)
-        sys.stderr.flush()
+        self.__logger.info("save_fuel_gauge_params: %s" % params)
 
 
     def __enter_host_shutdown(self, reason):
         if self.__shutdown_initiated:
             return
 
-        print("PSUMonitor.enter_host_shutdown: %s" % reason, file=sys.stderr)
-        sys.stderr.flush()
+        self.__logger.info("enter_host_shutdown: %s" % reason)
 
         self.__psu.host_shutdown_initiated()
         self.__shutdown_initiated = True
