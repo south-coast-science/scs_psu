@@ -98,6 +98,9 @@ class PSUStatus(PSUReport):
     # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self, _charge_min):
+        if self.input_power_present is None or self.prot_batt is None:
+            return None
+
         if self.input_power_present:
             return False
 
@@ -119,6 +122,9 @@ class PSUStatus(PSUReport):
 
     @property
     def input_power_present(self):
+        if self.v_in is None:
+            return None
+
         return self.v_in >= self.POWER_IN_MINIMUM
 
 
