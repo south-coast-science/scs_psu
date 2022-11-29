@@ -52,12 +52,10 @@ class PSUOsloV1(SerialPSU):
     def status(self):
         response = self.communicate("state")
 
-        try:
-            jdict = json.loads(response)
-            return PSUStatus.construct_from_jdict(jdict)
+        if response is None:
+            return PSUStatus.null_datum()
 
-        except (TypeError, ValueError):
-            return None
+        return PSUStatus.construct_from_jdict(json.loads(response))
 
 
     def charge_min(self):
