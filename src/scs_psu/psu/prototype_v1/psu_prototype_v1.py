@@ -52,6 +52,9 @@ class PSUPrototypeV1(SerialPSU):
     def status(self):
         response = self.communicate("state")
 
+        if response is None:
+            return PSUStatus.null_datum()
+
         try:
             jdict = json.loads(response)
             return PSUStatus.construct_from_jdict(jdict)

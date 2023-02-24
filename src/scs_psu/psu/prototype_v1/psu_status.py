@@ -46,6 +46,11 @@ class PSUStatus(PSUReport):
         return cls(power_reset, watchdog_reset, battery_fault, host_3v3, v_in, prot_batt)
 
 
+    @classmethod
+    def null_datum(cls):
+        return cls(None, None, None, None, None, None)
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, power_reset, watchdog_reset, battery_fault, host_3v3, v_in, prot_batt):
@@ -63,6 +68,11 @@ class PSUStatus(PSUReport):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def is_null_datum(self):
+        return self.__power_reset is None and self.__watchdog_reset is None and self.__battery_fault is None and \
+               self.__host_3v3 is None and self.__v_in is None and self.__prot_batt is None
+
 
     def below_power_threshold(self, _charge_min):
         if self.input_power_present:
