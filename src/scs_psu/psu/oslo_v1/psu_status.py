@@ -75,27 +75,11 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
-        jdict = OrderedDict()
+    def is_null_datum(self):
+        return self.__reset is None and self.__standby is None and self.__charger is None and \
+               self.__battery_fault is None and self.__host_3v3 is None and self.__v_in is None and \
+               self.__prot_batt is None
 
-        jdict['src'] = self.source
-
-        jdict['standby'] = self.standby
-        jdict['in'] = self.input_power_present
-        jdict['pwr-in'] = self.v_in
-
-        jdict['rst'] = None if self.reset is None else self.reset.as_json()
-        jdict['chgr'] = None if self.charger is None else self.charger.as_json()
-
-        jdict['batt-flt'] = self.battery_fault
-
-        jdict['host-3v3'] = self.host_3v3
-        jdict['prot-batt'] = self.prot_batt
-
-        return jdict
-
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     def below_power_threshold(self, _charge_min):
         if self.input_power_present is None or self.prot_batt is None:
@@ -141,6 +125,28 @@ class PSUStatus(PSUReport):
     @property
     def charge_status(self):
         return None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def as_json(self):
+        jdict = OrderedDict()
+
+        jdict['src'] = self.source
+
+        jdict['standby'] = self.standby
+        jdict['in'] = self.input_power_present
+        jdict['pwr-in'] = self.v_in
+
+        jdict['rst'] = None if self.reset is None else self.reset.as_json()
+        jdict['chgr'] = None if self.charger is None else self.charger.as_json()
+
+        jdict['batt-flt'] = self.battery_fault
+
+        jdict['host-3v3'] = self.host_3v3
+        jdict['prot-batt'] = self.prot_batt
+
+        return jdict
 
 
     # ----------------------------------------------------------------------------------------------------------------
