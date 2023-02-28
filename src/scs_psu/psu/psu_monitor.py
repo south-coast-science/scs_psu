@@ -96,9 +96,9 @@ class PSUMonitor(SynchronisedProcess):
             while timer.true():
                 status = self.__psu.status()
 
-                if status is None:
+                if status.is_null_datum():
                     self.__logger.error('run: unable to obtain status report')
-                    continue
+                    # self.__enter_host_shutdown("PSU COMMUNICATIONS LOST")             # dangerous!
 
                 # report...
                 with self._lock:
