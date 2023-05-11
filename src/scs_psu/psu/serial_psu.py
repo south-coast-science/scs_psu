@@ -14,6 +14,8 @@ from scs_core.psu.psu import PSU
 from scs_core.psu.psu_uptime import PSUUptime
 from scs_core.psu.psu_version import PSUVersion
 
+from scs_core.sys.logging import Logging
+
 from scs_host.sys.host_serial import HostSerial
 
 
@@ -26,7 +28,7 @@ class SerialPSU(PSU):
 
     __EOL =                     "\n"
 
-    __SERIAL_LOCK_TIMEOUT =     3.0         # seconds
+    __SERIAL_LOCK_TIMEOUT =     6.0         # seconds
     __SERIAL_COMMS_TIMEOUT =    2.0         # seconds
 
 
@@ -49,6 +51,7 @@ class SerialPSU(PSU):
         Constructor
         """
         self._serial = HostSerial(uart, self.baud_rate())
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -61,27 +64,33 @@ class SerialPSU(PSU):
     # ----------------------------------------------------------------------------------------------------------------
 
     def open(self):
-        self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
+        pass
 
 
     def close(self):
-        self._serial.close()
+        pass
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def communicate(self, command):
         try:
-            self._serial.write_line(command.strip(), self.__EOL)
-        except AttributeError:
-            return None
+            self._serial.open(self.__SERIAL_LOCK_TIMEOUT, self.__SERIAL_COMMS_TIMEOUT)
 
-        try:
-            response = self._serial.read_line(self.__EOL, self.__SERIAL_COMMS_TIMEOUT)
-        except TimeoutError:
-            return None
+            try:
+                self._serial.write_line(command.strip(), self.__EOL)
+            except AttributeError as ex:
+                self.__logger.error("write_line: %s" % repr(ex))
+                return None
 
-        return response
+            try:
+                return self._serial.read_line(eol=self.__EOL, timeout=self.__SERIAL_COMMS_TIMEOUT)
+            except TimeoutError as ex:
+                self.__logger.error("read_line: %s" % repr(ex))
+                return None
+
+        finally:
+            self._serial.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
