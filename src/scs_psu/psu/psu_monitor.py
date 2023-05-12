@@ -27,7 +27,7 @@ class PSUMonitor(SynchronisedProcess):
     """
     classdocs
     """
-    __MONITOR_INTERVAL =        1.0             # seconds
+    __MONITOR_INTERVAL =        3.0             # seconds   (was 1.0)
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ class PSUMonitor(SynchronisedProcess):
             params = batt_pack.initialise(self.__host, force_config=False)
 
             if params:
-                self.__logger.info("run: battery pack initialised: %s" % params)
+                self.__logger.info("battery pack initialised: %s" % params)
 
         # monitor PSU...
         try:
@@ -97,8 +97,8 @@ class PSUMonitor(SynchronisedProcess):
                 status = self.__psu.status()
 
                 if status.is_null_datum():
-                    self.__logger.error('run: unable to obtain status report')
-                    # self.__enter_host_shutdown("PSU COMMUNICATIONS LOST")             # dangerous!
+                    self.__logger.error('temporarily unable to obtain status report')
+                    continue
 
                 # report...
                 with self._lock:
