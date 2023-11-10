@@ -50,6 +50,7 @@ class PSUMonitor(SynchronisedProcess):
         self.__prev_params = None
 
         self.__logger = Logging.getLogger()
+        self.__logging_specification = Logging.specification()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -80,6 +81,9 @@ class PSUMonitor(SynchronisedProcess):
 
 
     def run(self):
+        Logging.replicate(self.__logging_specification)
+        self.__logger = Logging.getLogger()
+
         # initialise fuel guage...
         batt_pack = self.__psu.batt_pack
 
