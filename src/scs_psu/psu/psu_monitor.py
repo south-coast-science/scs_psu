@@ -35,9 +35,12 @@ class PSUMonitor(SynchronisedProcess):
         """
         Constructor
         """
+        self.__logger = Logging.getLogger()
+        self.__logging_specification = Logging.specification()
+
         manager = Manager()
 
-        SynchronisedProcess.__init__(self, manager.list())
+        SynchronisedProcess.__init__(self, value=manager.list())
 
         self.__host = host                                                  # Host
         self.__psu = psu                                                    # PSU
@@ -48,8 +51,6 @@ class PSUMonitor(SynchronisedProcess):
         self.__shutdown_initiated = False
         self.__prev_charge = None
         self.__prev_params = None
-
-        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -80,6 +81,9 @@ class PSUMonitor(SynchronisedProcess):
 
 
     def run(self):
+        Logging.replicate(self.__logging_specification)
+        self.__logger = Logging.getLogger()
+
         # initialise fuel guage...
         batt_pack = self.__psu.batt_pack
 
