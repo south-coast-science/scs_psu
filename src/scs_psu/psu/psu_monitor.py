@@ -13,7 +13,9 @@ import time
 from collections import OrderedDict
 from multiprocessing import Manager
 
+
 from scs_core.psu.psu import PSU
+from scs_core.psu.psu_event_log import PSUEventLog
 
 from scs_core.sync.interval_timer import IntervalTimer
 from scs_core.sync.synchronised_process import SynchronisedProcess
@@ -111,12 +113,16 @@ class PSUMonitor(SynchronisedProcess):
                 # fuel gauge...
                 self.__save_fuel_gauge_params(batt_pack)
 
+                # input_power_lost...
+                if not status.input_power_present:
+                    pass
+
                 # shutdown...
                 if not self.__ignore_standby and status.standby:
-                    self.__enter_host_shutdown("STANDBY")
+                    self.__enter_host_shutdown("operator request")
 
                 if not self.__ignore_threshold and status.below_power_threshold(self.__psu.charge_min()):
-                    self.__enter_host_shutdown("BELOW POWER THRESHOLD")
+                    self.__enter_host_shutdown("below power threshold")
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
@@ -147,14 +153,15 @@ class PSUMonitor(SynchronisedProcess):
         if self.__shutdown_initiated:
             return
 
-        self.__logger.info("enter_host_shutdown: %s" % reason)
-
-        self.__psu.host_shutdown_initiated()
         self.__shutdown_initiated = True
+        self.__psu.host_shutdown_initiated()
 
-        # self.__psu.power_peripherals(False)   # see Tim email on 2021-03-24
+        self.__logger.info("shutdown: %s" % reason)
+        PSUEventLog.save_event(self.__host, "shutdown: %s" % reason, trim=True)
 
-        time.sleep(2.0)                         # allow reporting to be completed
+        # self.__psu.power_peripherals(False)           # see Tim email on 2021-03-24
+
+        time.sleep(2.0)                                 # allow reporting to be completed
 
         self.__host.shutdown()
 
