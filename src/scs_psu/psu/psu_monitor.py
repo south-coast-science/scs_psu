@@ -159,9 +159,9 @@ class PSUMonitor(SynchronisedProcess):
         self.__logger.info("shutdown: %s" % reason)
         PSUEventLog.save_event(self.__host, "shutdown: %s" % reason, trim=True)
 
-        # self.__psu.power_peripherals(False)   # see Tim email on 2021-03-24
+        # self.__psu.power_peripherals(False)           # see Tim email on 2021-03-24
 
-        time.sleep(2.0)                         # allow reporting to be completed
+        time.sleep(2.0)                                 # allow reporting to be completed
 
         self.__host.shutdown()
 
