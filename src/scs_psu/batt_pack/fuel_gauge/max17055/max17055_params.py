@@ -71,10 +71,14 @@ class Max17055Params(PersistentJSONable):
 
 
     def __eq__(self, other):                            # ignore calibrated_on, cycles
-        return self.r_comp_0 == other.r_comp_0 and \
-               self.temp_co == other.temp_co and \
-               self.full_cap_rep == other.full_cap_rep and \
-               self.full_cap_nom == other.full_cap_nom
+        try:
+            return self.r_comp_0 == other.r_comp_0 and \
+                   self.temp_co == other.temp_co and \
+                   self.full_cap_rep == other.full_cap_rep and \
+                   self.full_cap_nom == other.full_cap_nom
+
+        except (TypeError, AttributeError):
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
