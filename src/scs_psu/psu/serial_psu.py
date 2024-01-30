@@ -51,7 +51,7 @@ class SerialPSU(PSU):
         Constructor
         """
         self._serial = HostSerial(uart, self.baud_rate())
-        self.__logger = Logging.getLogger()
+        self._logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -80,13 +80,13 @@ class SerialPSU(PSU):
             try:
                 self._serial.write_line(command.strip(), self.__EOL)
             except AttributeError as ex:
-                self.__logger.error("write_line: %s" % repr(ex))
+                self._logger.error("write_line: %s" % repr(ex))
                 return None
 
             try:
                 return self._serial.read_line(eol=self.__EOL, timeout=self.__SERIAL_COMMS_TIMEOUT)
             except TimeoutError as ex:
-                self.__logger.error("read_line: %s" % repr(ex))
+                self._logger.error("read_line: %s" % repr(ex))
                 return None
 
         finally:

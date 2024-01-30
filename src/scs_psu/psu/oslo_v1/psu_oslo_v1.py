@@ -57,7 +57,8 @@ class PSUOsloV1(SerialPSU):
 
         try:
             return PSUStatus.construct_from_jdict(json.loads(response))
-        except ValueError:
+        except ValueError as ex:
+            self._logger.error("status: %s" % repr(ex))
             return PSUStatus.null_datum()
 
 
