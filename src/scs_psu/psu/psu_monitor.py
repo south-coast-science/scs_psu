@@ -102,13 +102,13 @@ class PSUMonitor(SynchronisedProcess):
             while timer.true():
                 status = self.__psu.status()
 
-                if status.is_null_datum():
-                    self.__logger.error('temporarily unable to obtain status report')
-                    continue
-
                 # report...
                 with self._lock:
                     status.as_list(self._value)
+
+                if status.is_null_datum():
+                    self.__logger.error('unable to obtain status report')
+                    continue
 
                 # fuel gauge...
                 self.__save_fuel_gauge_params(batt_pack)
