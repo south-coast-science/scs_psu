@@ -51,7 +51,7 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['src'] = self.source
@@ -162,7 +162,7 @@ class ChargeStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['chg'] = self.charge
