@@ -90,7 +90,7 @@ class Max17055Params(PersistentJSONable):
         super().save(manager, encryption_key=encryption_key)
 
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['calibrated-on'] = None if self.calibrated_on is None else self.calibrated_on.as_iso8601()

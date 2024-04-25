@@ -65,7 +65,7 @@ class BattStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['in'] = self.input_power_present
@@ -173,7 +173,7 @@ class ChargeLevel(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['%'] = self.percent

@@ -62,7 +62,7 @@ class PSUStatus(PSUReport):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['src'] = self.source
@@ -186,7 +186,7 @@ class ChargeStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         jdict = OrderedDict()
 
         jdict['chg'] = self.charge
@@ -255,7 +255,7 @@ class ChargerStatus(JSONable):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         items = (self.ready, self.fault, self.charging, self.power_fail)
 
         item_string = ''.join(['T' if item else 'F' for item in items])
