@@ -76,6 +76,7 @@ class PSUMonitor(SynchronisedProcess):
     def stop(self):
         try:
             super().stop()
+
             self.__psu.close()
 
         except (ConnectionError, KeyboardInterrupt, SystemExit):
