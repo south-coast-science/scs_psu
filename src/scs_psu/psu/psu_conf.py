@@ -6,8 +6,7 @@ Created on 21 Jun 2017
 specifies which PSU is present, if any
 
 example JSON:
-{"model": "MobileV2", "batt-model": "PackV1", "ignore-threshold": true, "reporting-interval": 10,
-"report-file": "/tmp/southcoastscience/psu_status_report.json"}
+{"model": "MobileV2", "batt-model": "PackV1", "ignore-threshold": true, "reporting-interval": 10}
 """
 
 from scs_core.psu.psu_conf import PSUConf as AbstractPSUConf
@@ -69,25 +68,24 @@ class PSUConf(AbstractPSUConf):
     @classmethod
     def construct_from_jdict(cls, jdict, skeleton=False):
         if not jdict:
-            return PSUConf(None, None, False, 0, None)
+            return PSUConf(None, None, False, 0)
 
         psu_model = jdict.get('model')
         batt_model = jdict.get('batt-model')
         ignore_threshold = jdict.get('ignore-threshold', False)
 
         reporting_interval = jdict.get('reporting-interval')
-        report_file = jdict.get('report-file')
 
-        return cls(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
+        return cls(psu_model, batt_model, ignore_threshold, reporting_interval)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, psu_model, batt_model, ignore_threshold, reporting_interval, report_file):
+    def __init__(self, psu_model, batt_model, ignore_threshold, reporting_interval):
         """
         Constructor
         """
-        super().__init__(psu_model, batt_model, ignore_threshold, reporting_interval, report_file)
+        super().__init__(psu_model, batt_model, ignore_threshold, reporting_interval)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -153,7 +151,5 @@ class PSUConf(AbstractPSUConf):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "PSUConf(psu):{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s, " \
-               "report_file:%s}" % \
-               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval,
-                self.report_file)
+        return "PSUConf(psu):{psu_model:%s, batt_model:%s, ignore_threshold:%s, reporting_interval:%s}" % \
+               (self.psu_model, self.batt_model, self.ignore_threshold, self.reporting_interval)
