@@ -8,8 +8,6 @@ Created on 2 Oct 2016
 
 import json
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.data.timedelta import Timedelta
 
@@ -34,7 +32,7 @@ jstr = JSONify.dumps(datum)
 print(jstr)
 print("-")
 
-jdict = json.loads(jstr, object_hook=OrderedDict)
+jdict = json.loads(jstr)
 
 datum = BattStatus.construct_from_jdict(jdict)
 print(datum)
